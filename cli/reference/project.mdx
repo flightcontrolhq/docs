@@ -1,0 +1,135 @@
+---
+title: "project"
+description: "Manage projects"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion project`
+
+Manage projects
+
+**Aliases:** `projects`, `proj`
+
+### `ravion project config`
+
+Manage project config
+
+#### `ravion project config apply`
+
+Apply project config
+
+```bash
+ravion project config apply <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--file <string>` | yes | File to read project config from |
+| `--autoapprove` |  | Pass autoapprove=true to supported stack change pipeline runs |
+| `--dry-run` |  | Validate and print planned changes without applying them |
+| `--json` |  | emit response as JSON |
+
+#### `ravion project config pull`
+
+Pull project config
+
+```bash
+ravion project config pull <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--file <string>` | yes | File to write project config to |
+
+#### `ravion project config schema`
+
+Print project config file schema
+
+```bash
+ravion project config schema
+```
+
+### `ravion project create`
+
+Create Project
+
+```bash
+ravion project create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--given-id <string>` | yes | User-provided project identifier. Must be unique within organization. |
+| `--name <string>` | yes | name |
+| `--description <string>` |  | description |
+| `--json` |  | emit response as JSON |
+
+### `ravion project delete`
+
+Delete Project
+
+```bash
+ravion project delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+### `ravion project get`
+
+Get Project by id
+
+```bash
+ravion project get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion project list`
+
+List Projects
+
+```bash
+ravion project list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
+
+### `ravion project update`
+
+Patch Project
+
+```bash
+ravion project update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` |  | description |
+| `--given-id <string>` |  | User-provided project identifier. Must be unique within organization. |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | name |
+

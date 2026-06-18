@@ -1,0 +1,337 @@
+---
+title: "pipeline"
+description: "Manage pipelines"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion pipeline`
+
+Manage pipelines
+
+**Aliases:** `pipelines`, `pipe`
+
+### `ravion pipeline config`
+
+Manage pipeline config
+
+#### `ravion pipeline config apply`
+
+Apply pipeline config as a new version
+
+```bash
+ravion pipeline config apply <pipeline-id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--file <string>` | yes | File to read pipeline config from |
+| `--json` |  | emit response as JSON |
+
+#### `ravion pipeline config pull`
+
+Pull pipeline config
+
+```bash
+ravion pipeline config pull <pipeline-id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--file <string>` | yes | File to write pipeline config to |
+
+### `ravion pipeline create`
+
+Create Pipeline
+
+```bash
+ravion pipeline create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--given-id <string>` | yes | User-provided pipeline identifier. Must be unique within project. |
+| `--name <string>` | yes | name |
+| `--project-id <string>` | yes | projectId |
+| `--description <string>` |  | description |
+| `--json` |  | emit response as JSON |
+
+### `ravion pipeline delete`
+
+Delete Pipeline
+
+```bash
+ravion pipeline delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+### `ravion pipeline get`
+
+Get Pipeline by id
+
+```bash
+ravion pipeline get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion pipeline list`
+
+List Pipelines
+
+```bash
+ravion pipeline list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--project-id <string>` |  | projectId |
+| `-v, --verbose` |  | show full output |
+
+### `ravion pipeline run`
+
+Manage pipeline runs
+
+**Aliases:** `runs`
+
+#### `ravion pipeline run cancel`
+
+Cancel a pipeline run
+
+```bash
+ravion pipeline run cancel <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--force` |  | When true, force cancellation: interrupt the runner and bound cleanup time |
+| `--json` |  | emit response as JSON |
+
+#### `ravion pipeline run create`
+
+Create PipelineRun
+
+```bash
+ravion pipeline run create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` | yes | User-provided description of this pipeline run. |
+| `--pipeline-id <string>` | yes | pipelineId |
+| `--variant-id <string>` | yes | ID of the variant to execute. |
+| `--attached-entity-id <string>` |  | ID of the entity (e.g. Stack) that this run is associated with |
+| `--input <string>` |  | Manual pipeline input values keyed by input definition key. Example: \{"image_tag": "v1.2.3", "enable_debug": true\}. |
+| `--json` |  | emit response as JSON |
+| `--pipeline-version-id <string>` |  | pipelineVersionId |
+
+#### `ravion pipeline run get`
+
+Get PipelineRun by id
+
+```bash
+ravion pipeline run get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion pipeline run list`
+
+List PipelineRuns
+
+```bash
+ravion pipeline run list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--attached-entity-id <string>` |  | attachedEntityId |
+| `--attached-entity-ids <limit>` |  | Return runs whose attached entity is any of these ids, newest first, bounded by limit. |
+| `--cursor <string>` |  | cursor |
+| `--ids <limit>` |  | Return only the runs with these ids, newest first, bounded by limit. Ids that don't exist (or aren't accessible) are omitted rather than erroring. |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--limit-per-attached-entity <attachedEntityIds>` |  | When set together with attachedEntityIds, return only the newest N runs per attached entity. |
+| `--pipeline-id <strings>` |  | pipelineId |
+| `--pipeline-version-id <string>` |  | pipelineVersionId |
+| `--status <strings>` |  | Filter to runs in any of these statuses. |
+| `-v, --verbose` |  | show full output |
+
+#### `ravion pipeline run retry`
+
+Retry a pipeline run
+
+```bash
+ravion pipeline run retry <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--retry-scope <string>` | yes | Which portion of the same pipeline run should be retried. |
+| `--json` |  | emit response as JSON |
+| `--use-latest-version` |  | When true, a full-run retry should use the latest pipeline version. |
+
+### `ravion pipeline schema`
+
+Print pipeline definition schema
+
+```bash
+ravion pipeline schema
+```
+
+### `ravion pipeline step-execution`
+
+Manage pipeline step executions
+
+**Aliases:** `step-executions`
+
+#### `ravion pipeline step-execution approve`
+
+Approve a pipeline step execution
+
+```bash
+ravion pipeline step-execution approve <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion pipeline step-execution get`
+
+Get PipelineStepExecution by id
+
+```bash
+ravion pipeline step-execution get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion pipeline step-execution list`
+
+List PipelineStepExecutions
+
+```bash
+ravion pipeline step-execution list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--pipeline-run-id <string>` |  | pipelineRunId |
+| `-v, --verbose` |  | show full output |
+
+### `ravion pipeline update`
+
+Patch Pipeline
+
+```bash
+ravion pipeline update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` |  | description |
+| `--given-id <string>` |  | User-provided pipeline identifier. Must be unique within project. |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | name |
+| `--project-id <string>` |  | projectId |
+
+### `ravion pipeline version`
+
+Manage pipeline versions
+
+**Aliases:** `versions`
+
+#### `ravion pipeline version create`
+
+Create PipelineVersion
+
+```bash
+ravion pipeline version create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--config <string>` | yes | Pipeline configuration in JSON format. Validated by handler using templatable schema. |
+| `--pipeline-id <string>` | yes | ID of the parent pipeline. |
+| `--json` |  | emit response as JSON |
+
+#### `ravion pipeline version get`
+
+Get PipelineVersion by id
+
+```bash
+ravion pipeline version get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion pipeline version list`
+
+List PipelineVersions
+
+```bash
+ravion pipeline version list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--pipeline-id <string>` |  | pipelineId |
+| `-v, --verbose` |  | show full output |
+

@@ -1,0 +1,40 @@
+---
+title: "Configuration"
+description: "Configure the Ravion CLI with environment variables."
+---
+
+The Ravion CLI reads its runtime configuration from environment variables. Each shipped binary has production defaults baked in, so you only need these variables to point the CLI at a different environment, such as staging or local development.
+
+## Environment variables
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| `RAVION_API_URL` | Base URL of the Ravion API. | `https://api.ravion.com` |
+| `RAVION_FRONTEND_URL` | Base URL of the Ravion app, where the sign-in approval page lives. | `https://app.ravion.com` |
+| `RAVION_CLOUD_URL` | Upstream URL used by `ravion terraform` for Terraform credentials. | `https://terraform.ravion.com` |
+
+Environment variables always take precedence over the defaults baked into the binary.
+
+## Examples
+
+Point a single command at a local API:
+
+```bash
+RAVION_API_URL=http://localhost:8080 ravion whoami
+```
+
+Run the Terraform workflow against a local cloud endpoint:
+
+```bash
+RAVION_CLOUD_URL=http://localhost:8083 ravion terraform shell
+```
+
+## Global flags
+
+These flags are available on most commands:
+
+| Flag | Description |
+| --- | --- |
+| `--json` | Emit the response as JSON. |
+| `-v, --verbose` | Show full output, including all columns on list commands. |
+| `-y, --yes` | Skip confirmation prompts on destructive commands. |

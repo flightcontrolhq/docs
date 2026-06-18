@@ -1,0 +1,149 @@
+---
+title: "organization"
+description: "Manage organizations"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion organization`
+
+Manage organizations
+
+**Aliases:** `organizations`
+
+### `ravion organization create`
+
+Create Organization
+
+```bash
+ravion organization create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--billing-email <string>` | yes | billingEmail |
+| `--name <string>` | yes | name |
+| `--json` |  | emit response as JSON |
+
+### `ravion organization get`
+
+Get Organization by id
+
+```bash
+ravion organization get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion organization list`
+
+List Organizations
+
+```bash
+ravion organization list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
+
+### `ravion organization permitted-idps`
+
+Get permitted identity providers for an organization
+
+```bash
+ravion organization permitted-idps <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion organization permitted-idps-update`
+
+Update permitted identity providers for an organization
+
+```bash
+ravion organization permitted-idps-update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--data <string>` | yes | Request data as JSON |
+| `--json` |  | emit response as JSON |
+
+### `ravion organization sso-portal-link`
+
+Get Admin Portal link for SAML SSO setup
+
+```bash
+ravion organization sso-portal-link <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion organization sso-settings`
+
+Get SAML SSO settings
+
+```bash
+ravion organization sso-settings <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion organization sso-settings-update`
+
+Update SAML SSO settings
+
+```bash
+ravion organization sso-settings-update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--sso-enforced` | yes | Whether to enforce SAML SSO as the sole login method. |
+| `--json` |  | emit response as JSON |
+
+### `ravion organization update`
+
+Patch Organization
+
+```bash
+ravion organization update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--billing-email <string>` |  | billingEmail |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | name |
+

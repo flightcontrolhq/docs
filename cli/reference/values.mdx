@@ -1,0 +1,147 @@
+---
+title: "values"
+description: "List possible values for things like aws regions"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion values`
+
+List possible values for things like aws regions
+
+**Aliases:** `value`
+
+### `ravion values aws-ec2-instance-types`
+
+Get AWS EC2 instance type values
+
+```bash
+ravion values aws-ec2-instance-types [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` | yes | AWS account ID |
+| `--region <string>` | yes | AWS region code |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion values aws-fargate-sizes`
+
+Get AWS Fargate size values
+
+```bash
+ravion values aws-fargate-sizes [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--capacity-provider <string>` |  | Fargate capacity provider used for pricing |
+| `--cpu-architecture <string>` |  | Fargate task CPU architecture used for pricing |
+| `--json` |  | emit response as JSON |
+| `--operating-system <string>` |  | Fargate task operating system used for pricing |
+| `--region <string>` |  | AWS region code used for pricing |
+| `-v, --verbose` |  | show full output |
+
+### `ravion values aws-regions`
+
+Get AWS region values
+
+```bash
+ravion values aws-regions [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion values aws-security-groups`
+
+Get AWS security group values
+
+```bash
+ravion values aws-security-groups [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` | yes | AWS account ID |
+| `--region <string>` | yes | AWS region code |
+| `--vpc-id <string>` | yes | AWS VPC ID |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion values aws-subnets`
+
+Get AWS subnet values
+
+```bash
+ravion values aws-subnets [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` | yes | AWS account ID |
+| `--region <string>` | yes | AWS region code |
+| `--vpc-id <string>` | yes | AWS VPC ID |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion values aws-vpcs`
+
+Get AWS VPC values
+
+```bash
+ravion values aws-vpcs [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` | yes | AWS account ID |
+| `--region <string>` | yes | AWS region code |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion values opentofu-versions`
+
+Get OpenTofu version values
+
+```bash
+ravion values opentofu-versions [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion values terraform-versions`
+
+Get Terraform version values
+
+```bash
+ravion values terraform-versions [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+

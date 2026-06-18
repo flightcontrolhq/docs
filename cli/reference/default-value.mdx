@@ -1,0 +1,180 @@
+---
+title: "default-value"
+description: "Manage default values"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion default-value`
+
+Manage default values
+
+**Aliases:** `default-values`
+
+### `ravion default-value create`
+
+Create DefaultValue
+
+```bash
+ravion default-value create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--default-value-definition-id <string>` | yes | Definition this value belongs to. |
+| `--parent-id <string>` | yes | Organization, project, or environment ID matching the parent type. |
+| `--parent-type <string>` | yes | Scope where this value is defined. |
+| `--value <string>` | yes | Raw value matching the definition schema. |
+| `--json` |  | emit response as JSON |
+
+### `ravion default-value definition`
+
+Manage default value definitions
+
+**Aliases:** `definitions`
+
+#### `ravion default-value definition create`
+
+Create DefaultValueDefinition
+
+```bash
+ravion default-value definition create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--given-id <string>` | yes | User-provided identifier. Must be unique within organization. |
+| `--name <string>` | yes | name |
+| `--schema <string>` | yes | Schema describing the value this default accepts. |
+| `--description <string>` |  | description |
+| `--json` |  | emit response as JSON |
+
+#### `ravion default-value definition delete`
+
+Delete DefaultValueDefinition
+
+```bash
+ravion default-value definition delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+#### `ravion default-value definition get`
+
+Get DefaultValueDefinition by id
+
+```bash
+ravion default-value definition get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion default-value definition list`
+
+List DefaultValueDefinitions
+
+```bash
+ravion default-value definition list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
+
+#### `ravion default-value definition update`
+
+Patch DefaultValueDefinition
+
+```bash
+ravion default-value definition update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` |  | description |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | name |
+| `--schema <string>` |  | Schema describing the value this default accepts. |
+
+### `ravion default-value delete`
+
+Delete DefaultValue
+
+```bash
+ravion default-value delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+### `ravion default-value get`
+
+Get DefaultValue by id
+
+```bash
+ravion default-value get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion default-value list`
+
+List DefaultValues
+
+```bash
+ravion default-value list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--definition-id <string>` |  | definitionId |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--parent-id <string>` |  | parentId |
+| `--parent-type <string>` |  | parentType |
+| `-v, --verbose` |  | show full output |
+
+### `ravion default-value update`
+
+Patch DefaultValue
+
+```bash
+ravion default-value update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `--value <string>` |  | Raw value matching the definition schema. |
+

@@ -1,0 +1,181 @@
+---
+title: "deploy"
+description: "Manage deployments"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion deploy`
+
+Manage deployments
+
+**Aliases:** `deploys`, `deployment`, `deployments`
+
+### `ravion deploy cancel`
+
+Cancel a deployment
+
+```bash
+ravion deploy cancel <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion deploy create`
+
+Create a deployment for a module
+
+```bash
+ravion deploy create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` | yes | User-provided description shown in dashboards and audit logs. Required. |
+| `--module-instance-id <string>` | yes | Module instance ID |
+| `--inputs <string>` |  | Deploy-time input values |
+| `--json` |  | emit response as JSON |
+
+### `ravion deploy get`
+
+Get Deployment by id
+
+```bash
+ravion deploy get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion deploy instance`
+
+Manage deployment instances
+
+**Aliases:** `instances`
+
+#### `ravion deploy instance get`
+
+Get DeploymentInstance by id
+
+```bash
+ravion deploy instance get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion deploy instance list`
+
+List DeploymentInstances
+
+```bash
+ravion deploy instance list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--deployment-id <string>` |  | deploymentId |
+| `--json` |  | emit response as JSON |
+| `--lifecycle-type <string>` |  | lifecycleType |
+| `--limit <int>` |  | limit |
+| `--module-instance-id <string>` |  | moduleInstanceId |
+| `--type <string>` |  | type |
+| `-v, --verbose` |  | show full output |
+
+### `ravion deploy list`
+
+List Deployments
+
+```bash
+ravion deploy list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--environment-id <string>` |  | environmentId |
+| `--id <strings>` |  | id |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--limit-per-module-instance <moduleInstanceIds>` |  | When set together with moduleInstanceIds, return only the newest N deployments per module instance. |
+| `--module-instance-id <string>` |  | moduleInstanceId |
+| `--module-instance-ids <limit>` |  | Return deployments belonging to any of these module instances, newest first, bounded by limit. |
+| `--pipeline-run-id <string>` |  | pipelineRunId |
+| `--status <strings>` |  | Filter to deployments in any of these statuses. |
+| `-v, --verbose` |  | show full output |
+
+### `ravion deploy redeploy`
+
+Redeploy a deployment
+
+```bash
+ravion deploy redeploy <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion deploy rollback`
+
+Start a rollback deployment
+
+```bash
+ravion deploy rollback <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion deploy rollback-candidates`
+
+List rollback candidates
+
+```bash
+ravion deploy rollback-candidates <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion deploy swap-blue-green`
+
+Swap a blue/green deployment to live traffic
+
+```bash
+ravion deploy swap-blue-green [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--module-instance-id <string>` | yes | moduleInstanceId |
+| `--json` |  | emit response as JSON |
+

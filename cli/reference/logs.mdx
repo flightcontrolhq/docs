@@ -1,0 +1,34 @@
+---
+title: "logs"
+description: "Query and stream logs"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion logs`
+
+Query and stream logs
+
+### `ravion logs cloudwatch`
+
+Stream CloudWatch logs
+
+```bash
+ravion logs cloudwatch [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` | yes | Database ID of the AwsAccount to use for credentials |
+| `--log-group-name <string>` | yes | CloudWatch log group name |
+| `--region <string>` | yes | AWS region where logs are stored |
+| `--end-time <string>` |  | End time for historical logs (ISO 8601) |
+| `--filter-pattern <string>` |  | Optional CloudWatch FilterPattern |
+| `--json` |  | emit response as JSON |
+| `--log-stream-names <strings>` |  | Explicit list of log stream names to filter by |
+| `--log-stream-prefix <string>` |  | Log stream prefix to filter by |
+| `--start-time <string>` |  | Start time for historical logs (ISO 8601) |
+| `--tail` |  | Switch to live tail mode after fetching historical logs |
+

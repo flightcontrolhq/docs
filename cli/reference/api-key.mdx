@@ -1,0 +1,76 @@
+---
+title: "api-key"
+description: "Manage API keys"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion api-key`
+
+Manage API keys
+
+**Aliases:** `api-keys`
+
+### `ravion api-key delete`
+
+Delete ApiKey
+
+```bash
+ravion api-key delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+### `ravion api-key get`
+
+Get ApiKey by id
+
+```bash
+ravion api-key get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion api-key list`
+
+List ApiKeys
+
+```bash
+ravion api-key list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--owner-id <string>` |  | Optional owner id filter. Must be provided with ownerType. |
+| `--owner-type <string>` |  | Optional owner type filter. Must be provided with ownerId. |
+| `-v, --verbose` |  | show full output |
+
+### `ravion api-key update`
+
+Patch ApiKey
+
+```bash
+ravion api-key update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` |  | Optional context for where or why this API key is used. |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | User-facing label for the API key. |
+

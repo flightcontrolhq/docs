@@ -23,6 +23,55 @@
         ]
       },
       {
+        "tab": "CLI",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "cli/overview",
+              "cli/installation",
+              "cli/authentication",
+              "cli/configuration"
+            ]
+          },
+          {
+            "group": "Command reference",
+            "pages": [
+              "cli/reference/api-key",
+              "cli/reference/aws",
+              "cli/reference/code-source",
+              "cli/reference/default-value",
+              "cli/reference/deploy",
+              "cli/reference/describe",
+              "cli/reference/environment",
+              "cli/reference/git",
+              "cli/reference/github",
+              "cli/reference/gitlab",
+              "cli/reference/infrastructure-event",
+              "cli/reference/login",
+              "cli/reference/logout",
+              "cli/reference/logs",
+              "cli/reference/membership",
+              "cli/reference/metrics",
+              "cli/reference/module",
+              "cli/reference/organization",
+              "cli/reference/pipeline",
+              "cli/reference/project",
+              "cli/reference/service-account",
+              "cli/reference/shell-completion",
+              "cli/reference/signup",
+              "cli/reference/stack",
+              "cli/reference/switch",
+              "cli/reference/terraform",
+              "cli/reference/user",
+              "cli/reference/values",
+              "cli/reference/whoami",
+              "cli/reference/workspace"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API reference",
         "groups": [
           {
@@ -46,6 +95,11 @@
           "anchor": "Dashboard",
           "href": "https://app.ravion.com",
           "icon": "grid-2"
+        },
+        {
+          "anchor": "CLI",
+          "href": "/cli/overview",
+          "icon": "terminal"
         },
         {
           "anchor": "API reference",

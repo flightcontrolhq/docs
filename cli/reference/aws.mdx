@@ -1,0 +1,144 @@
+---
+title: "aws"
+description: "Manage AWS resources"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion aws`
+
+Manage AWS resources
+
+### `ravion aws account`
+
+Manage AWS accounts
+
+**Aliases:** `accounts`
+
+#### `ravion aws account cloudformation-template-url`
+
+Get the S3 CloudFormation template URL and a scoped JWT for connecting or upgrading the given AWS account
+
+```bash
+ravion aws account cloudformation-template-url <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion aws account create`
+
+Create AwsAccount
+
+```bash
+ravion aws account create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--given-id <string>` | yes | User-provided AWS account identifier. Must be unique within organization. |
+| `--name <string>` | yes | Name of the AWS account |
+| `--json` |  | emit response as JSON |
+
+#### `ravion aws account delete`
+
+Delete AwsAccount
+
+```bash
+ravion aws account delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+#### `ravion aws account get`
+
+Get AwsAccount by id
+
+```bash
+ravion aws account get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion aws account list`
+
+List AwsAccounts
+
+```bash
+ravion aws account list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
+
+#### `ravion aws account policy-diff`
+
+Get IAM policy diff for an AWS account
+
+```bash
+ravion aws account policy-diff <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion aws account update`
+
+Patch AwsAccount
+
+```bash
+ravion aws account update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--given-id <string>` |  | User-provided AWS account identifier. Must be unique within organization. |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | Name of the AWS account |
+
+### `ravion aws default-network`
+
+Create AWS default VPC network
+
+**Aliases:** `default-networks`
+
+#### `ravion aws default-network create`
+
+Create AwsDefaultNetwork
+
+```bash
+ravion aws default-network create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` | yes | awsAccountId |
+| `--region <string>` | yes | region |
+| `--json` |  | emit response as JSON |
+

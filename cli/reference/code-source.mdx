@@ -1,0 +1,122 @@
+---
+title: "code-source"
+description: "Manage code sources"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion code-source`
+
+Manage code sources
+
+**Aliases:** `code-sources`
+
+### `ravion code-source branches`
+
+List code source branches
+
+```bash
+ravion code-source branches <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion code-source create`
+
+Create CodeSource
+
+```bash
+ravion code-source create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--git-self-hosted-server-id <string>` | yes | Git self-hosted server ID |
+| `--github-installation-id <string>` | yes | GitHub installation ID |
+| `--gitlab-third-party-account-id <string>` | yes | GitLab third-party account ID for OAuth |
+| `--repo-url <string>` | yes | Git repository URL |
+| `--type <string>` | yes | type |
+| `--json` |  | emit response as JSON |
+
+### `ravion code-source get`
+
+Get CodeSource by id
+
+```bash
+ravion code-source get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion code-source module-yaml-exists`
+
+Check if module.yaml exists at path
+
+```bash
+ravion code-source module-yaml-exists <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--branch <string>` | yes | Branch name |
+| `--base-path <string>` |  | Base directory path within the repository |
+| `--json` |  | emit response as JSON |
+
+### `ravion code-source repository`
+
+Get repository from git provider
+
+```bash
+ravion code-source repository <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion code-source search`
+
+Search code source by repo URL
+
+```bash
+ravion code-source search [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--repo-url <string>` | yes | Repository URL to search for |
+| `--json` |  | emit response as JSON |
+
+### `ravion code-source terraform-variables`
+
+Search code source terraform variables
+
+```bash
+ravion code-source terraform-variables <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--base-path <string>` |  | Base path to filter terraform files |
+| `--json` |  | emit response as JSON |
+| `--ref <string>` |  | Git reference (branch name, commit SHA, or tag) |
+

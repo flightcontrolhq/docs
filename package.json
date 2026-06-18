@@ -8,5 +8,8 @@
   },
   "devDependencies": {
     "mint": "latest"
+  },
+  "dependencies": {
+    "keytar": "7.9.0"
   }
 }

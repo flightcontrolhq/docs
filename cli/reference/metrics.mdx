@@ -1,0 +1,34 @@
+---
+title: "metrics"
+description: "Query metrics"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion metrics`
+
+Query metrics
+
+### `ravion metrics cloudwatch`
+
+Query CloudWatch metric data
+
+```bash
+ravion metrics cloudwatch [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` | yes | AWS account database ID used to resolve credentials |
+| `--end-time <string>` | yes | Inclusive end of the query window (ISO 8601) |
+| `--metric-name <string>` | yes | CloudWatch metric name, for example CPUUtilization |
+| `--metric-namespace <string>` | yes | CloudWatch namespace, for example AWS/ECS |
+| `--period <int>` | yes | Aggregation period in seconds |
+| `--region <string>` | yes | AWS region the metric lives in |
+| `--start-time <string>` | yes | Inclusive start of the query window (ISO 8601) |
+| `--statistic <string>` | yes | CloudWatch statistic to apply, for example Average |
+| `--dimensions <strings>` |  | Repeated dimensionName=dimensionValue pairs scoping the metric |
+| `--json` |  | emit response as JSON |
+

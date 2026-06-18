@@ -1,0 +1,83 @@
+---
+title: "stack"
+description: "Manage stacks"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion stack`
+
+Manage stacks
+
+**Aliases:** `stacks`
+
+### `ravion stack get`
+
+Get Stack by id
+
+```bash
+ravion stack get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion stack list`
+
+List Stacks
+
+```bash
+ravion stack list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--environment-id <string>` |  | environmentId |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--project-id <string>` |  | projectId |
+| `-v, --verbose` |  | show full output |
+
+### `ravion stack trigger-pipeline`
+
+Trigger a pipeline run for a stack
+
+```bash
+ravion stack trigger-pipeline <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` | yes | User-provided description of this pipeline run |
+| `--pipeline-type <string>` | yes | Which stack pipeline to trigger |
+| `--autoapprove` |  | Pass autoapprove=true to stack change pipeline runs when supported. |
+| `--json` |  | emit response as JSON |
+
+### `ravion stack workspace`
+
+Manage stack workspaces
+
+**Aliases:** `workspaces`
+
+#### `ravion stack workspace list`
+
+List stack workspaces in the active organization
+
+```bash
+ravion stack workspace list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+

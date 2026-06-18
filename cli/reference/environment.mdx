@@ -1,0 +1,205 @@
+---
+title: "environment"
+description: "Manage environments"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion environment`
+
+Manage environments
+
+**Aliases:** `environments`, `env`
+
+### `ravion environment create`
+
+Create Environment
+
+```bash
+ravion environment create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--given-id <string>` | yes | User-provided environment identifier. Must be unique within project. |
+| `--name <string>` | yes | name |
+| `--project-id <string>` | yes | projectId |
+| `--description <string>` |  | description |
+| `--json` |  | emit response as JSON |
+
+### `ravion environment delete`
+
+Delete Environment
+
+```bash
+ravion environment delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+### `ravion environment execution`
+
+Manage execution environments
+
+**Aliases:** `executions`
+
+#### `ravion environment execution create`
+
+Create ExecutionEnvironment
+
+```bash
+ravion environment execution create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` | yes | awsAccountId |
+| `--given-id <string>` | yes | User-provided execution environment identifier. Must be unique within organization. |
+| `--name <string>` | yes | name |
+| `--region <string>` | yes | region |
+| `--security-group-id <string>` | yes | securityGroupId |
+| `--subnet-id <string>` | yes | subnetId |
+| `--type <string>` | yes | type |
+| `--vpc-id <string>` | yes | vpcId |
+| `--json` |  | emit response as JSON |
+
+#### `ravion environment execution delete`
+
+Delete ExecutionEnvironment
+
+```bash
+ravion environment execution delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+#### `ravion environment execution get`
+
+Get ExecutionEnvironment by id
+
+```bash
+ravion environment execution get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion environment execution list`
+
+List ExecutionEnvironments
+
+```bash
+ravion environment execution list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` |  | awsAccountId |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
+
+#### `ravion environment execution update`
+
+Patch ExecutionEnvironment
+
+```bash
+ravion environment execution update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--aws-account-id <string>` |  | awsAccountId |
+| `--given-id <string>` |  | User-provided execution environment identifier. Must be unique within organization. |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | name |
+| `--region <string>` |  | region |
+| `--security-group-id <string>` |  | securityGroupId |
+| `--subnet-id <string>` |  | subnetId |
+| `--type <string>` |  | type |
+| `--vpc-id <string>` |  | vpcId |
+
+### `ravion environment get`
+
+Get Environment by id
+
+```bash
+ravion environment get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion environment list`
+
+List Environments
+
+```bash
+ravion environment list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--project-id <string>` |  | projectId |
+| `-v, --verbose` |  | show full output |
+
+### `ravion environment module-graph`
+
+Get environment module graph
+
+```bash
+ravion environment module-graph <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion environment update`
+
+Patch Environment
+
+```bash
+ravion environment update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` |  | description |
+| `--given-id <string>` |  | User-provided environment identifier. Must be unique within project. |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | name |
+| `--project-id <string>` |  | projectId |
+

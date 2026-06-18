@@ -1,0 +1,87 @@
+---
+title: "user"
+description: "Manage user account settings"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion user`
+
+Manage user account settings
+
+**Aliases:** `users`
+
+### `ravion user change-password`
+
+Change user password
+
+```bash
+ravion user change-password <userId> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--current-password <string>` | yes | currentPassword |
+| `--new-password <string>` | yes | newPassword |
+| `--json` |  | emit response as JSON |
+
+### `ravion user get`
+
+Get auth settings for a user
+
+```bash
+ravion user get <userId> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion user identity-delete`
+
+Disconnect an identity provider
+
+```bash
+ravion user identity-delete <userId> <provider> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+### `ravion user organizations`
+
+Get user organizations
+
+```bash
+ravion user organizations <userId> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion user update`
+
+Update user profile
+
+```bash
+ravion user update <userId> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--full-name <string>` |  | fullName |
+| `--json` |  | emit response as JSON |
+| `--short-name <string>` |  | shortName |
+

@@ -1,0 +1,44 @@
+---
+title: "gitlab"
+description: "GitLab integration"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion gitlab`
+
+GitLab integration
+
+### `ravion gitlab connect`
+
+Open the GitLab OAuth flow in a browser
+
+```bash
+ravion gitlab connect [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--no-browser` |  | Print the URL instead of opening a browser |
+| `--redirect-url <string>` |  | URL to redirect to after auth |
+| `--self-hosted <string>` |  | Self-hosted server id (uses self-hosted login flow when set) |
+
+### `ravion gitlab repos`
+
+List GitLab repositories in a namespace
+
+```bash
+ravion gitlab repos [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--namespace <string>` | yes | Namespace id (required) |
+| `--json` |  | emit response as JSON |
+| `--namespace-type <string>` |  | Filter by namespace type |
+| `--self-hosted <string>` |  | Self-hosted server id (use self-hosted endpoint when set) |
+

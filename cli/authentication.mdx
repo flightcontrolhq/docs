@@ -1,0 +1,67 @@
+---
+title: "Authentication"
+description: "Sign in to Ravion and select an active organization from the CLI."
+---
+
+The Ravion CLI authenticates with your Ravion account and stores credentials locally for subsequent commands.
+
+## Sign in
+
+Sign in with:
+
+```bash
+ravion login
+```
+
+By default, `login` uses the device-authorization flow. The CLI prints a URL and a short code, and you approve the sign-in from any browser, including a browser on another device. This works on headless hosts.
+
+## Check your identity
+
+Confirm who you are signed in as:
+
+```bash
+ravion whoami
+```
+
+Add `--json` to get machine-readable output.
+
+## Select an organization
+
+If you belong to more than one organization, choose the active one:
+
+```bash
+ravion switch
+```
+
+This walks through your organizations and persists the selection. Pass `--org <id-or-name>` to skip the interactive picker. Switching organization clears the active workspace, so `ravion terraform` asks you to pick a workspace again.
+
+## Sign out
+
+Clear locally stored credentials:
+
+```bash
+ravion logout
+```
+
+## Credential storage
+
+Credentials are stored under your config directory:
+
+```text
+${XDG_CONFIG_HOME:-$HOME/.config}/ravion/auth.json
+```
+
+## Service accounts and API keys
+
+For automation that should not depend on a person's session, use a service account API key instead of an interactive login. See [`ravion service-account`](/cli/reference/service-account) and [`ravion api-key`](/cli/reference/api-key).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Command reference" icon="terminal" href="/cli/overview">
+    Browse every CLI command.
+  </Card>
+  <Card title="Terraform credentials" icon="layer-group" href="/cli/reference/terraform">
+    Run Terraform with Ravion-managed credentials.
+  </Card>
+</CardGroup>

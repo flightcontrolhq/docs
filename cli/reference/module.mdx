@@ -1,0 +1,267 @@
+---
+title: "module"
+description: "Manage module instances"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion module`
+
+Manage module instances
+
+**Aliases:** `modules`, `mod`
+
+### `ravion module create`
+
+Create ModuleInstance
+
+```bash
+ravion module create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--environment-id <string>` | yes | Environment ID where this instance is deployed |
+| `--given-id <string>` | yes | User-provided unique identifier. Must be unique within environment. |
+| `--input <string>` | yes | Configuration input object for the module instance |
+| `--module-definition-id <string>` | yes | Module definition ID |
+| `--module-version-id <string>` | yes | Module version ID for the current configuration |
+| `--name <string>` | yes | User-provided instance name. |
+| `--description <string>` |  | Optional description of the module instance. |
+| `--initial-stack-run <string>` |  | Initial stack run behavior after creating a stack-backed module instance. Defaults to NONE. PLAN starts a stack run. APPLY starts a stack run with the autoapprove input enabled. |
+| `--json` |  | emit response as JSON |
+
+### `ravion module definition`
+
+Manage module definitions
+
+**Aliases:** `definitions`, `def`
+
+#### `ravion module definition create`
+
+Create ModuleDefinition
+
+```bash
+ravion module definition create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` | yes | Short description displayed in the catalog. |
+| `--name <string>` | yes | name |
+| `--type <string>` | yes | Module type identifier, e.g. "aws-network". Must be unique within organization. |
+| `--json` |  | emit response as JSON |
+
+#### `ravion module definition delete`
+
+Delete ModuleDefinition
+
+```bash
+ravion module definition delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+#### `ravion module definition get`
+
+Get ModuleDefinition by id
+
+```bash
+ravion module definition get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion module definition list`
+
+List ModuleDefinitions
+
+```bash
+ravion module definition list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--include-latest-version` |  | includeLatestVersion |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--organization-id <string>` |  | organizationId |
+| `--status <string>` |  | status |
+| `-v, --verbose` |  | show full output |
+
+#### `ravion module definition schema`
+
+Print module definition schema
+
+```bash
+ravion module definition schema
+```
+
+#### `ravion module definition update`
+
+Patch ModuleDefinition
+
+```bash
+ravion module definition update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--description <string>` |  | Short description displayed in the catalog. |
+| `--is-global-published` |  | Superadmin-only setting that publishes the module globally. |
+| `--json` |  | emit response as JSON |
+| `--name <string>` |  | name |
+
+### `ravion module delete`
+
+Delete ModuleInstance
+
+```bash
+ravion module delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
+### `ravion module get`
+
+Get ModuleInstance by id
+
+```bash
+ravion module get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+### `ravion module list`
+
+List ModuleInstances
+
+```bash
+ravion module list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--environment-id <string>` |  | environmentId |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--module-definition-id <strings>` |  | moduleDefinitionId |
+| `--project-id <string>` |  | projectId |
+| `--stack-id <string>` |  | stackId |
+| `-v, --verbose` |  | show full output |
+
+### `ravion module schema`
+
+Print module input schema
+
+```bash
+ravion module schema <type> [version]
+```
+
+### `ravion module update`
+
+Patch ModuleInstance
+
+```bash
+ravion module update <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--autoapprove` |  | Pass autoapprove=true to stack change pipeline runs after config updates when supported. |
+| `--description <string>` |  | Optional description of the module instance. |
+| `--environment-id <string>` |  | Environment ID where this instance is deployed |
+| `--given-id <string>` |  | User-provided unique identifier. Must be unique within environment. |
+| `--input <string>` |  | Configuration input object for the module instance |
+| `--json` |  | emit response as JSON |
+| `--module-version-id <string>` |  | Module version ID for the current configuration |
+| `--name <string>` |  | User-provided instance name. |
+| `--run-stack` |  | Trigger a stack change pipeline run after module config updates. Defaults to true. |
+
+### `ravion module version`
+
+Manage module versions
+
+**Aliases:** `versions`
+
+#### `ravion module version create`
+
+Create ModuleVersion
+
+```bash
+ravion module version create [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--config <string>` | yes | Parsed module.yaml contents |
+| `--description <string>` | yes | description |
+| `--module-definition-id <string>` | yes | Module definition ID |
+| `--version <string>` | yes | Semantic version string, e.g. "1.0.0" or "1.0.0-dev" |
+| `--json` |  | emit response as JSON |
+
+#### `ravion module version get`
+
+Get ModuleVersion by id
+
+```bash
+ravion module version get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion module version list`
+
+List ModuleVersions
+
+```bash
+ravion module version list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--id <strings>` |  | id |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `--module-definition-id <string>` |  | moduleDefinitionId |
+| `-v, --verbose` |  | show full output |
+

@@ -1,0 +1,119 @@
+---
+title: "CLI overview"
+description: "Manage Ravion projects, environments, deployments, and infrastructure from the command line."
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+ravion is the command-line interface for the Ravion platform.
+
+## Install
+
+Install the latest release with the install script:
+
+```bash
+curl -fsSL https://github.com/flightcontrolhq/cli/releases/latest/download/install.sh | sh
+```
+
+On macOS, install with Homebrew:
+
+```bash
+brew install flightcontrolhq/tap/ravion
+```
+
+See [Installation](/cli/installation) for version pinning, [Authentication](/cli/authentication) to sign in, and [Configuration](/cli/configuration) for environment variables.
+
+## Commands
+
+<CardGroup cols={2}>
+  <Card title="api-key" href="/cli/reference/api-key">
+    Manage API keys
+  </Card>
+  <Card title="aws" href="/cli/reference/aws">
+    Manage AWS resources
+  </Card>
+  <Card title="code-source" href="/cli/reference/code-source">
+    Manage code sources
+  </Card>
+  <Card title="default-value" href="/cli/reference/default-value">
+    Manage default values
+  </Card>
+  <Card title="deploy" href="/cli/reference/deploy">
+    Manage deployments
+  </Card>
+  <Card title="describe" href="/cli/reference/describe">
+    Get info about any resource by unique id
+  </Card>
+  <Card title="environment" href="/cli/reference/environment">
+    Manage environments
+  </Card>
+  <Card title="git" href="/cli/reference/git">
+    Manage Git integrations
+  </Card>
+  <Card title="github" href="/cli/reference/github">
+    GitHub integration
+  </Card>
+  <Card title="gitlab" href="/cli/reference/gitlab">
+    GitLab integration
+  </Card>
+  <Card title="infrastructure-event" href="/cli/reference/infrastructure-event">
+    Manage infrastructure events
+  </Card>
+  <Card title="login" href="/cli/reference/login">
+    Sign in to Ravion
+  </Card>
+  <Card title="logout" href="/cli/reference/logout">
+    Clear locally stored Ravion credentials
+  </Card>
+  <Card title="logs" href="/cli/reference/logs">
+    Query and stream logs
+  </Card>
+  <Card title="membership" href="/cli/reference/membership">
+    Manage organization memberships
+  </Card>
+  <Card title="metrics" href="/cli/reference/metrics">
+    Query metrics
+  </Card>
+  <Card title="module" href="/cli/reference/module">
+    Manage module instances
+  </Card>
+  <Card title="organization" href="/cli/reference/organization">
+    Manage organizations
+  </Card>
+  <Card title="pipeline" href="/cli/reference/pipeline">
+    Manage pipelines
+  </Card>
+  <Card title="project" href="/cli/reference/project">
+    Manage projects
+  </Card>
+  <Card title="service-account" href="/cli/reference/service-account">
+    Manage service accounts
+  </Card>
+  <Card title="shell-completion" href="/cli/reference/shell-completion">
+    Generate shell completion scripts
+  </Card>
+  <Card title="signup" href="/cli/reference/signup">
+    Sign up a new account
+  </Card>
+  <Card title="stack" href="/cli/reference/stack">
+    Manage stacks
+  </Card>
+  <Card title="switch" href="/cli/reference/switch">
+    Choose the active organization
+  </Card>
+  <Card title="terraform" href="/cli/reference/terraform">
+    Manage Terraform credentials and resources
+  </Card>
+  <Card title="user" href="/cli/reference/user">
+    Manage user account settings
+  </Card>
+  <Card title="values" href="/cli/reference/values">
+    List possible values for things like aws regions
+  </Card>
+  <Card title="whoami" href="/cli/reference/whoami">
+    Print the currently authenticated identity
+  </Card>
+  <Card title="workspace" href="/cli/reference/workspace">
+    List or delete Ravion workspaces
+  </Card>
+</CardGroup>

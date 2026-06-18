@@ -1,0 +1,42 @@
+---
+title: "github"
+description: "GitHub integration"
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion github`
+
+GitHub integration
+
+### `ravion github connect`
+
+Open the GitHub App install flow in a browser
+
+```bash
+ravion github connect [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--no-browser` |  | Print the URL instead of opening a browser |
+| `--redirect-url <string>` |  | URL to redirect to after install |
+
+### `ravion github repos`
+
+List repositories for a GitHub installation
+
+```bash
+ravion github repos [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--installation <string>` | yes | GitHub installation id (required) |
+| `--json` |  | emit response as JSON |
+| `--namespace-type <string>` |  | Filter by namespace type |
+

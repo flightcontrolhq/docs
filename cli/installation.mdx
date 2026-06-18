@@ -1,0 +1,67 @@
+---
+title: "Installation"
+description: "Install the Ravion CLI on macOS and Linux."
+---
+
+The Ravion CLI (`ravion`) runs on macOS and Linux, on both x86_64 and arm64.
+
+## Install script
+
+Install the latest release with the install script:
+
+```bash
+curl -fsSL https://github.com/flightcontrolhq/cli/releases/latest/download/install.sh | sh
+```
+
+The script downloads the release archive, verifies its checksum, and installs the `ravion` binary to `/usr/local/bin`.
+
+## Homebrew
+
+On macOS, install with Homebrew:
+
+```bash
+brew install flightcontrolhq/tap/ravion
+```
+
+## Install options
+
+Set environment variables before running the install script to control the install:
+
+| Variable | Description |
+| --- | --- |
+| `RAVION_VERSION` | Install a specific version, such as `0.2.0`, instead of the latest release. |
+| `RAVION_INSTALL_DIR` | Install directory. Defaults to `/usr/local/bin`. |
+
+For example, to install a specific version into a custom directory:
+
+```bash
+RAVION_VERSION=0.2.0 RAVION_INSTALL_DIR="$HOME/bin" \
+  sh -c "$(curl -fsSL https://github.com/flightcontrolhq/cli/releases/latest/download/install.sh)"
+```
+
+## Verify the installation
+
+Confirm the CLI is installed and on your `PATH`:
+
+```bash
+ravion --version
+```
+
+## Shell completion
+
+Generate a completion script for your shell with [`ravion shell-completion`](/cli/reference/shell-completion). For example, for zsh:
+
+```bash
+ravion shell-completion zsh > "${fpath[1]}/_ravion"
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Authenticate" icon="key" href="/cli/authentication">
+    Sign in and choose your active organization.
+  </Card>
+  <Card title="Configure" icon="sliders" href="/cli/configuration">
+    Point the CLI at a different environment with environment variables.
+  </Card>
+</CardGroup>
