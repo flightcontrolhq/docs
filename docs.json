@@ -167,10 +167,13 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API reference",
+            "group": "Get started",
             "pages": [
               "api-reference/overview"
-            ],
+            ]
+          },
+          {
+            "group": "API reference",
             "openapi": "https://api.ravion.com/openapi.yaml"
           }
         ]

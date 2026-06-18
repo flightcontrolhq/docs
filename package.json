@@ -4,6 +4,8 @@
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "dev": "mint dev",
+    "sync:schema-reference": "node scripts/sync-schema-reference.mjs",
+    "validate": "mint validate",
     "update": "mint update"
   },
   "devDependencies": {
