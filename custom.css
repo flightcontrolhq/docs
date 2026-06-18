@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;1,400&display=swap");
 
 :root {
   --font-mono:
@@ -65,6 +65,7 @@ samp,
 [data-component-part="code-block"],
 [data-component-part="code-block"] * {
   font-family: var(--font-mono) !important;
+  font-weight: 400 !important;
 }
 
 /* Typography to match flightcontrol ui2 / packages/web ----------------------- */
