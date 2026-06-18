@@ -1,0 +1,48 @@
+---
+title: "API overview"
+description: "Use the Ravion API to automate projects, environments, pipelines, deployments, and infrastructure workflows."
+---
+
+The Ravion API lets you automate the same cloud workflow primitives you use in the dashboard.
+
+Use it to manage projects, environments, pipelines, deployments, service accounts, API keys, code sources, Terraform resources, and infrastructure events.
+
+## Base URL
+
+Send API requests to:
+
+```text
+https://api.ravion.com
+```
+
+The OpenAPI specification is available at:
+
+```text
+https://api.ravion.com/openapi.yaml
+```
+
+## Authentication
+
+The API uses bearer authentication.
+
+Include your token in the `Authorization` header:
+
+```http
+Authorization: Bearer <token>
+```
+
+Use service accounts and API keys for automation that should not depend on a person's dashboard session.
+
+## Pagination
+
+List endpoints can return paginated responses.
+
+Use the `limit` query parameter to control page size. Use the returned cursor, such as `nextCursor`, to request the next page.
+
+## Errors
+
+Error responses include a machine-readable code and a human-readable message. They can also include a `requestId` that helps Ravion trace the request.
+
+## Endpoint reference
+
+Use the generated endpoint pages in this section for request parameters, response schemas, and example payloads.

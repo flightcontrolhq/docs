@@ -1,34 +1,56 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "theme": "maple",
+  "name": "Ravion Docs",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#FE6104",
+    "light": "#BD4406",
+    "dark": "#F6DDCE"
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
+        "tab": "Documentation",
         "pages": [
-          "index",
-          "quickstart"
+          {
+            "group": "Get started",
+            "pages": [
+              "index",
+              "quickstart"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "groups": [
+          {
+            "group": "API reference",
+            "pages": [
+              "api-reference/overview"
+            ],
+            "openapi": "https://api.ravion.com/openapi.yaml"
+          }
         ]
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Website",
+          "href": "https://www.ravion.com",
+          "icon": "globe"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Dashboard",
+          "href": "https://app.ravion.com",
+          "icon": "grid-2"
+        },
+        {
+          "anchor": "API reference",
+          "href": "/api-reference/overview",
+          "icon": "code"
         }
       ]
     }
@@ -40,14 +62,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Website",
+        "href": "https://www.ravion.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Open dashboard",
+      "href": "https://app.ravion.com"
     }
   },
   "contextual": {
@@ -64,9 +86,8 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "linkedin": "https://www.linkedin.com",
+      "x": "https://twitter.com"
     }
   }
 }
