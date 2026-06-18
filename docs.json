@@ -12,12 +12,77 @@
     "tabs": [
       {
         "tab": "Documentation",
-        "pages": [
+        "groups": [
           {
             "group": "Get started",
             "pages": [
               "index",
               "quickstart"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "concepts/overview",
+              "concepts/containers",
+              "concepts/modules",
+              "concepts/pipelines"
+            ]
+          },
+          {
+            "group": "Terraform stacks",
+            "pages": [
+              "terraform-stacks/overview",
+              "terraform-stacks/resources",
+              "terraform-stacks/runs"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/project-config"
+            ]
+          },
+          {
+            "group": "Modules",
+            "pages": [
+              "modules/overview",
+              "modules/stack",
+              "modules/build",
+              "modules/deploy",
+              "modules/metrics",
+              "modules/logs",
+              "modules/links"
+            ]
+          },
+          {
+            "group": "Pipelines",
+            "pages": [
+              "pipelines/overview",
+              "pipelines/config-reference",
+              "pipelines/step-types",
+              "pipelines/templating",
+              "pipelines/concurrency-and-locking",
+              "pipelines/triggers"
+            ]
+          },
+          {
+            "group": "Module catalog",
+            "pages": [
+              "catalog/overview",
+              "catalog/create-a-definition",
+              "catalog/definition-schema",
+              "catalog/versioning",
+              "catalog/inputs-and-config"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/overview",
+              "integrations/aws",
+              "integrations/github",
+              "integrations/gitlab"
             ]
           }
         ]
@@ -30,8 +95,7 @@
             "pages": [
               "cli/overview",
               "cli/installation",
-              "cli/authentication",
-              "cli/configuration"
+              "cli/authentication"
             ]
           },
           {
@@ -83,31 +147,7 @@
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Website",
-          "href": "https://www.ravion.com",
-          "icon": "globe"
-        },
-        {
-          "anchor": "Dashboard",
-          "href": "https://app.ravion.com",
-          "icon": "grid-2"
-        },
-        {
-          "anchor": "CLI",
-          "href": "/cli/overview",
-          "icon": "terminal"
-        },
-        {
-          "anchor": "API reference",
-          "href": "/api-reference/overview",
-          "icon": "code"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",

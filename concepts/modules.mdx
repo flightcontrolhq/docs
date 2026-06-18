@@ -1,0 +1,17 @@
+---
+title: "Modules"
+description: "The module primitive: instances vs definitions, and the facets a module can have."
+---
+
+A **module** is a deployable unit of infrastructure. A module *definition* (from the catalog) is instantiated as a module *instance* inside an environment.
+
+A module instance can optionally expose these facets:
+
+- **Stack** — the Terraform resources it manages
+- **Build** — image, Lambda, or static builds
+- **Deploy** — ECS or static deployment
+- **Metrics** — CloudWatch metrics
+- **Logs** — CloudWatch logs
+- **Links** — references to other modules
+
+{/* TODO: Expand this page. */}
