@@ -95,7 +95,8 @@
             "pages": [
               "cli/overview",
               "cli/installation",
-              "cli/authentication"
+              "cli/authentication",
+              "cli/releases"
             ]
           },
           {

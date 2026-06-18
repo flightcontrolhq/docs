@@ -1,0 +1,61 @@
+:root {
+  --radius-interactive-element: 0.125rem;
+  --radius-sm: 0.125rem;
+  --radius-text-highlight: 0.125rem;
+  --radius-md: 0.125rem;
+  --radius-menus: 0.125rem;
+  --radius-lg: 0.125rem;
+  --radius-xl: 0.125rem;
+  --radius-full: 9999px;
+
+  --rounded-sm: 0.125rem;
+  --rounded: 0.125rem;
+  --rounded-md: 0.125rem;
+  --rounded-lg: 0.125rem;
+  --rounded-xl: 0.125rem;
+  --rounded-2xl: 0.125rem;
+  --rounded-3xl: 0.125rem;
+  --border-radius: 0.125rem;
+}
+
+:where(
+  [class*="rounded"]:not(.rounded-none):not(.rounded-full):not([class*="rounded-full"])
+) {
+  border-radius: 0.125rem !important;
+}
+
+.rounded-full,
+[class*="rounded-full"] {
+  border-radius: var(--radius-full) !important;
+}
+
+[data-radix-menu-content],
+[data-radix-dropdown-menu-content],
+[role="menu"][data-side],
+[data-component-part="search-modal"],
+[data-component-part="search-header"],
+[data-component-part="search-list"] {
+  border-radius: 0.125rem !important;
+}
+
+:is(.dark, [data-theme="dark"]) [data-component-part="search-modal"] {
+  box-shadow:
+    0 0 0 100vmax rgb(0 0 0 / 60%),
+    0 25px 50px -12px rgb(0 0 0 / 70%) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-component-part="search-modal"] {
+    box-shadow:
+      0 0 0 100vmax rgb(0 0 0 / 60%),
+      0 25px 50px -12px rgb(0 0 0 / 70%) !important;
+  }
+}
+
+a[href="https://www.mintlify.com/?utm_campaign=poweredBy&utm_medium=referral&utm_source=ravion-b90c0359"],
+a[href*="mintlify.com"][href*="poweredBy"],
+a[href*="mintlify.com"][href*="powered-by"],
+a[aria-label*="Mintlify"],
+a[title*="Mintlify"] {
+  display: none !important;
+}
