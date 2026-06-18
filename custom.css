@@ -1,4 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap");
+
 :root {
+  --font-mono:
+    "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+
   --radius-interactive-element: 0.125rem;
   --radius-sm: 0.125rem;
   --radius-text-highlight: 0.125rem;
@@ -16,11 +22,10 @@
   --rounded-2xl: 0.125rem;
   --rounded-3xl: 0.125rem;
   --border-radius: 0.125rem;
+  font-size: 17px;
 }
 
-:where(
-  [class*="rounded"]:not(.rounded-none):not(.rounded-full):not([class*="rounded-full"])
-) {
+:where([class*="rounded"]:not(.rounded-none):not(.rounded-full):not([class*="rounded-full"])) {
   border-radius: 0.125rem !important;
 }
 
@@ -50,6 +55,70 @@
       0 0 0 100vmax rgb(0 0 0 / 60%),
       0 25px 50px -12px rgb(0 0 0 / 70%) !important;
   }
+}
+
+code,
+pre,
+kbd,
+samp,
+[class*="language-"],
+[data-component-part="code-block"],
+[data-component-part="code-block"] * {
+  font-family: var(--font-mono) !important;
+}
+
+/* Typography to match flightcontrol ui2 / packages/web ----------------------- */
+
+/* Global + body: PP Neue Montreal
+   - letter-spacing 0.02em (--tracking-normal)
+   - line-height 1.25 (--leading-base)
+   - weight 400, antialiased */
+html {
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body,
+p,
+li {
+  letter-spacing: 0.02em;
+}
+
+/* Headings: PP Fragment (Glare Regular), matching the marketing display style
+   - weight 400 (Glare Regular)
+   - letter-spacing 0
+   - line-height 1.1 (--leading-display) */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: 0 !important;
+  line-height: 1.1 !important;
+  font-weight: 400 !important;
+}
+
+/* Card titles */
+[data-component-part="card-title"] {
+  font-size: 1.2rem !important;
+}
+
+/* Space between card title and body */
+[data-component-part="card-content"] {
+  margin-top: 0.5rem !important;
+}
+
+/* Keep code free of the body letter-spacing for legibility */
+code,
+pre,
+kbd,
+samp,
+[class*="language-"],
+[data-component-part="code-block"],
+[data-component-part="code-block"] * {
+  letter-spacing: normal;
 }
 
 a[href="https://www.mintlify.com/?utm_campaign=poweredBy&utm_medium=referral&utm_source=ravion-b90c0359"],

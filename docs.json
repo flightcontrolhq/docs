@@ -7,6 +7,20 @@
     "light": "#BD4406",
     "dark": "#F6DDCE"
   },
+  "fonts": {
+    "body": {
+      "family": "PP Neue Montreal",
+      "source": "/fonts/PPNeueMontreal-Variable.woff2",
+      "format": "woff2",
+      "weight": 450
+    },
+    "heading": {
+      "family": "PP Fragment",
+      "source": "/fonts/PPFragment-GlareRegular.woff2",
+      "format": "woff2",
+      "weight": 400
+    }
+  },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
@@ -17,16 +31,29 @@
             "group": "Get started",
             "pages": [
               "index",
+              "philosophy",
               "quickstart"
+            ]
+          },
+          {
+            "group": "Use cases",
+            "pages": [
+              "use-cases/provision-infrastructure",
+              "use-cases/build-code",
+              "use-cases/deploy-code",
+              "use-cases/metrics-and-logs",
+              "use-cases/preview-environments",
+              "use-cases/developer-self-service",
+              "use-cases/agent-self-service"
             ]
           },
           {
             "group": "Concepts",
             "pages": [
-              "concepts/overview",
               "concepts/containers",
               "concepts/modules",
-              "concepts/pipelines"
+              "concepts/pipelines",
+              "concepts/infrastructure-as-code"
             ]
           },
           {
