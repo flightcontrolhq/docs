@@ -7,7 +7,7 @@ The declarative project configuration file applied with `ravion projects config 
 | Notation | Meaning |
 | --- | --- |
 | `T[]` | Array of `T` |
-| `map<str,T>` | Object keyed by strings with `T` values |
+| `map<string,T>` | Object keyed by strings with `T` values |
 | `enum[a,b]` | One of the listed values |
 | `A \| B` | One of several types |
 | ~template | Field accepts `<< ... >>` template expressions |
@@ -16,47 +16,39 @@ The declarative project configuration file applied with `ravion projects config 
 
 User-authored project config file consumed by `ravion projects config apply --file`.
 
-| Field | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `project` | [Project](#project) | No | — | Project metadata to update before applying environment configuration. |
-| `environments` | [Environment](#environment)[] | Yes | — | Environment configuration blocks to apply. |
+- **`project`**: [Project](#project) — optional. Project metadata to update before applying environment configuration.
+- **`environments`**: [Environment](#environment)[] — required. Environment configuration blocks to apply.
 
 ## Project
 
 Writable project metadata accepted by project config apply.
 
-| Field | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `id` | str | No | — | Existing project ID. When provided, it must match the project in the route. |
-| `givenId` | str | No | — | User-provided project identifier. When provided, it must match the project in the route. |
-| `name` | str | No | — | — |
-| `description` | str | No | — | — |
+- **`id`**: string — optional. Existing project ID. When provided, it must match the project in the route.
+- **`givenId`**: string — optional. User-provided project identifier. When provided, it must match the project in the route.
+- **`name`**: string — optional
+- **`description`**: string — optional
 
 ## Environment
 
 Environment block authored in project config files.
 
-| Field | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `id` | str | No | — | Existing environment ID. |
-| `givenId` | str | No | — | User-provided environment identifier. |
-| `name` | str | No | — | — |
-| `description` | str | No | — | — |
-| `moduleInstances` | [ModuleInstance](#moduleinstance)[] | Yes | — | — |
+- **`id`**: string — optional. Existing environment ID.
+- **`givenId`**: string — optional. User-provided environment identifier.
+- **`name`**: string — optional
+- **`description`**: string — optional
+- **`moduleInstances`**: [ModuleInstance](#moduleinstance)[] — required
 
 ## ModuleInstance
 
 Module instance shape authored in project config files.
 
-| Field | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `id` | str | No | — | Existing module instance ID. Non-empty IDs must resolve to an existing module. |
-| `givenId` | str | No | — | User-provided unique identifier. Must be unique within environment. |
-| `name` | str | No | — | — |
-| `description` | str | No | — | — |
-| `type` | str | No | — | Module type identifier. |
-| `version` | str | No | — | Semantic module version string. |
-| `input` | map&lt;str,any \| null&gt; | No | — | Runtime module configuration input. |
+- **`id`**: string — optional. Existing module instance ID. Non-empty IDs must resolve to an existing module.
+- **`givenId`**: string — optional. User-provided unique identifier. Must be unique within environment.
+- **`name`**: string — optional
+- **`description`**: string — optional
+- **`type`**: string — optional. Module type identifier.
+- **`version`**: string — optional. Semantic module version string.
+- **`input`**: map&lt;string,any \| null&gt; — optional. Runtime module configuration input.
 
 ## Module references
 

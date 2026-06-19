@@ -31,6 +31,7 @@
             "group": "Get started",
             "pages": [
               "index",
+              "how-ravion-works",
               "philosophy",
               "quickstart"
             ]

@@ -1,0 +1,78 @@
+---
+title: "How Ravion works"
+description: "Ravion automates your cloud account. Your code and user traffic never goes through our servers."
+---
+
+## 1. Connect your cloud account to Ravion
+
+Supported today: AWS<br/>
+Later this year: CloudFlare, GCP, Azure
+
+This enables us to automate your cloud account based on actions in Ravion, and to display logs, metrics, and deployment information from your cloud in Ravion.
+
+## 2. Create a server, static site, lambda or any other infrastructure
+
+Choose from our standard library of production-ready modules that are backed by Terraform.
+
+Or bring your own Terraform code. You can use Ravion like Terraform Cloud, or package your Terraform into a re-usable Ravion module for your company.
+
+## 3. Ravion spins up temporary EC2 instances in your cloud to execute the Terraform plan and apply steps
+
+The Terraform executes securely in your account so your source code and other secrets never live in the Ravion control plane.
+
+You get full visibility into every Terraform resource, planned changes, and versioned state changes over time.
+
+## 4. All infrastructure is provisioned in your cloud account
+
+Even though Ravion may look like a PaaS, we don't host any customer infrastructure or data. You get dedicated infrastructure for ultimate performance, control and security.
+
+This makes compliance much easier than on PaaS and scales to enterprise platform teams.
+
+## 5. Build your code in Ravion pipelines or in an external CI/CD provider
+
+Ravion has a full featured CI/CD pipeline system to orchestrate builds, deploys, and any other code execution or tasks.
+
+Ravion pipelines run on temporary EC2 instances in your account, so you can securely access your private network without keys in or public access to GitHub actions.
+
+When using external pipelines, you trigger deploys through Ravion using our CLI or API.
+
+## 6. Ravion automates deployments and surfaces all the details like instance level status and logs
+
+For example, in an ECS deployment, we take a task definition template, fill in required values, create a new task definition revision in AWS, start and monitor the deployment, and surface every low level event through the Ravion UI, API, and CLI.
+
+You get a much more comprehensive and easy to understand view of the deployment data than you can possibly get in your CI or AWS console.
+
+For Kubernetes deployments (coming soon), we can directly deploy Helm charts to clusters or integrate with ArgoCD.
+
+## 7. See all your infrastructure, builds, deploys, metrics, and logs in a single place
+
+The Ravion dashboard and API gives you a single place to monitor, debug, and update all your infrastructure, builds, and deploys.
+
+## 8. Get ephemeral preview environments for pull requests or one-off testing
+
+Define an environment template, and then create as many instances as you need to test pre-production changes in a live environment.
+
+And then quickly clean then up when you're done.
+
+## 9. Your devops or platform team can fully customize every aspect of Ravion
+
+While Ravion is easy for small teams to adopt, it's actually an enterprise platform engineering system with great defaults.
+
+But it can be fully customized and locked down. You can modify or completely replace the default modules and pipelines to match your company's workflows and compliance standards.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Product philosophy" icon="book-open" href="/philosophy">
+    Learn why Ravion balances developer speed with DevOps control.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Connect Ravion and start your first deployment workflow.
+  </Card>
+  <Card title="Modules" icon="boxes" href="/concepts/modules">
+    Learn how modules define reusable infrastructure and application patterns.
+  </Card>
+  <Card title="Pipelines" icon="workflow" href="/concepts/pipelines">
+    Learn how pipelines coordinate provisioning, builds, deploys, and checks.
+  </Card>
+</CardGroup>
