@@ -1,17 +1,34 @@
 ---
 title: "Modules"
-description: "The module primitive: instances vs definitions, and the facets a module can have."
+description: "The 'what' primative that defines, tracks, and manages infrastructure"
 ---
 
-A **module** is a deployable unit of infrastructure. A module *definition* (from the catalog) is instantiated as a module *instance* inside an environment.
+A **module** is a deployable unit of infrastructure. A module _definition_ (from the catalog) is instantiated as a module _instance_ inside an environment.
 
 A module instance can optionally expose these facets:
 
-- **Stack** — the Terraform resources it manages
-- **Build** — image, Lambda, or static builds
-- **Deploy** — ECS or static deployment
-- **Metrics** — CloudWatch metrics
-- **Logs** — CloudWatch logs
-- **Links** — references to other modules
+```mermaid
+%%{init: {'flowchart': {'defaultRenderer': 'elk'}}}%%
+flowchart LR
+  Module[Module instance] -. optional .-> TerraformState["<div style='width: 225px; text-align: left;'>Terraform state management</div>"]
+  Module -. optional .-> BuildConfig["<div style='width: 225px; text-align: left;'>Build config</div>"]
+  Module -. optional .-> DeployManager["<div style='width: 225px; text-align: left;'>Deploy manager</div>"]
+  Module -. optional .-> CertificateDomain["<div style='width: 225px; text-align: left;'>Certificate & domain manager</div>"]
+  Module -. optional .-> MetricCharts["<div style='width: 225px; text-align: left;'>Metric charts</div>"]
+  Module -. optional .-> Logs["<div style='width: 225px; text-align: left;'>Logs</div>"]
 
-{/* TODO: Expand this page. */}
+  click TerraformState "/modules/stack" "Open stack docs"
+  click BuildConfig "/modules/build" "Open build docs"
+  click DeployManager "/modules/deploy" "Open deploy docs"
+  click CertificateDomain "/modules/deploy" "Open deploy docs"
+  click MetricCharts "/modules/metrics" "Open metrics docs"
+  click Logs "/modules/logs" "Open logs docs"
+```
+
+## Module taxonomy
+
+```mermaid
+flowchart
+  ModuleDefinition[Module definition] -- has many --> ModuleVersion[Module version]
+  ModuleInstance[Module instance] -- of --> ModuleVersion
+```

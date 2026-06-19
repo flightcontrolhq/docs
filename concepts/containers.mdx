@@ -1,8 +1,27 @@
 ---
-title: "Projects and environments"
+title: "Organizations, projects, environments"
 description: "Organizing containers that scope and group your modules."
 ---
 
-Projects and environments are organizing containers. They scope and group modules; they are not deployable on their own.
+Your Ravion organization is the root container for users and projects. Enterprise companies can have multiple Ravion organizations with unified billing.
 
-{/* TODO: Expand this page. */}
+Projects and environments are lightweight containers for all your infrastructure and pipelines.
+
+```mermaid
+flowchart TD
+  Organization[Organization] --> Project[Project]
+  Organization --> Membership[Membership]
+  Membership --> User[User]
+  Organization --> ModuleDefinition[Module definition]
+  Project --> Environment[Environment]
+  Environment --> Module[Module instance]
+  Project --> Pipeline[Pipeline]
+
+  class Organization,Project,Environment container
+  class ModuleDefinition,Module module
+  class Membership,User identity
+
+  classDef container fill:#FE6104,stroke:#BD4406,color:#fff
+  classDef module fill:#F6DDCE,stroke:#FE6104,color:#2a1208
+  classDef identity fill:#1f2937,stroke:#111827,color:#fff
+```

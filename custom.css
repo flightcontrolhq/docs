@@ -1,5 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;1,400&display=swap");
 
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("/fonts/PPNeueMontreal-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --font-mono:
     "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
@@ -84,6 +92,11 @@ body,
 p,
 li {
   letter-spacing: 0.02em;
+}
+
+strong,
+b {
+  font-weight: 600 !important;
 }
 
 /* Headings: PP Fragment (Glare Regular), matching the marketing display style
