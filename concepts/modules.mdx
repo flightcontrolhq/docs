@@ -1,23 +1,30 @@
 ---
 title: "Modules"
-description: "The 'what' primative that defines, tracks, and manages infrastructure"
+description: "The primative that defines, tracks, and manages infrastructure"
 ---
 
-A **module** is a deployable unit of infrastructure. A module _definition_ (from the catalog) is instantiated as a module _instance_ inside an environment.
+A module is the core primitive in Ravion for both tracking and managing your services and supporting infrastructure.
 
-A module instance can optionally expose these facets:
+A module can optionally have one or more of the following facets:
 
 ```mermaid
 %%{init: {'flowchart': {'defaultRenderer': 'elk'}}}%%
 flowchart LR
-  Module[Module instance] -. optional .-> TerraformState["<div style='width: 225px; text-align: left;'>Terraform state management</div>"]
+  Module[Module] -. optional .-> IaCState["<div style='width: 225px; text-align: left;'>IaC state management</div>"]
   Module -. optional .-> BuildConfig["<div style='width: 225px; text-align: left;'>Build config</div>"]
   Module -. optional .-> DeployManager["<div style='width: 225px; text-align: left;'>Deploy manager</div>"]
   Module -. optional .-> CertificateDomain["<div style='width: 225px; text-align: left;'>Certificate & domain manager</div>"]
   Module -. optional .-> MetricCharts["<div style='width: 225px; text-align: left;'>Metric charts</div>"]
   Module -. optional .-> Logs["<div style='width: 225px; text-align: left;'>Logs</div>"]
+  Module -. optional .-> Links["<div style='width: 225px; text-align: left;'>Links</div>"]
 
-  click TerraformState "/modules/stack" "Open stack docs"
+  class Module container
+  class IaCState,BuildConfig,DeployManager,CertificateDomain,MetricCharts,Logs,Links module
+
+  classDef container fill:#FE6104,stroke:#BD4406,color:#fff
+  classDef module fill:#F6DDCE,stroke:#FE6104,color:#2a1208
+
+  click IaCState "/modules/stack" "Open stack docs"
   click BuildConfig "/modules/build" "Open build docs"
   click DeployManager "/modules/deploy" "Open deploy docs"
   click CertificateDomain "/modules/deploy" "Open deploy docs"
@@ -25,10 +32,32 @@ flowchart LR
   click Logs "/modules/logs" "Open logs docs"
 ```
 
-## Module taxonomy
+For example, our **VPC Network** module has only IaC state management. But the **ECS Web Server** module has _all_ of the above facets.
+
+By default, you have access to the Ravion standard library of module definitions. You can see the available module definitions via the _Catalog_ page in the dashboard or via the `/module-definitions` endpoint.
+
+You can also create your own module definitions.
+
+## Module hierarchy
+
+_Catalog_ is used to refer to the module definitions available to your organization. These include the Ravion standard library of modules with type `rvn-*` and any custom modules you've added.
+
+Module definitions are versioned with semver, and each module instance is an instance of a specific version.
 
 ```mermaid
 flowchart
-  ModuleDefinition[Module definition] -- has many --> ModuleVersion[Module version]
+  OrgCatalog[Organization catalog] -- contains --> StandardModules[Standard modules of type rvn-*]
+  OrgCatalog -- contains --> CustomModules[Custom modules]
+  StandardModules --> ModuleDefinition[Module definition]
+  CustomModules --> ModuleDefinition
+  ModuleDefinition -- has many --> ModuleVersion[Module version]
   ModuleInstance[Module instance] -- of --> ModuleVersion
+
+  class OrgCatalog catalog
+  class StandardModules,CustomModules source
+  class ModuleDefinition,ModuleVersion,ModuleInstance module
+
+  classDef catalog fill:#FE6104,stroke:#BD4406,color:#fff
+  classDef source fill:#1f2937,stroke:#111827,color:#fff
+  classDef module fill:#F6DDCE,stroke:#FE6104,color:#2a1208
 ```

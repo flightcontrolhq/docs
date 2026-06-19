@@ -4,60 +4,108 @@ The declarative project configuration file applied with `ravion projects config 
 
 ## Legend
 
-| Notation | Meaning |
-| --- | --- |
-| `T[]` | Array of `T` |
-| `map<string,T>` | Object keyed by strings with `T` values |
-| `enum[a,b]` | One of the listed values |
-| `A \| B` | One of several types |
-| ~template | Field accepts `<< ... >>` template expressions |
+| Notation        | Meaning                                        |
+| --------------- | ---------------------------------------------- |
+| `T[]`           | Array of `T`                                   |
+| `map<string,T>` | Object keyed by strings with `T` values        |
+| `enum[a,b]`     | One of the listed values                       |
+| `A \| B`        | One of several types                           |
+| ~template       | Field accepts `<< ... >>` template expressions |
 
 ## ProjectConfig
 
 User-authored project config file consumed by `ravion projects config apply --file`.
 
-- **`project`**: [Project](#project) — optional. Project metadata to update before applying environment configuration.
-- **`environments`**: [Environment](#environment)[] — required. Environment configuration blocks to apply.
+<ResponseField name="project" type="Project.ApplyProjectConfigProject">
+  Project metadata to update before applying environment configuration.
+
+  See: [Project](#project)
+</ResponseField>
+
+<ResponseField name="environments" type="Project.ProjectConfigFileEnvironment[]" required>
+  Environment configuration blocks to apply.
+
+  See: [Environment](#environment)
+</ResponseField>
 
 ## Project
 
 Writable project metadata accepted by project config apply.
 
-- **`id`**: string — optional. Existing project ID. When provided, it must match the project in the route.
-- **`givenId`**: string — optional. User-provided project identifier. When provided, it must match the project in the route.
-- **`name`**: string — optional
-- **`description`**: string — optional
+<ResponseField name="id" type="string">
+  Existing project ID. When provided, it must match the project in the route.
+</ResponseField>
+
+<ResponseField name="givenId" type="string">
+  User-provided project identifier. When provided, it must match the project in the route.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+</ResponseField>
+
+<ResponseField name="description" type="string">
+</ResponseField>
 
 ## Environment
 
 Environment block authored in project config files.
 
-- **`id`**: string — optional. Existing environment ID.
-- **`givenId`**: string — optional. User-provided environment identifier.
-- **`name`**: string — optional
-- **`description`**: string — optional
-- **`moduleInstances`**: [ModuleInstance](#moduleinstance)[] — required
+<ResponseField name="id" type="string">
+  Existing environment ID.
+</ResponseField>
+
+<ResponseField name="givenId" type="string">
+  User-provided environment identifier.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+</ResponseField>
+
+<ResponseField name="description" type="string">
+</ResponseField>
+
+<ResponseField name="moduleInstances" type="Project.ProjectConfigFileModuleInstance[]" required>
+  See: [ModuleInstance](#moduleinstance)
+</ResponseField>
 
 ## ModuleInstance
 
 Module instance shape authored in project config files.
 
-- **`id`**: string — optional. Existing module instance ID. Non-empty IDs must resolve to an existing module.
-- **`givenId`**: string — optional. User-provided unique identifier. Must be unique within environment.
-- **`name`**: string — optional
-- **`description`**: string — optional
-- **`type`**: string — optional. Module type identifier.
-- **`version`**: string — optional. Semantic module version string.
-- **`input`**: map&lt;string,any \| null&gt; — optional. Runtime module configuration input.
+<ResponseField name="id" type="string">
+  Existing module instance ID. Non-empty IDs must resolve to an existing module.
+</ResponseField>
+
+<ResponseField name="givenId" type="string">
+  User-provided unique identifier. Must be unique within environment.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+</ResponseField>
+
+<ResponseField name="description" type="string">
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Module type identifier.
+</ResponseField>
+
+<ResponseField name="version" type="string">
+  Semantic module version string.
+</ResponseField>
+
+<ResponseField name="input" type="map<string,any | null>">
+  Runtime module configuration input.
+</ResponseField>
 
 ## Module references
 
 Use `{moduleGivenIdRef: "..."}` inside module input fields that reference another module.
 
-| Scope | Reference |
-| --- | --- |
-| Same environment | `{moduleGivenIdRef: "module"}` |
-| Cross environment, same project | `{moduleGivenIdRef: "environment.module"}` |
+| Scope                            | Reference                                          |
+| -------------------------------- | -------------------------------------------------- |
+| Same environment                 | `{moduleGivenIdRef: "module"}`                     |
+| Cross environment, same project  | `{moduleGivenIdRef: "environment.module"}`         |
 | Cross project, same organization | `{moduleGivenIdRef: "project.environment.module"}` |
 
 Use `givenId` values for the project, environment, and module segments.

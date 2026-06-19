@@ -1,8 +1,68 @@
 ---
 title: "Pipelines"
-description: "The pipeline primitive: a DAG of steps that builds and deploys modules."
+description: "Use pipelines to orchestrate builds, deploys, and other code execution tasks."
 ---
 
-A **pipeline** is a dependency-driven DAG of steps that builds, provisions, and deploys modules. See the [Pipelines](/pipelines/overview) tab for the full authoring reference.
+Ravion Pipelines are a full featured CI/CD system that runs in your cloud account.
 
-{/* TODO: Expand this page. */}
+They are _optional_ for you instead of using GitHub Actions or Circle CI.
+
+Regardless, you will need to have a pipeline _somewhere_ to build your code, upload the artifacts to a store, and trigger a deployment of that in Ravion.
+
+```mermaid
+flowchart LR
+  GitPush[Git push or API] --> BuildCode[Build code]
+  BuildCode --> TriggerDeploy[Trigger Ravion deploy]
+
+  class GitPush source
+  class BuildCode build
+  class TriggerDeploy deploy
+
+  classDef source fill:#F6DDCE,stroke:#FE6104,color:#2a1208
+  classDef build fill:#1f2937,stroke:#111827,color:#fff
+  classDef deploy fill:#FE6104,stroke:#BD4406,color:#fff
+```
+
+### You might want to use Ravion pipelines for the following reasons:
+
+<Steps>
+  <Step>
+    You get **a single pane of glass and CLI/API surface area** to see all your builds, deploys, and infrastructure.
+  </Step>
+
+<Step>
+  You get **enhanced security and control** because you no longer have to open up your database or
+  image registries to GitHub Actions. Ravion pipelines execute entirely in your cloud account.
+</Step>
+
+  <Step>
+    You can **define all your build configuration in the module** alongside your runtime config.
+  </Step>
+</Steps>
+
+```mermaid
+flowchart LR
+  Ravion[Ravion control plane]
+
+  subgraph CustomerCloud[Your cloud account]
+    subgraph VPC[Your VPC]
+      Runner[EC2 runner]
+      PrivateResources[Private resources]
+    end
+  end
+
+  Ravion --> Runner
+  Runner -- accesses --> PrivateResources
+
+  class Ravion external
+  class CustomerCloud,VPC cloud
+  class Runner runner
+  class PrivateResources resource
+
+  classDef external fill:#FE6104,stroke:#BD4406,color:#fff
+  classDef cloud fill:#F6DDCE,stroke:#FE6104,color:#2a1208
+  classDef runner fill:#1f2937,stroke:#111827,color:#fff
+  classDef resource fill:#fff,stroke:#BD4406,color:#2a1208
+```
+
+See [Pipelines](/pipelines/overview) for the detailed docs.

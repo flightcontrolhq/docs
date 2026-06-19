@@ -1,8 +1,21 @@
 ---
 title: "Infrastructure as code"
-description: "Manage cloud infrastructure declaratively with Terraform-backed modules."
+description: "Manage cloud infrastructure declaratively with code"
 ---
 
-Define and version your cloud infrastructure as code using Terraform-backed modules.
+Infrastructure as code (IaC) is a way to manage cloud infrastructure using code.
 
-{/* TODO: Expand this page. */}
+Common tools include:
+
+- [Terraform](https://www.terraform.io/) — closed source
+- [OpenTofu](https://opentofu.org/) — open source community fork of Terraform
+- [CloudFormation](https://aws.amazon.com/cloudformation/)
+- [Pulumi](https://www.pulumi.com/)
+
+These all exist as a standard way to provision, update, and destroy cloud infrastructure without clicking around in the web console.
+
+## Ravion is a platform to automate IaC and track its state over time
+
+Use Ravion to execute your plan, apply, and enforce policy checks.
+
+Ravion can optionally function as your managed state backend instead of S3 and DynamoDB.

@@ -25,3 +25,32 @@ flowchart TD
   classDef module fill:#F6DDCE,stroke:#FE6104,color:#2a1208
   classDef identity fill:#1f2937,stroke:#111827,color:#fff
 ```
+
+## Projects
+
+Use projects to organize your modules.
+
+A project can contain many or few modules. Small companies may have a single project for all their infrastructure. Or you can have a separate project for each sub-system for your app. It's up to you.
+
+You can always move modules to another project to re-organize later.
+
+Projects can have many environments.
+
+## Environments
+
+Use environments to separate between **production** and other environments like **staging** and **test**.
+
+Typically you'll have the same modules in each environment, but you don't have to.
+
+```mermaid
+flowchart TD
+  Project[Project] --> Production[Production]
+  Project --> Staging[Staging]
+  Project --> Test[Test]
+
+  class Project project
+  class Production,Staging,Test environment
+
+  classDef project fill:#FE6104,stroke:#BD4406,color:#fff
+  classDef environment fill:#F6DDCE,stroke:#FE6104,color:#2a1208
+```
