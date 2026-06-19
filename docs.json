@@ -165,6 +165,17 @@
         ]
       },
       {
+        "tab": "MCP",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "mcp/overview"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API reference",
         "groups": [
           {

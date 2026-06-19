@@ -1,0 +1,73 @@
+---
+title: "Ravion Docs MCP"
+description: "Connect your AI tools to the Ravion Docs MCP server so they can search and read Ravion documentation."
+---
+
+Ravion Docs includes a hosted Model Context Protocol (MCP) server for your AI tools.
+
+## Quick setup
+
+Use `add-mcp` to add Ravion Docs to supported MCP clients:
+
+```bash
+npx add-mcp https://docs.ravion.com/mcp
+```
+
+The installer supports tools like Claude Code, Cursor, OpenCode, VS Code, and Codex. If your client supports remote HTTP MCP servers directly, you can also use the server URL in the client configuration.
+
+## What the MCP server can do
+
+The MCP server gives connected tools read-only access to indexed Ravion documentation.
+
+It can:
+
+- Search Ravion Docs for relevant pages
+- Read documentation pages as Markdown
+- Browse the docs through a virtual filesystem
+- Use current docs content instead of relying on model training data
+
+## Add it to Claude Code
+
+Run this command from your terminal:
+
+```bash
+claude mcp add --transport http ravion-docs https://docs.ravion.com/mcp
+```
+
+Then ask Claude Code questions about Ravion. Claude can use the MCP server when it needs documentation context.
+
+## Add it to Cursor
+
+Open your MCP settings in Cursor and add this server:
+
+```json
+{
+  "mcpServers": {
+    "ravion-docs": {
+      "url": "https://docs.ravion.com/mcp"
+    }
+  }
+}
+```
+
+Reload Cursor after saving the MCP configuration.
+
+## Add it to another MCP client
+
+Use the remote HTTP MCP transport and set the server URL to:
+
+```text
+https://docs.ravion.com/mcp
+```
+
+If your client supports MCP discovery, use:
+
+```text
+https://docs.ravion.com/.well-known/mcp
+```
+
+## Notes
+
+- The MCP server is read-only.
+- It searches indexed public pages from Ravion Docs.
+- You do not need a Ravion API key to use the public docs MCP server.
