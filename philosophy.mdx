@@ -3,8 +3,65 @@ title: "Product philosophy"
 description: "Ravion gives developers and agents self-service while keeping platform and DevOps teams in control."
 ---
 
-Ravion is built around a simple belief: developers and agents should move fast, and platform and DevOps engineers should still control how cloud infrastructure is provisioned, deployed, and operated.
+## Ravion must scale from the tiniest startup to the largest enterprise
 
-Most teams want to reduce DevOps overhead without giving up safety. PaaS tools are fast until you need deeper control. Raw IaC gives control, but it asks every developer to understand platform internals. A patchwork of deployment, observability, and infrastructure tools slows everyone down.
+We don't want to be stuck serving only SMBs with a product that is too restrictive for even small enterprises. Nor do we want to be an ugly juggernaut that is not attractive for each new generation of future enterprise companies.
 
-Ravion is the middle path: developer cloud self-service backed by Terraform, reusable modules, controlled pipelines, and shared visibility.
+We attract startups by being a very simple system with excellent defaults and a great agentic experience.
+
+We attract enterprises because this same simple system can manage incredible complexity and is infinitely customizable.
+
+## Startups should be able to use AWS on day 1 as easy as with a PaaS
+
+Companies that start on PaaS and become large always end up moving to a hyperscaler like AWS for at least part of their infrastructure.
+
+But its understandable because PaaS has traditionally been so much easier to start with.
+
+Until Ravion — while there's still a touch more friction than PaaS, once you connect your AWS a huge world of hyperscaler options open up to you.
+
+And you never have to suffer PaaS reliability problems or do a painful migration.
+
+## Developers and their agents shouldn’t normally use IaC directly
+
+It's true, anyone can whip up serious looking IaC in mere minutes. But who is the infrastructure expert that's going to review and make sure databases aren't accidentally public and VPC subnets are set up securely?
+
+Besides, most developers don't want to deal with the toil of infrastructure! They just want to git push and have their work live asap.
+
+Which means even if you give them pre-built Terraform modules and AI skills, it's a high chance they end up doing something you don't want because it was easier to make an innocent looking hack to fix the problem at hand.
+
+And now it's on you, the infrastructure expert, to fix it and try for the 100th time to train them up in the way they should go.
+
+## IaC should be used through a platform that provides easy, safe paths for developers and agents
+
+The solution is to give developers and agents an intermediate platform that is so easy and simple it makes them want to get up and dance. And on the backend it is running your signed, sealed, and delivered Infrastructure as Code.
+
+The platform turns your IaC into re-usable and self-contained modules, and modules can require or allow connections to other modules. With everything tracked in a single place. No bespoke CloudFormation stack hidden in a closet.
+
+Devs and agents get to roam freely within the generous but thoughtful boundaries of the platform, and you, the ops person, can sleep well at night knowing the platform is locked down.
+
+## Config as code is critical
+
+You most likely understand the value of this, so we won't belabor the point other than to say we agree.
+
+All the config in Ravion can be pulled and pushed from our systems at any time with CLI and API.
+
+Store the config in your repo, execute dry-run in your pull request, and run config apply on merge to main.
+
+## Everything composed from core primitives
+
+## Everything config based
+
+## Infinite flexibility and customization
+
+## Multi-cloud
+
+## If you understand the fundamental building blocks of infrastructure, you can build a system that is both simple and infinitely flexible
+
+The fundamental building blocks of infrastructure are:
+
+- You have things (we call them modules).
+- Things can have IaC, builds, deploys, logs, metrics, links, and unstructured content.
+- Things can connect to or use other things.
+- Things are organized by environments
+- Pipelines orchestrate how IaC, builds, deploys, and other tasks execute.
+- Default values simplify redundancy of things that should typically be the same across an environment, project, or organization.
