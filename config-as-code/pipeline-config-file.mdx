@@ -1,0 +1,47 @@
+---
+title: "Pipeline config file"
+description: "Pull, edit, and apply a pipeline's config from a version controllable file."
+---
+
+Define a pipeline declaratively in `.yaml`, `.jsonc`, or `.cue`. The config file describes steps, parallel and group blocks, inputs, variants, and triggers.
+
+## Pull and apply
+
+Store the config file in your repository and manage it with the CLI.
+
+<Steps>
+  <Step title="Create the pipeline, if needed">
+
+    ```bash
+    ravion pipeline create --given-id <pipeline-id> --name "My pipeline" --project-id <project-id>
+    ```
+
+  </Step>
+  <Step title="Pull the current config">
+    Write the live pipeline config to a file.
+
+    ```bash
+    ravion pipeline config pull <pipeline-id> --file pipeline.yaml
+    ```
+
+  </Step>
+  <Step title="Edit the file">
+    Edit the config as needed.
+  </Step>
+  <Step title="Apply the changes">
+    Apply the config. This creates a new Pipeline Version every time.
+
+    ```bash
+    ravion pipeline config apply <pipeline-id> --file pipeline.yaml
+    ```
+
+  </Step>
+</Steps>
+
+## Schema reference
+
+For every field, block, and step type, see the full reference.
+
+<Card title="Pipeline configuration" icon="book" href="/pipelines/config-reference">
+  Steps, blocks, inputs, variants, and triggers.
+</Card>

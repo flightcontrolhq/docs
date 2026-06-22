@@ -95,7 +95,8 @@ li {
 }
 
 strong,
-b {
+b,
+.font-semibold {
   font-weight: 600 !important;
 }
 
@@ -111,6 +112,16 @@ h5,
 h6 {
   letter-spacing: 0 !important;
   line-height: 1.1 !important;
+  font-weight: 400 !important;
+}
+
+/* Headings stay at weight 400 even when they carry the font-semibold utility */
+h1.font-semibold,
+h2.font-semibold,
+h3.font-semibold,
+h4.font-semibold,
+h5.font-semibold,
+h6.font-semibold {
   font-weight: 400 !important;
 }
 

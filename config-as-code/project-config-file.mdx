@@ -1,0 +1,68 @@
+---
+title: "Project config file"
+description: "Pull, edit, and apply all config for a project from a version controllable file."
+---
+
+import ProjectConfigSchemaReference from "/snippets/schema-reference/project-config.mdx";
+
+Define a project declaratively in `.yaml`, `.jsonc`, or `.cue`. The top-level `environments[]` array contains `moduleInstances[]`, and modules reference each other with `moduleGivenIdRef`.
+
+## Pull and apply
+
+Store the config file in your repository and manage it with the CLI.
+
+<Steps>
+  <Step title="Create the project, if needed">
+
+    ```bash
+    ravion project create --given-id <project-id> --name "My project"
+    ```
+
+  </Step>
+  <Step title="Pull the current config">
+    Write the live project config to a file.
+
+    ```bash
+    ravion project config pull <project-id> --file project.yaml
+    ```
+
+<Note>
+  Pulling a `.yaml`, `.jsonc`, or `.cue` file adds an AI skill header, inline field comments, and
+  quick links to the generated file. Plain `.json` does not support comments, so it omits these
+  annotations.
+</Note>
+
+  </Step>
+  <Step title="Edit the file">
+    Add or edit environments and add, edit, or remove module instances.
+<Note>
+      Removing a module instance from the config file will run the Terraform plan for the Terraform destroy action and then wait for manual approval. You'll need to manually approve the destroy and then delete the module instance from the system.
+</Note>
+  </Step>
+  <Step title="Preview with a dry run">
+    Validate the file and print the planned changes without applying them.
+
+    ```bash
+    ravion project config apply <project-id> --file project.yaml --dry-run
+    ```
+
+  </Step>
+  <Step title="Apply the changes">
+    Apply the config to update the stored config and run the Terraform plan if needed.
+
+    ```bash
+    ravion project config apply <project-id> --file project.yaml
+    ```
+
+    Add `--autoapprove` to approve supported stack change pipeline runs without a manual gate.
+
+  </Step>
+</Steps>
+
+## Schema reference
+
+Use this reference when you author project config files or generate project configuration from another system.
+
+For a compact, machine-readable version, fetch `https://api.ravion.com/projects/config/schema.md`.
+
+<ProjectConfigSchemaReference />
