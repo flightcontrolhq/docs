@@ -209,6 +209,12 @@
       "href": "https://app.ravion.com"
     }
   },
+  "integrations": {
+    "posthog": {
+      "apiKey": "phc_RgMab28lz1UlVVwYfM1njD4kjiRISKijEIt79js5n0d",
+      "apiHost": "https://api.ravion.com/i"
+    }
+  },
   "contextual": {
     "options": [
       "copy",
