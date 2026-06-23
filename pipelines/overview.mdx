@@ -1,8 +1,10 @@
 ---
-title: "Pipelines overview"
-description: "The DAG execution model and blocks."
+title: "Pipelines"
+sidebarTitle: "Overview"
+description: "Use pipelines to orchestrate builds, deploys, and other code execution tasks."
+canonical: "https://docs.ravion.com/concepts/pipelines"
 ---
 
-Pipelines execute as a dependency-driven DAG. Steps run as soon as their dependencies are satisfied. Blocks group steps: **parallel** blocks run children concurrently, **group** blocks run them sequentially.
+import PipelineOverview from "/snippets/pipelines/overview.mdx";
 
-{/* TODO: Expand this page. */}
+<PipelineOverview />

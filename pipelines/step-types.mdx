@@ -1,8 +1,218 @@
 ---
 title: "Step types"
-description: "The catalog of available pipeline steps."
+description: "The catalog of available pipeline steps: module actions, CI steps, and control flow."
 ---
 
-Available step types include `custom`, `terraform:apply`, `terraform:plan`, `build:image`, `build:lambda`, `build:static`, `deploy`, `approval`, `sleep`, and `trigger pipeline`.
+A step is the smallest unit of work in a pipeline. Every action step shares a common shape — `id`, optional `name`, `timeout`, and `if` condition — and adds fields specific to its `type`. Wrap steps in `parallel` or `group` blocks to control how they run. See [Pipelines overview](/pipelines/overview).
 
-{/* TODO: Expand this page. */}
+Steps fall into three categories:
+
+- **Module steps** act on a module instance through its build or deploy manager: `build`, `deploy`, `rollback`.
+- **CI steps** run on provisioned compute that you configure with an `infrastructure` block: `build:image`, `build:static`, `custom`, `terraform:plan`, `terraform:apply`.
+- **Control-flow steps** shape the run itself: `approval`, `sleep`, `trigger:pipeline`.
+
+For every field, default, and nested type, see the [pipeline configuration schema](/pipelines/config-reference).
+
+## Module steps
+
+### build
+
+Triggers a build for a module instance using the module's own build configuration. Reference the module instance by unique ID (`mi_…`), `environmentGivenId.moduleGivenId`, or `projectGivenId.environmentGivenId.moduleGivenId`. Pass build parameters through `input`; outputs such as `image_digest` are available to later steps.
+
+```yaml
+- id: build_web_app
+  name: Build web-app
+  type: build
+  module_instance: << pipeline.variant.id >>.web-app
+  input:
+    branch: << pipeline.input.branch >>
+    ref: << pipeline.input.commit >>
+```
+
+See [BuildStep schema](/pipelines/config-reference#buildstep).
+
+### deploy
+
+Triggers a deployment for a module instance using the module's deploy configuration. Commonly consumes a preceding build's output to pin the exact artifact. Concurrency is managed by the deploy manager lock, not the pipeline scheduler.
+
+```yaml
+- id: deploy_web_app
+  name: Deploy web-app
+  type: deploy
+  module_instance: << pipeline.variant.id >>.web-app
+  input:
+    image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+See [DeployStep schema](/pipelines/config-reference#deploystep).
+
+### rollback
+
+Reverts a module instance to a specific previous deployment by `deployment_id`. Use it in a `rollback` block to recover automatically when a pipeline fails.
+
+```yaml
+- id: rollback_web_app
+  name: Roll back web-app
+  type: rollback
+  module_instance: << pipeline.variant.id >>.web-app
+  deployment_id: << steps.deploy_web_app.output.previous_deployment_id >>
+```
+
+See [RollbackStep schema](/pipelines/config-reference#rollbackstep).
+
+## CI steps
+
+CI steps run on compute you provision through an `infrastructure` block, which selects an execution environment or an AWS account, region, instance type, and size. See [StepInfrastructure](/pipelines/config-reference#stepinfrastructure).
+
+### build:image
+
+Builds a Docker image from a git source and pushes it to one or more ECR destinations. Build with a `dockerfile` or let `nixpacks` auto-detect the language and framework.
+
+```yaml
+- id: build_image
+  name: Build image
+  type: build:image
+  source:
+    type: git
+    repo: https://github.com/my-org/my-repo
+    branch: main
+  builder:
+    type: dockerfile
+  destinations:
+    - id: ecr
+      type: ecr
+      repository_arn: arn:aws:ecr:us-east-1:123456789012:repository/my-app
+      tags:
+        - << pipeline.input.commit >>
+  infrastructure:
+    type: ec2
+    instance_size: medium
+```
+
+See [BuildImageCiStep schema](/pipelines/config-reference#buildimagecistep).
+
+### build:static
+
+Builds static assets from a git source and uploads them to one or more S3 destinations. Build with a `dockerfile` or `nixpacks`.
+
+```yaml
+- id: build_site
+  name: Build site
+  type: build:static
+  source:
+    type: git
+    repo: https://github.com/my-org/my-repo
+    branch: main
+  builder:
+    type: nixpacks
+  destinations:
+    - id: s3
+      type: s3
+      bucket: my-static-bucket
+      region: us-east-1
+  infrastructure:
+    type: ec2
+    instance_size: small
+```
+
+See [BuildStaticCiStep schema](/pipelines/config-reference#buildstaticcistep).
+
+### custom
+
+Runs arbitrary shell commands on provisioned compute — tests, linters, migrations, or any scripted task. Optionally check out a git `source`, install tools with `setup` actions, and pass `environment_variables`.
+
+```yaml
+- id: run_tests
+  name: Run tests
+  type: custom
+  source:
+    type: git
+    repo: https://github.com/my-org/my-repo
+    branch: main
+  commands:
+    - npm ci
+    - npm test
+  infrastructure:
+    type: ec2
+    instance_size: medium
+```
+
+See [CustomCommandCiStep schema](/pipelines/config-reference#customcommandcistep).
+
+### terraform:plan
+
+Generates a Terraform or OpenTofu plan and uploads the plan file to S3 for a later apply. Set `plan_type` to `destroy` to plan a teardown. Supply input variables with `terraform_variables` or `terraform_variable_files`.
+
+```yaml
+- id: tf_plan
+  name: Plan
+  type: terraform:plan
+  tool: opentofu
+  version: 1.7.0
+  infrastructure:
+    type: ec2
+    instance_size: small
+```
+
+See [TerraformPlanCiStep schema](/pipelines/config-reference#terraformplancistep).
+
+### terraform:apply
+
+Applies a plan file produced by a preceding `terraform:plan` step. Reference the plan with `plan_file_uri`, typically from the plan step's output.
+
+```yaml
+- id: tf_apply
+  name: Apply
+  type: terraform:apply
+  tool: opentofu
+  version: 1.7.0
+  plan_file_uri: << steps.tf_plan.output.plan_file_uri >>
+  infrastructure:
+    type: ec2
+    instance_size: small
+```
+
+See [TerraformApplyCiStep schema](/pipelines/config-reference#terraformapplycistep).
+
+## Control-flow steps
+
+### approval
+
+Pauses the pipeline until a user approves through the dashboard or REST API. Use it to gate production deployments behind a manual review.
+
+```yaml
+- id: approve_deploy
+  name: Approve deploy
+  type: approval
+```
+
+See [ApprovalStep schema](/pipelines/config-reference#approvalstep).
+
+### sleep
+
+Pauses execution for a fixed `duration_ms`. Useful for spacing out steps or for testing and debugging pipeline behavior.
+
+```yaml
+- id: wait
+  name: Wait 30s
+  type: sleep
+  duration_ms: 30000
+```
+
+See [SleepStep schema](/pipelines/config-reference#sleepstep).
+
+### trigger:pipeline
+
+Starts another pipeline run and passes `inputs` to it. Optionally pin a `pipeline_version_id` or override behavior per variant with `run`.
+
+```yaml
+- id: trigger_deploy
+  name: Trigger deploy pipeline
+  type: trigger:pipeline
+  pipeline_id: pipeline_123
+  description: Deploy after build
+  inputs:
+    commit: << pipeline.input.commit >>
+```
+
+See [TriggerPipelineStep schema](/pipelines/config-reference#triggerpipelinestep).
