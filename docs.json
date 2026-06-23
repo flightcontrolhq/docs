@@ -21,7 +21,7 @@
       "weight": 400
     }
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
@@ -61,7 +61,8 @@
             "group": "Config as code",
             "pages": [
               "config-as-code/project-config-file",
-              "config-as-code/pipeline-config-file"
+              "config-as-code/pipeline-config-file",
+              "config-as-code/ci-integration"
             ]
           },
           {

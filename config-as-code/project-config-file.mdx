@@ -7,6 +7,58 @@ import ProjectConfigSchemaReference from "/snippets/schema-reference/project-con
 
 Define a project declaratively in `.yaml`, `.jsonc`, or `.cue`. The top-level `environments[]` array contains `moduleInstances[]`, and modules reference each other with `moduleGivenIdRef`.
 
+<Accordion title="Example project config">
+  A minimal `ravion.yaml` with a VPC, an ECS cluster, and a web service. Modules reference each other with `moduleGivenIdRef`.
+
+  ```yaml ravion.yaml
+  project:
+    givenId: demo
+    name: Demo
+  environments:
+    - givenId: production
+      name: Production
+      moduleInstances:
+        - givenId: vpc
+          name: VPC
+          type: rvn-aws-network
+          version: 0.1.0
+          input:
+            aws_account_id: ravion-prod
+            aws_region: ca-central-1
+            name: demo-production
+            vpc_cidr: 10.0.0.0/16
+            nat_gateway_enabled: true
+
+        - givenId: ecs-cluster
+          name: ECS Cluster
+          type: rvn-ecs-cluster
+          version: 0.1.2
+          input:
+            network:
+              moduleGivenIdRef: vpc # Must be type rvn-aws-network
+            name: demo-production
+            fargate_enabled: true
+            fargate_spot_enabled: true
+            public_alb_enabled: true
+
+        - givenId: web-app
+          name: web-app
+          type: rvn-ecs-web
+          version: 0.5.0
+          input:
+            cluster:
+              moduleGivenIdRef: ecs-cluster # Must be type rvn-ecs-cluster
+            name: demo-production-web-app
+            public_web_service_enabled: true
+            build_type: dockerfile
+            source_repo: my-org/my-repo
+            source_base_path: "."
+            dockerfile: Dockerfile
+            container_port: 80
+            health_check_path: /
+  ```
+</Accordion>
+
 ## Pull and apply
 
 Store the config file in your repository and manage it with the CLI.
@@ -56,6 +108,11 @@ Store the config file in your repository and manage it with the CLI.
 
     Add `--autoapprove` to approve supported stack change pipeline runs without a manual gate.
 
+  </Step>
+  <Step title="Integrate with CI">
+    Commit the config file and let GitHub Actions plan changes on each pull request and apply them on merge.
+
+    See [CI integration](/config-as-code/ci-integration).
   </Step>
 </Steps>
 

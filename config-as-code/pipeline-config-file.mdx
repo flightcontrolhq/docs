@@ -5,6 +5,53 @@ description: "Pull, edit, and apply a pipeline's config from a version controlla
 
 Define a pipeline declaratively in `.yaml`, `.jsonc`, or `.cue`. The config file describes steps, parallel and group blocks, inputs, variants, and triggers.
 
+<Accordion title="Example pipeline config">
+  A minimal pipeline that builds and deploys the `web-app` module from the [example `ravion.yaml`](/config-as-code/project-config-file). The `build` and `deploy` steps reference the module by given ID with `environmentGivenId.moduleGivenId`. Here the `production` variant ID matches the environment given ID, so `<< pipeline.variant.id >>.web-app` resolves to `production.web-app`.
+
+  The step `input` keys come from the module definition: the `rvn-ecs-web` build accepts `branch` and `ref`, and the deploy accepts `image_ref` (an image tag or digest, not a full URI). The deploy consumes the build's `image_digest` output, so it pins the exact image the build pushed to the module's ECR repository.
+
+  ```yaml ravion-pipeline.yaml
+  triggers:
+    - id: github_push
+      type: webhook:github
+      event: push
+      repo: https://github.com/my-org/my-repo
+      filter:
+        branch: main
+      run:
+        production:
+          input:
+            branch: << trigger.payload.branch >>
+            commit: << trigger.payload.commit >>
+  inputs:
+    - id: branch
+      type: string
+      default: main
+    - id: commit
+      type: string
+      required: false
+  variants:
+    - id: production
+      name: Production
+  steps:
+    - group: Build and deploy
+      steps:
+        - id: build_web_app
+          name: Build web-app
+          type: build
+          module_instance: << pipeline.variant.id >>.web-app
+          input:
+            branch: << pipeline.input.branch >>
+            ref: << pipeline.input.commit >>
+        - id: deploy_web_app
+          name: Deploy web-app
+          type: deploy
+          module_instance: << pipeline.variant.id >>.web-app
+          input:
+            image_ref: << steps.build_web_app.output.image_digest >>
+  ```
+</Accordion>
+
 ## Pull and apply
 
 Store the config file in your repository and manage it with the CLI.
@@ -35,6 +82,11 @@ Store the config file in your repository and manage it with the CLI.
     ravion pipeline config apply <pipeline-id> --file pipeline.yaml
     ```
 
+  </Step>
+  <Step title="Integrate with CI">
+    Commit the config file and let GitHub Actions plan changes on each pull request and apply them on merge.
+
+    See [CI integration](/config-as-code/ci-integration).
   </Step>
 </Steps>
 
