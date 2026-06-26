@@ -29,12 +29,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "index",
-              "how-ravion-works",
-              "philosophy",
-              "quickstart"
-            ]
+            "pages": ["index", "how-ravion-works", "philosophy", "quickstart"]
           },
           {
             "group": "Use cases",
@@ -66,12 +61,8 @@
             ]
           },
           {
-            "group": "Terraform stacks",
-            "pages": [
-              "terraform-stacks/overview",
-              "terraform-stacks/resources",
-              "terraform-stacks/runs"
-            ]
+            "group": "Migration",
+            "pages": ["migration/from-flightcontrol", "migration/from-terraform-cloud"]
           },
           {
             "group": "Modules",
@@ -94,6 +85,14 @@
               "pipelines/templating",
               "pipelines/concurrency-and-locking",
               "pipelines/triggers"
+            ]
+          },
+          {
+            "group": "Terraform stacks",
+            "pages": [
+              "terraform-stacks/overview",
+              "terraform-stacks/resources",
+              "terraform-stacks/runs"
             ]
           },
           {
@@ -122,12 +121,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "cli/overview",
-              "cli/installation",
-              "cli/authentication",
-              "cli/releases"
-            ]
+            "pages": ["cli/overview", "cli/installation", "cli/authentication", "cli/releases"]
           },
           {
             "group": "Command reference",
@@ -171,9 +165,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "mcp/overview"
-            ]
+            "pages": ["mcp/overview"]
           }
         ]
       },
@@ -182,9 +174,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "api-reference/overview"
-            ]
+            "pages": ["api-reference/overview"]
           },
           {
             "group": "API reference",
@@ -218,16 +208,7 @@
     }
   },
   "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "mcp", "cursor", "vscode"]
   },
   "footer": {
     "socials": {

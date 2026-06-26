@@ -3,6 +3,12 @@ title: "Product philosophy"
 description: "Ravion gives developers and agents self-service while keeping platform and DevOps teams in control."
 ---
 
+## Be a framework for Internal Developer Platforms
+
+We've built the product with primitives powerful enough for large enterprise use cases. It's a simple system, but scales to handle immense complexity.
+
+While the default on-ramp to Ravion is a bit more PaaS-esque, enterprise platform teams can nuke the Ravion defaults and build out their own platform from scratch.
+
 ## Startups should be able to launch with a hyperscaler or on-prem as easy as with a PaaS
 
 Companies that start on PaaS and become large always end up moving to a hyperscaler like AWS for at least part of their infrastructure.
@@ -12,14 +18,6 @@ But its understandable because PaaS has traditionally been so much easier to sta
 Until Ravion — while there's still a touch more friction than PaaS, once you connect your hyperscale cloud account the whole cloud becomes your oyster.
 
 Then you never have to suffer PaaS reliability problems or do a painful migration.
-
-## Fundamentally designed for platform teams
-
-Because scaling companies will eventually have one.
-
-While the default on-ramp to Ravion is a bit more PaaS-esque, enterprise platform teams can nuke the Ravion defaults and build out their own platform from scratch.
-
-We've designed a simple system that can scale to handle immense complexity. Because the core product primitives are designed so users have maximum control and can compose them together as they wish.
 
 ## Single pane of glass for infrastructure, builds, deploys, and observability
 
@@ -59,7 +57,7 @@ Store the config in your repo, execute dry-run in your pull request, and run con
 
 ## Everything customizable with user facing config
 
-The entire Ravion experience can be fully modified by users.
+You can modify the entire Ravion experience.
 
 You can add custom modules alongside our standard library or you can completely replace it.
 
@@ -68,14 +66,3 @@ Module definitions use config to define what inputs are possible, what metrics a
 You can customize or replace the default Terraform pipelines.
 
 You can customize or replace the organization's Default Values.
-
-## If you understand the fundamental building blocks of infrastructure, you can build a system that is both simple and infinitely flexible
-
-The fundamental building blocks of infrastructure are:
-
-- You have things (we call them modules).
-- Things can have IaC, builds, deploys, logs, metrics, links, and unstructured content.
-- Things can connect to or use other things.
-- Things are organized by environments
-- Pipelines orchestrate how IaC, builds, deploys, and other tasks execute.
-- Default values simplify redundancy of things that should typically be the same across an environment, project, or organization.
