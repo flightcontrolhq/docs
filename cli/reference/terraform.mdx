@@ -70,7 +70,7 @@ ravion terraform execution-summary submit-summary [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--run-type <string>` | yes | The type of terraform run |
+| `--run-type <string>` | yes | The type of terraform run. Available values: PLAN, APPLY, DESTROY. |
 | `--step-execution-id <string>` | yes | The step execution ID this summary belongs to |
 | `--summary <string>` | yes | Summary counts for the execution |
 | `--json` |  | emit response as JSON |
@@ -128,11 +128,11 @@ ravion terraform resource list [flags]
 | Flag | Required | Description |
 | --- | --- | --- |
 | `--cursor <string>` |  | cursor |
-| `--drift-status <string>` |  | Drift status to filter by (optional, requires pipelineRunId) |
+| `--drift-status <string>` |  | Drift status to filter by (optional, requires pipelineRunId). Available values: UNKNOWN, IN_SYNC, DRIFTED. |
 | `--json` |  | emit response as JSON |
 | `--limit <int>` |  | limit |
 | `--pipeline-run-id <string>` |  | Pipeline run ID to filter by (mutually exclusive with stackId) |
-| `--run-type <string>` |  | Run type to filter by (optional, requires pipelineRunId) |
+| `--run-type <string>` |  | Run type to filter by (optional, requires pipelineRunId). Available values: PLAN, APPLY, DESTROY. |
 | `--stack-id <string>` |  | Stack ID to filter by (mutually exclusive with pipelineRunId) |
 | `--step-execution-id <string>` |  | Step execution ID to filter by (optional, requires pipelineRunId) |
 | `-v, --verbose` |  | show full output |

@@ -25,7 +25,7 @@ ravion default-value create [flags]
 | --- | --- | --- |
 | `--default-value-definition-id <string>` | yes | Definition this value belongs to. |
 | `--parent-id <string>` | yes | Organization, project, or environment ID matching the parent type. |
-| `--parent-type <string>` | yes | Scope where this value is defined. |
+| `--parent-type <string>` | yes | Scope where this value is defined. Available values: organization, project, environment. |
 | `--value <string>` | yes | Raw value matching the definition schema. |
 | `--json` |  | emit response as JSON |
 
@@ -160,7 +160,7 @@ ravion default-value list [flags]
 | `--json` |  | emit response as JSON |
 | `--limit <int>` |  | limit |
 | `--parent-id <string>` |  | parentId |
-| `--parent-type <string>` |  | parentType |
+| `--parent-type <string>` |  | parentType. Available values: organization, project, environment. |
 | `-v, --verbose` |  | show full output |
 
 ### `ravion default-value update`

@@ -28,6 +28,7 @@ ravion pipeline config apply <pipeline-id> [flags]
 | Flag | Required | Description |
 | --- | --- | --- |
 | `--file <string>` | yes | File to read pipeline config from |
+| `--dry-run` |  | Validate and print planned changes without applying them |
 | `--json` |  | emit response as JSON |
 
 #### `ravion pipeline config pull`
@@ -199,7 +200,7 @@ ravion pipeline run retry <id> [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--retry-scope <string>` | yes | Which portion of the same pipeline run should be retried. |
+| `--retry-scope <string>` | yes | Which portion of the same pipeline run should be retried. Available values: FULL_RUN. |
 | `--json` |  | emit response as JSON |
 | `--use-latest-version` |  | When true, a full-run retry should use the latest pipeline version. |
 
@@ -261,6 +262,7 @@ ravion pipeline step-execution list [flags]
 | `--json` |  | emit response as JSON |
 | `--limit <int>` |  | limit |
 | `--pipeline-run-id <string>` |  | pipelineRunId |
+| `--pipeline-run-ids <strings>` |  | Batch filter: return step executions for any of these run ids in one call. |
 | `-v, --verbose` |  | show full output |
 
 ### `ravion pipeline update`
@@ -301,6 +303,7 @@ ravion pipeline version create [flags]
 | --- | --- | --- |
 | `--config <string>` | yes | Pipeline configuration in JSON format. Validated by handler using templatable schema. |
 | `--pipeline-id <string>` | yes | ID of the parent pipeline. |
+| `--dry-run` |  | Validate and return the planned config diff without creating a pipeline version. |
 | `--json` |  | emit response as JSON |
 
 #### `ravion pipeline version get`

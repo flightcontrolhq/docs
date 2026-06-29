@@ -25,6 +25,21 @@ ravion deploy cancel <id> [flags]
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
 
+### `ravion deploy continue`
+
+Continue a paused deployment
+
+```bash
+ravion deploy continue <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--hook-id <string>` |  | Pause-hook id to resolve. Optional — when omitted the deploy workflow targets the hook it is currently paused on (the common case; linear/canary deploys pause once per traffic-shift step, each with a fresh hook id surfaced on the PAUSED event). |
+| `--json` |  | emit response as JSON |
+
 ### `ravion deploy create`
 
 Create a deployment for a module
@@ -55,47 +70,6 @@ ravion deploy get <id> [flags]
 | Flag | Required | Description |
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
-
-### `ravion deploy instance`
-
-Manage deployment instances
-
-**Aliases:** `instances`
-
-#### `ravion deploy instance get`
-
-Get DeploymentInstance by id
-
-```bash
-ravion deploy instance get <id> [flags]
-```
-
-**Flags:**
-
-| Flag | Required | Description |
-| --- | --- | --- |
-| `--json` |  | emit response as JSON |
-
-#### `ravion deploy instance list`
-
-List DeploymentInstances
-
-```bash
-ravion deploy instance list [flags]
-```
-
-**Flags:**
-
-| Flag | Required | Description |
-| --- | --- | --- |
-| `--cursor <string>` |  | cursor |
-| `--deployment-id <string>` |  | deploymentId |
-| `--json` |  | emit response as JSON |
-| `--lifecycle-type <string>` |  | lifecycleType |
-| `--limit <int>` |  | limit |
-| `--module-instance-id <string>` |  | moduleInstanceId |
-| `--type <string>` |  | type |
-| `-v, --verbose` |  | show full output |
 
 ### `ravion deploy list`
 
@@ -135,6 +109,47 @@ ravion deploy redeploy <id> [flags]
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
 
+### `ravion deploy resource`
+
+Manage deployment resources
+
+**Aliases:** `resources`
+
+#### `ravion deploy resource get`
+
+Get DeploymentResource by id
+
+```bash
+ravion deploy resource get <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
+#### `ravion deploy resource list`
+
+List DeploymentResources
+
+```bash
+ravion deploy resource list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--deployment-id <string>` |  | deploymentId |
+| `--json` |  | emit response as JSON |
+| `--lifecycle-type <string>` |  | lifecycleType |
+| `--limit <int>` |  | limit |
+| `--module-instance-id <string>` |  | moduleInstanceId |
+| `--type <string>` |  | type |
+| `-v, --verbose` |  | show full output |
+
 ### `ravion deploy rollback`
 
 Start a rollback deployment
@@ -163,19 +178,4 @@ ravion deploy rollback-candidates <id> [flags]
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
-
-### `ravion deploy swap-blue-green`
-
-Swap a blue/green deployment to live traffic
-
-```bash
-ravion deploy swap-blue-green [flags]
-```
-
-**Flags:**
-
-| Flag | Required | Description |
-| --- | --- | --- |
-| `--module-instance-id <string>` | yes | moduleInstanceId |
-| `--json` |  | emit response as JSON |
 
