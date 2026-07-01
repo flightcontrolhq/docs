@@ -1,7 +1,7 @@
 ---
 title: "Start here (human + agent)"
 sidebarTitle: "Start here"
-description: "Set up Ravion for an AI agent: connect human-owned accounts and give the agent commands to discover modules, schemas, pipelines, and project config."
+description: "Set up Ravion for an AI agent: connect human-owned accounts and point the agent to the authoritative config, pipeline, and CI workflows."
 ---
 
 ## Human setup
@@ -59,21 +59,21 @@ After the human setup is complete, give the agent this checklist.
   <Step title="Use the project config file flow to create and manage modules">
     Use project config to set up or change things in Ravion, including environments, module instances, and references between modules.
 
-    See [Project config file](/config-as-code/project-config-file).
+    Follow the required workflow in [Project config file](/config-as-code/project-config-file#agent-tips). Check schemas before editing, preserve existing IDs and versions, preview every change with a dry run, and apply only after the dry run is correct and approved.
 
   </Step>
 
   <Step title="Set up build and deploy pipelines using pipeline config file">
-    Use pipeline config to define build and deploy pipelines for modules, including steps, variants, inputs, and triggers.
+    After modules are created, use pipeline config to define build and deploy pipelines for modules that are deployable.
 
-    See [Pipeline config file](/config-as-code/pipeline-config-file).
+    Follow [Pipeline config file](/config-as-code/pipeline-config-file). Pull the live config, edit the file, and apply through the documented config file flow.
 
   </Step>
 
-  <Step title="Set up CI for config changes">
+  <Step title="Set up CI for applying config changes">
     Configure CI to plan Ravion configuration changes on every pull request and apply them after merge.
 
-    See [CI integration](/config-as-code/ci-integration).
+    Follow [CI integration](/config-as-code/ci-integration). Use a service-account API key, store it as `RAVION_API_KEY`, and keep project and pipeline resource IDs in the workflow configuration.
 
   </Step>
 </Steps>

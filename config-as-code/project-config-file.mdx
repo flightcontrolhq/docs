@@ -10,53 +10,54 @@ Define a project declaratively in `.yaml`, `.jsonc`, or `.cue`. The top-level `e
 <Accordion title="Example project config">
   A minimal `ravion.yaml` with a VPC, an ECS cluster, and a web service. Modules reference each other with `moduleGivenIdRef`.
 
-  ```yaml ravion.yaml
-  project:
-    givenId: demo
-    name: Demo
-  environments:
-    - givenId: production
-      name: Production
-      moduleInstances:
-        - givenId: vpc
-          name: VPC
-          type: rvn-aws-network
-          version: 0.1.0
-          input:
-            aws_account_id: ravion-prod
-            aws_region: ca-central-1
-            name: demo-production
-            vpc_cidr: 10.0.0.0/16
-            nat_gateway_enabled: true
+```yaml ravion.yaml
+project:
+  givenId: demo
+  name: Demo
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: vpc
+        name: VPC
+        type: rvn-aws-network
+        version: 0.1.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: ca-central-1
+          name: demo-production
+          vpc_cidr: 10.0.0.0/16
+          nat_gateway_enabled: true
 
-        - givenId: ecs-cluster
-          name: ECS Cluster
-          type: rvn-ecs-cluster
-          version: 0.1.2
-          input:
-            network:
-              moduleGivenIdRef: vpc # Must be type rvn-aws-network
-            name: demo-production
-            fargate_enabled: true
-            fargate_spot_enabled: true
-            public_alb_enabled: true
+      - givenId: ecs-cluster
+        name: ECS Cluster
+        type: rvn-ecs-cluster
+        version: 0.1.2
+        input:
+          network:
+            moduleGivenIdRef: vpc # Must be type rvn-aws-network
+          name: demo-production
+          fargate_enabled: true
+          fargate_spot_enabled: true
+          public_alb_enabled: true
 
-        - givenId: web-app
-          name: web-app
-          type: rvn-ecs-web
-          version: 0.5.0
-          input:
-            cluster:
-              moduleGivenIdRef: ecs-cluster # Must be type rvn-ecs-cluster
-            name: demo-production-web-app
-            public_web_service_enabled: true
-            build_type: dockerfile
-            source_repo: my-org/my-repo
-            source_base_path: "."
-            dockerfile: Dockerfile
-            container_port: 80
-            health_check_path: /
-  ```
+      - givenId: web-app
+        name: web-app
+        type: rvn-ecs-web
+        version: 0.5.0
+        input:
+          cluster:
+            moduleGivenIdRef: ecs-cluster # Must be type rvn-ecs-cluster
+          name: demo-production-web-app
+          public_web_service_enabled: true
+          build_type: dockerfile
+          source_repo: my-org/my-repo
+          source_base_path: "."
+          dockerfile: Dockerfile
+          container_port: 80
+          health_check_path: /
+```
+
 </Accordion>
 
 ## Pull and apply
@@ -109,12 +110,82 @@ Store the config file in your repository and manage it with the CLI.
     Add `--autoapprove` to approve supported stack change pipeline runs without a manual gate.
 
   </Step>
+  <Step title="Review and approve the stack run">
+    Applying a config change starts a stack change pipeline run when the affected module has a Terraform stack. The stack run creates a Terraform plan and waits for manual approval before applying, unless you pass `--autoapprove` to an apply command that supports it.
+
+    After the stack run starts, inspect the run and its Terraform results with these commands:
+
+    ```bash
+    ravion pipeline run get <pipeline-run-id>
+    ravion pipeline run get-plan <pipeline-run-id>
+    ravion pipeline run get-apply <pipeline-run-id>
+    ravion logs pipeline-step <step-execution-id>
+    ```
+
+  </Step>
   <Step title="Integrate with CI">
     Commit the config file and let GitHub Actions plan changes on each pull request and apply them on merge.
 
     See [CI integration](/config-as-code/ci-integration).
+
   </Step>
 </Steps>
+
+## Agent tips
+
+Use these rules when an agent edits a project config file.
+
+### Required workflow
+
+1. Check the project config schema before editing:
+
+```bash
+ravion project config schema
+```
+
+2. List available module definitions before adding a module:
+
+```bash
+ravion module definition list
+```
+
+3. Inspect the input schema before adding or editing a module instance:
+
+```bash
+ravion module schema <module-type> [version]
+```
+
+4. Preview every change before applying it:
+
+```bash
+ravion project config apply <project-id> --file ravion.yaml --dry-run
+```
+
+5. Apply only after the dry run is correct and approved:
+
+```bash
+ravion project config apply <project-id> --file ravion.yaml
+```
+
+### Helpful hints
+
+- Pull the latest live config anytime with `ravion project config pull <project-id> --file ravion.yaml`.
+- Use `--autoapprove` only for supported stack changes that do not need a manual approval gate.
+- To iterate on one target, pass `--environment-id`, `--environment-given-id`, `--module-instance-id`, or `--module-given-id`.
+
+### Module editing rules
+
+- Treat the config file as the source of truth for the current task.
+- Preserve existing IDs, `givenId` values, module versions, and Ravion app links unless asked to change them.
+- Tailor recommended settings to the target environment.
+- Ask about important settings that cannot be inferred with high confidence.
+- Ask before production-impacting changes such as public access, deletion protection, backup retention, capacity, region, or networking exposure.
+
+### Do not
+
+- Copy module inputs from unrelated files or examples.
+- Invent fields that are not present in the CLI schema output.
+- Apply changes without a successful dry run first.
 
 ## Schema reference
 
