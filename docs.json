@@ -28,8 +28,8 @@
         "tab": "Documentation",
         "groups": [
           {
-            "group": "Get started",
-            "pages": ["index", "how-ravion-works", "philosophy", "quickstart"]
+            "group": "Introduction",
+            "pages": ["start-here", "how-ravion-works", "philosophy", "contact-support"]
           },
           {
             "group": "Use cases",
@@ -62,7 +62,7 @@
           },
           {
             "group": "Migration",
-            "pages": ["migration/from-flightcontrol", "migration/from-terraform-cloud"]
+            "pages": ["migration/from-flightcontrol"]
           },
           {
             "group": "Modules",

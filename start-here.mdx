@@ -1,0 +1,96 @@
+---
+title: "Start here (human + agent)"
+sidebarTitle: "Start here"
+description: "Set up Ravion for an AI agent, connect the required human-owned accounts, and give the agent the commands it needs to discover modules, schemas, pipelines, and project config."
+---
+
+## Human setup
+
+Complete these steps before asking an agent to create or change infrastructure.
+
+<Steps>
+  <Step title="Connect your AWS account from org settings">
+    Open the [Ravion dashboard](https://app.ravion.com) and connect the AWS account where Ravion should provision infrastructure.
+
+  </Step>
+
+  <Step title="Install the CLI and sign in">
+    On macOS, install the Ravion CLI with Homebrew:
+
+    ```bash
+    brew install flightcontrolhq/tap/ravion
+    ```
+
+    Or install it with the install script:
+
+    ```bash
+    curl -fsSL https://github.com/flightcontrolhq/cli/releases/latest/download/install.sh | sh
+    ```
+
+    Then sign in:
+
+    ```bash
+    ravion login
+    # If you belong to more than one organization, select the active organization:
+    ravion switch
+    ```
+
+
+    See [Install the Ravion CLI](/cli/installation) and [Authentication](/cli/authentication).
+
+  </Step>
+
+  <Step title="Install the Docs MCP server">
+
+    ```bash
+    npx add-mcp https://docs.ravion.com/mcp
+    ```
+
+    The Docs MCP server lets agents search and read current Ravion documentation from their context window. See [Ravion Docs MCP](/mcp/overview).
+
+  </Step>
+</Steps>
+
+## Agent workflow
+
+After the human setup is complete, give the agent this checklist.
+
+<Steps>
+  <Step title="Use the project config file flow to create and manage modules">
+    Use project config to set up or change things in Ravion, including environments, module instances, and references between modules.
+
+    See [Project config file](/config-as-code/project-config-file).
+
+  </Step>
+
+  <Step title="Set up build and deploy pipelines using pipeline config file">
+    Use pipeline config to define build and deploy pipelines for modules, including steps, variants, inputs, and triggers.
+
+    See [Pipeline config file](/config-as-code/pipeline-config-file).
+
+  </Step>
+
+  <Step title="Set up CI for config changes">
+    Configure CI to plan Ravion configuration changes on every pull request and apply them after merge.
+
+    See [CI integration](/config-as-code/ci-integration).
+
+  </Step>
+</Steps>
+
+## Useful references
+
+<CardGroup cols={2}>
+  <Card title="Project config file" icon="file-code" href="/config-as-code/project-config-file">
+    Define environments and module instances from one file.
+  </Card>
+  <Card title="Pipeline config file" icon="workflow" href="/config-as-code/pipeline-config-file">
+    Define build, deploy, trigger, and approval workflows.
+  </Card>
+  <Card title="Module catalog" icon="boxes-stacked" href="/catalog/overview">
+    Understand module definitions, versions, inputs, and config.
+  </Card>
+  <Card title="CLI reference" icon="terminal" href="/cli/overview">
+    Browse every Ravion CLI command.
+  </Card>
+</CardGroup>
