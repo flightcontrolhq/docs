@@ -45,6 +45,21 @@ ravion stack list [flags]
 | `--project-id <string>` |  | projectId |
 | `-v, --verbose` |  | show full output |
 
+### `ravion stack resource-count`
+
+Count current-state terraform resources for stacks
+
+```bash
+ravion stack resource-count [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--id <strings>` | yes | Stack IDs to count current-state resources for. |
+| `--json` |  | emit response as JSON |
+
 ### `ravion stack trigger-pipeline`
 
 Trigger a pipeline run for a stack
@@ -81,3 +96,4 @@ ravion stack workspace list [flags]
 | Flag | Required | Description |
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
+

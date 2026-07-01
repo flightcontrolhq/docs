@@ -31,7 +31,11 @@ ravion project config apply <id> [flags]
 | `--file <string>` | yes | File to read project config from |
 | `--autoapprove` |  | Pass autoapprove=true to supported stack change pipeline runs |
 | `--dry-run` |  | Validate and print planned changes without applying them |
+| `--environment-given-id <strings>` |  | Environment given ID to include in the apply target set |
+| `--environment-id <strings>` |  | Environment ID to include in the apply target set |
 | `--json` |  | emit response as JSON |
+| `--module-given-id <strings>` |  | Module instance given ID to include within each selected environment |
+| `--module-instance-id <strings>` |  | Module instance ID to include in the apply target set |
 
 #### `ravion project config pull`
 
@@ -133,3 +137,4 @@ ravion project update <id> [flags]
 | `--given-id <string>` |  | User-provided project identifier. Must be unique within organization. |
 | `--json` |  | emit response as JSON |
 | `--name <string>` |  | name |
+

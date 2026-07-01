@@ -563,6 +563,12 @@ A selectable option with a numeric value.
   _(format:int32)_
 </ResponseField>
 
+<ResponseField name="show_when" type="Module.ShowWhen">
+  Only show this option when another field has a specific value
+
+  See: [Module.ShowWhen](#module-showwhen)
+</ResponseField>
+
 ### Module.ValidationPattern
 
 A regex pattern with an error message for validation
@@ -594,6 +600,44 @@ A selectable option with a string value.
 <ResponseField name="value" type="string" required>
   Actual value sent to Terraform when this option is selected
 </ResponseField>
+
+<ResponseField name="show_when" type="Module.ShowWhen">
+  Only show this option when another field has a specific value
+
+  See: [Module.ShowWhen](#module-showwhen)
+</ResponseField>
+
+### Module.ShowWhen
+
+Conditional visibility mapping.
+
+Type: map&lt;string,[Module.ShowWhenCondition](#module-showwhencondition)&gt;
+
+### Module.ShowWhenCondition
+
+A show_when condition.
+
+One of: string \| integer \| boolean \| string \| integer \| boolean[], [Module.ShowWhenNotCondition](#module-showwhennotcondition).
+
+### Module.ShowWhenComparableValue
+
+Value or values to compare against in a show_when condition.
+
+One of: string \| integer \| boolean, string \| integer \| boolean[].
+
+### Module.ShowWhenNotCondition
+
+Negated show_when condition.
+
+<ResponseField name="not" type="string | integer | boolean | string | integer | boolean[]" required>
+  Show the property only when the source value does not match this condition.
+</ResponseField>
+
+### Module.ShowWhenValue
+
+Value that can be used in a show_when condition.
+
+One of: string, integer, boolean.
 
 ## Variants
 
@@ -693,7 +737,7 @@ Parallel step - executes children concurrently
 
 ### ApprovalStep
 
-Approval action step — pauses pipeline execution until a user explicitly approves
+Approval action step — pauses pipeline execution until a user explicitly approves. If timeout is omitted, the step waits indefinitely.
 
 <ResponseField name="id" type="string" required>
   Unique step identifier, used for referencing in logs and dependencies
@@ -875,10 +919,10 @@ Build static CI action step
   _(templateable)_
 </ResponseField>
 
-<ResponseField name="destinations" type="S3StaticDestination[]" required>
+<ResponseField name="destinations" type="S3Destination[]" required>
   S3 destinations where the built static assets will be uploaded
 
-  See: [S3StaticDestination](#s3staticdestination)
+  See: [S3Destination](#s3destination)
 
   _(minItems:1; templateable)_
 </ResponseField>
@@ -1591,9 +1635,9 @@ Step infrastructure configuration
   _(templateable)_
 </ResponseField>
 
-### S3StaticDestination
+### S3Destination
 
-S3 destination for static builds
+S3 destination for build artifacts
 
 <ResponseField name="id" type="string" required>
   Unique destination identifier within the build step

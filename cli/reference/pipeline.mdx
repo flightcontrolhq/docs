@@ -165,6 +165,40 @@ ravion pipeline run get <id> [flags]
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
 
+#### `ravion pipeline run get-apply`
+
+Read applied Terraform resource results for a pipeline run
+
+```bash
+ravion pipeline run get-apply <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
+
+#### `ravion pipeline run get-plan`
+
+Read planned Terraform resource changes for a pipeline run
+
+```bash
+ravion pipeline run get-plan <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
+
 #### `ravion pipeline run list`
 
 List PipelineRuns
@@ -204,6 +238,24 @@ ravion pipeline run retry <id> [flags]
 | `--retry-scope <string>` | yes | Which portion of the same pipeline run should be retried. Available values: FULL_RUN. |
 | `--json` |  | emit response as JSON |
 | `--use-latest-version` |  | When true, a full-run retry should use the latest pipeline version. |
+
+#### `ravion pipeline run terraform-resources`
+
+List Terraform resources for a pipeline run
+
+```bash
+ravion pipeline run terraform-resources <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--run-type <string>` | yes | Terraform run type to inspect. PLAN shows planned changes; APPLY shows applied changes. Available values: PLAN, APPLY. |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
 
 ### `ravion pipeline schema`
 
@@ -264,6 +316,23 @@ ravion pipeline step-execution list [flags]
 | `--limit <int>` |  | limit |
 | `--pipeline-run-id <string>` |  | pipelineRunId |
 | `--pipeline-run-ids <strings>` |  | Batch filter: return step executions for any of these run ids in one call. |
+| `-v, --verbose` |  | show full output |
+
+#### `ravion pipeline step-execution terraform-resources`
+
+List Terraform resources for a step execution
+
+```bash
+ravion pipeline step-execution terraform-resources <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
 | `-v, --verbose` |  | show full output |
 
 ### `ravion pipeline update`
@@ -338,3 +407,4 @@ ravion pipeline version list [flags]
 | `--limit <int>` |  | limit |
 | `--pipeline-id <string>` |  | pipelineId |
 | `-v, --verbose` |  | show full output |
+

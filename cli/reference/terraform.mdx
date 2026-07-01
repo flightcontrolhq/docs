@@ -59,26 +59,6 @@ ravion terraform execution-summary list [flags]
 | `--step-execution-id <string>` |  | Step execution ID to filter by (optional) |
 | `-v, --verbose` |  | show full output |
 
-#### `ravion terraform execution-summary submit-summary`
-
-Create Terraform execution summary
-
-```bash
-ravion terraform execution-summary submit-summary [flags]
-```
-
-**Flags:**
-
-| Flag | Required | Description |
-| --- | --- | --- |
-| `--run-type <string>` | yes | The type of terraform run. Available values: PLAN, APPLY, DESTROY. |
-| `--step-execution-id <string>` | yes | The step execution ID this summary belongs to |
-| `--summary <string>` | yes | Summary counts for the execution |
-| `--json` |  | emit response as JSON |
-| `--output <string>` |  | Non-sensitive terraform output values from this execution |
-| `--plan-filename <string>` |  | Optional plan filename this summary is associated with |
-| `--stack-id <string>` |  | Optional stack ID to associate this execution summary with |
-
 ### `ravion terraform resource`
 
 Manage terraform resources
@@ -129,7 +109,6 @@ ravion terraform resource list [flags]
 | Flag | Required | Description |
 | --- | --- | --- |
 | `--cursor <string>` |  | cursor |
-| `--drift-status <string>` |  | Drift status to filter by (optional, requires pipelineRunId). Available values: UNKNOWN, IN_SYNC, DRIFTED. |
 | `--json` |  | emit response as JSON |
 | `--limit <int>` |  | limit |
 | `--pipeline-run-id <string>` |  | Pipeline run ID to filter by (mutually exclusive with stackId) |
@@ -138,23 +117,6 @@ ravion terraform resource list [flags]
 | `--step-execution-id <string>` |  | Step execution ID to filter by (optional, requires pipelineRunId) |
 | `-v, --verbose` |  | show full output |
 
-#### `ravion terraform resource submit-resources`
-
-Save Terraform resources
-
-```bash
-ravion terraform resource submit-resources [flags]
-```
-
-**Flags:**
-
-| Flag | Required | Description |
-| --- | --- | --- |
-| `--resources <string>` | yes | Array of resources with their change information |
-| `--step-execution-id <string>` | yes | The step execution ID these resources belong to |
-| `--json` |  | emit response as JSON |
-| `--stack-id <string>` |  | Optional stack ID to associate reported resources with |
-
 ### `ravion terraform shell`
 
 shell spawns either an interactive $SHELL -i (no `-- cmd`) or the
@@ -162,8 +124,35 @@ command after `--` once, with TF_CLOUD_HOSTNAME, TF_CLOUD_ORGANIZATION,
 TF_WORKSPACE, and TF_TOKEN_&lt;host&gt; wired so terraform/tofu talks directly
 to the Ravion cloud using your CLI session access token.
 
+Pass --workspace &lt;name&gt; to select a workspace non-interactively (skips the picker);
+the module-instance delete output prints the exact value to back up its state.
+
 **Aliases:** `sh`
 
 ```bash
-ravion terraform shell [-- cmd args...]
+ravion terraform shell [--workspace <name>] [-- cmd args...] [flags]
 ```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--workspace <string>` |  | Select this Terraform workspace by name, skipping the interactive picker |
+
+### `ravion terraform state`
+
+state forwards any `terraform state` subcommand to a managed Ravion workspace, wiring up
+the cloud backend in a throwaway directory first — no local config or `terraform init`
+needed. Examples:
+
+  ravion terraform state pull --workspace &lt;name&gt; &gt; backup.tfstate
+  ravion terraform state list --workspace &lt;name&gt;
+  ravion terraform state show &lt;address&gt; --workspace &lt;name&gt;
+
+--workspace is consumed by ravion; every other flag and arg is passed straight through
+to `terraform state`.
+
+```bash
+ravion terraform state --workspace <name> <subcommand> [args...]
+```
+

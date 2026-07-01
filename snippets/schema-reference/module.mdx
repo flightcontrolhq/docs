@@ -942,6 +942,12 @@ Allowed values:
 
 - `$values:first`
 
+### Pipeline.GitRepoUrl
+
+Full git repository URL including host.
+
+Type: string
+
 ### NumberValues
 
 Number values - either a static array of options or a dynamic reference.
@@ -1056,6 +1062,12 @@ A selectable option with a string value.
   Actual value sent to Terraform when this option is selected
 </ResponseField>
 
+<ResponseField name="show_when" type="ShowWhen">
+  Only show this option when another field has a specific value
+
+  See: [ShowWhen](#showwhen)
+</ResponseField>
+
 ### CompoundValueItem
 
 A compound value item - a record with arbitrary fields plus select metadata.
@@ -1092,6 +1104,12 @@ A selectable option with a numeric value.
   Actual number sent to Terraform when this option is selected
 
   _(format:int32)_
+</ResponseField>
+
+<ResponseField name="show_when" type="ShowWhen">
+  Only show this option when another field has a specific value
+
+  See: [ShowWhen](#showwhen)
 </ResponseField>
 
 ### ShowWhenComparableValue
@@ -1470,6 +1488,7 @@ Discriminated union. The `type` field selects which schema applies.
 | ------------ | ------------------------------------------- |
 | `disabled`   | [DisabledModuleBuild](#disabledmodulebuild) |
 | `image`      | [ImageModuleBuild](#imagemodulebuild)       |
+| `lambda`     | [LambdaModuleBuild](#lambdamodulebuild)     |
 | `static`     | [StaticModuleBuild](#staticmodulebuild)     |
 
 ### DisabledModuleBuild
@@ -1552,6 +1571,76 @@ Image build configuration for a module.
   _(templateable)_
 </ResponseField>
 
+### LambdaModuleBuild
+
+Lambda build configuration for a module. Produces a zip artifact uploaded to S3, sized for the Lambda Zip package type. Wraps the existing `Pipeline.BuildLam...
+
+<ResponseField name="type" type="enum" required>
+  Build type discriminator
+
+  Allowed values: `lambda`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="timeout" type="integer | null">
+  Maximum execution time in seconds before the build is killed.
+
+  _(format:int32,min:1; templateable)_
+</ResponseField>
+
+<ResponseField name="inputs" type="InputProperty[]" required>
+  Build-specific inputs shown when running a module build.
+
+  See: [InputProperty](#inputproperty)
+</ResponseField>
+
+<ResponseField name="source" type="Pipeline.GitSource" required>
+  Git source configuration.
+
+  See: [Pipeline.GitSource](#pipeline-gitsource)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="builder" type="Pipeline.LambdaBuildConfig" required>
+  Builder configuration — dockerfile or nixpacks settings for the Lambda zip build. Reuses the existing `Pipeline.LambdaBuildConfig` shape so module builds and...
+
+  See: [Pipeline.LambdaBuildConfig](#pipeline-lambdabuildconfig)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="environment_variables" type="Pipeline.EnvironmentVariablesValue">
+  Environment variables available during the build.
+
+  See: [Pipeline.EnvironmentVariablesValue](#pipeline-environmentvariablesvalue)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="debug" type="boolean | null">
+  Enable verbose build output for debugging build issues.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="destinations" type="Pipeline.S3Destination[]" required>
+  S3 destinations where the Lambda deployment package will be uploaded. At least one is required; the resulting key is passed to the deploy step as `deploy.inp...
+
+  See: [Pipeline.S3Destination](#pipeline-s3destination)
+
+  _(minItems:1; templateable)_
+</ResponseField>
+
+<ResponseField name="infrastructure" type="Pipeline.StepInfrastructure" required>
+  Execution environment configuration used for the build.
+
+  See: [Pipeline.StepInfrastructure](#pipeline-stepinfrastructure)
+
+  _(templateable)_
+</ResponseField>
+
 ### StaticModuleBuild
 
 Static build configuration for a module.
@@ -1606,10 +1695,10 @@ Static build configuration for a module.
   _(templateable)_
 </ResponseField>
 
-<ResponseField name="destinations" type="Pipeline.S3StaticDestination[]" required>
+<ResponseField name="destinations" type="Pipeline.S3Destination[]" required>
   S3 destinations where the built static assets will be uploaded.
 
-  See: [Pipeline.S3StaticDestination](#pipeline-s3staticdestination)
+  See: [Pipeline.S3Destination](#pipeline-s3destination)
 
   _(minItems:1; templateable)_
 </ResponseField>
@@ -1764,9 +1853,21 @@ Step infrastructure configuration
   _(templateable)_
 </ResponseField>
 
-### Pipeline.S3StaticDestination
+### Pipeline.LambdaBuildConfig
 
-S3 destination for static builds
+Lambda build configuration — discriminated by build method
+
+Discriminated union. The `type` field selects which schema applies.
+
+| `type` value | Schema                                                                        |
+| ------------ | ----------------------------------------------------------------------------- |
+| `disabled`   | [Pipeline.DisabledBuildConfig](#pipeline-disabledbuildconfig)                 |
+| `dockerfile` | [Pipeline.LambdaDockerfileBuildConfig](#pipeline-lambdadockerfilebuildconfig) |
+| `nixpacks`   | [Pipeline.LambdaNixpacksBuildConfig](#pipeline-lambdanixpacksbuildconfig)     |
+
+### Pipeline.S3Destination
+
+S3 destination for build artifacts
 
 <ResponseField name="id" type="string" required>
   Unique destination identifier within the build step
@@ -1816,12 +1917,6 @@ Discriminated union. The `type` field selects which schema applies.
 Environment variable — can be a plain string, Parameter Store reference, or Secrets Manager reference
 
 One of: string \| null, [Pipeline.ParameterStoreEnvVar](#pipeline-parameterstoreenvvar), [Pipeline.SecretsManagerEnvVar](#pipeline-secretsmanagerenvvar).
-
-### Pipeline.GitRepoUrl
-
-Full git repository URL including host.
-
-Type: string
 
 ### Pipeline.DisabledBuildConfig
 
@@ -1994,6 +2089,126 @@ Root volume storage configuration
 
 <ResponseField name="throughput" type="integer | null">
   Provisioned throughput in MiB/s
+
+  _(format:int32; templateable)_
+</ResponseField>
+
+### Pipeline.LambdaDockerfileBuildConfig
+
+Dockerfile configuration for Lambda builds
+
+<ResponseField name="type" type="enum" required>
+  Build method — use a custom Dockerfile
+
+  Allowed values: `dockerfile`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="dockerfile" type="string | null" default="Dockerfile">
+  Path to Dockerfile relative to source.base_path
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="context" type="string | null" default=".">
+  Docker build context path relative to source.base_path
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="inject_env_variables_in_dockerfile" type="boolean | null">
+  Whether to inject environment variables as Docker build args Accepts either a boolean literal or a full template token
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="output_directory" type="string" required>
+  Directory inside the built image containing the Lambda package contents
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="max_zip_size" type="integer | null" default="52428800">
+  Maximum allowed zip size in bytes — build fails if exceeded
+
+  _(format:int32; templateable)_
+</ResponseField>
+
+### Pipeline.LambdaNixpacksBuildConfig
+
+Nixpacks configuration for Lambda builds
+
+<ResponseField name="type" type="enum" required>
+  Build method — use Nixpacks auto-detection
+
+  Allowed values: `nixpacks`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="nixpacks_version" type="string | null">
+  Nixpacks version to use
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="build_path" type="string | null">
+  Directory to run the Nixpacks build from, relative to the repository root
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="config_file_path" type="string | null">
+  Path to the Nixpacks configuration file relative to the repository root
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="nix_pkgs" type="string[] | null">
+  Additional Nix packages to install
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="apt_pkgs" type="string[] | null">
+  Additional apt packages to install
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="nix_libs" type="string[] | null">
+  Additional Nix libraries to install
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="install_cmd" type="string | null">
+  Custom install command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="build_cmd" type="string | null">
+  Custom build command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="start_cmd" type="string | null">
+  Application start command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="output_directory" type="string" required>
+  Directory inside the built image containing the Lambda package contents
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="max_zip_size" type="integer | null" default="52428800">
+  Maximum allowed zip size in bytes — build fails if exceeded
 
   _(format:int32; templateable)_
 </ResponseField>
@@ -2234,6 +2449,7 @@ Discriminated union. The `type` field selects which schema applies.
 | `type` value   | Schema                                                  |
 | -------------- | ------------------------------------------------------- |
 | `"aws:ecs"`    | [EcsModuleDeployment](#ecsmoduledeployment)             |
+| `"aws:lambda"` | [LambdaModuleDeployment](#lambdamoduledeployment)       |
 | `"aws:static"` | [AwsStaticModuleDeployment](#awsstaticmoduledeployment) |
 
 ### AwsStaticModuleDeployment
@@ -2330,6 +2546,50 @@ AWS ECS deployment configuration
 
 <ResponseField name="post_deploy" type="EcsRunTaskOverrides">
   See: [EcsRunTaskOverrides](#ecsruntaskoverrides)
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaModuleDeployment
+
+AWS Lambda deployment configuration. v1 supports UpdateFunctionCode + PublishVersion + UpdateAlias. Pre/post deploy hooks and weighted- routing alias shifts...
+
+<ResponseField name="type" type="enum" required>
+  Deployment type discriminator
+
+  Allowed values: `aws:lambda`
+</ResponseField>
+
+<ResponseField name="infrastructure" type="LambdaDeploymentInfrastructure" required>
+  Infrastructure resources required by the deployment.
+
+  See: [LambdaDeploymentInfrastructure](#lambdadeploymentinfrastructure)
+</ResponseField>
+
+<ResponseField name="timeout" type="integer">
+  Maximum total wall-clock budget (in seconds) for a single deploy, measured from the moment the workflow starts (including time spent waiting for the deployme...
+
+  _(format:int32,min:60)_
+</ResponseField>
+
+<ResponseField name="inputs" type="InputProperty[]" required>
+  Deployment-specific inputs shown in the deploy modal.
+
+  See: [InputProperty](#inputproperty)
+</ResponseField>
+
+<ResponseField name="definition" type="LambdaDeploymentDefinition" required>
+  Per-deploy definition. Templateable — supports both module.input and deploy.input references inside string fields.
+
+  See: [LambdaDeploymentDefinition](#lambdadeploymentdefinition)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="function_configuration" type="LambdaFunctionConfiguration">
+  Per-deploy function-configuration overrides applied via `UpdateFunctionConfiguration` before the new code is published.
+
+  See: [LambdaFunctionConfiguration](#lambdafunctionconfiguration)
 
   _(templateable)_
 </ResponseField>
@@ -2748,6 +3008,175 @@ AWS ECS task definition — models the RegisterTaskDefinition API input.
   Inference accelerators (EC2 only)
 
   See: [EcsInferenceAccelerator](#ecsinferenceaccelerator)
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaDeploymentDefinition
+
+Per-deploy Lambda definition — discriminated by `package_type`.
+
+Discriminated union. The `package_type` field selects which schema applies.
+
+| `package_type` value | Schema                                          |
+| -------------------- | ----------------------------------------------- |
+| `image`              | [LambdaImageDefinition](#lambdaimagedefinition) |
+| `zip`                | [LambdaZipDefinition](#lambdazipdefinition)     |
+
+### LambdaDeploymentInfrastructure
+
+Infrastructure resources required for AWS Lambda deployment.
+
+<ResponseField name="function_arn" type="string" required>
+  Full ARN of the Lambda function the deploy targets.
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="region" type="string" required>
+  AWS region of the function. Mirrors `aws_static_module_deployment`'s `s3_region` — needed because Lambda's regional endpoint is the only thing the workflow c...
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="alias_name" type="string | null">
+  Alias the deploy flips after publishing the new function version.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="s3_artifact_bucket" type="string | null">
+  S3 bucket the build step uploaded the zip artifact into. Optional — captured into the deploy snapshot for audit even when the deploy itself targets an Image-...
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaFunctionConfiguration
+
+AWS Lambda function configuration — every field optional, applied as a partial update via `UpdateFunctionConfiguration`. Fields the user omits are left untou...
+
+<ResponseField name="role" type="string | null">
+  IAM execution role ARN.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="handler" type="string | null">
+  Handler entrypoint (Zip only — ignored for Image).
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="runtime" type="string | null">
+  Lambda runtime (Zip only — ignored for Image).
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="memory_size" type="integer | null">
+  Memory size in MiB. 128–10240.
+
+  _(format:int32,min:128,max:10240; templateable)_
+</ResponseField>
+
+<ResponseField name="timeout" type="integer | null">
+  Wall-clock timeout in seconds. 1–900.
+
+  _(format:int32,min:1,max:900; templateable)_
+</ResponseField>
+
+<ResponseField name="description" type="string | null">
+  Function description shown in the AWS console.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="architectures" type="enum[x86_64,arm64][] | null">
+  CPU architectures — exactly one of `x86_64` or `arm64`.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="environment" type="LambdaEnvironment">
+  Environment variables applied to the function.
+
+  See: [LambdaEnvironment](#lambdaenvironment)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="vpc_config" type="LambdaVpcConfig">
+  VPC configuration. Setting empty arrays disconnects the function from the VPC.
+
+  See: [LambdaVpcConfig](#lambdavpcconfig)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="layers" type="string[] | null">
+  Lambda layer ARNs (versioned, e.g.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="ephemeral_storage" type="LambdaEphemeralStorage">
+  Ephemeral `/tmp` storage size.
+
+  See: [LambdaEphemeralStorage](#lambdaephemeralstorage)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="tracing_config" type="LambdaTracingConfig">
+  X-Ray tracing mode.
+
+  See: [LambdaTracingConfig](#lambdatracingconfig)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="kms_key_arn" type="string | null">
+  Customer-managed KMS key ARN for environment variable encryption.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="dead_letter_config" type="LambdaDeadLetterConfig">
+  Dead-letter destination for async invocations.
+
+  See: [LambdaDeadLetterConfig](#lambdadeadletterconfig)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="file_system_configs" type="LambdaFileSystemConfig[] | null">
+  EFS file systems attached to the function.
+
+  See: [LambdaFileSystemConfig](#lambdafilesystemconfig)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="snap_start" type="LambdaSnapStart">
+  SnapStart configuration. Java-only on AWS today, but the field is forwarded as-is to Lambda.
+
+  See: [LambdaSnapStart](#lambdasnapstart)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="logging_config" type="LambdaLoggingConfig">
+  CloudWatch logging configuration.
+
+  See: [LambdaLoggingConfig](#lambdaloggingconfig)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="image_config" type="LambdaImageConfig">
+  Image overrides — image-packaged functions only.
+
+  See: [LambdaImageConfig](#lambdaimageconfig)
 
   _(templateable)_
 </ResponseField>
@@ -3282,6 +3711,190 @@ ECS volume — host path or Docker volume
   EFS volume configuration
 
   See: [EcsEfsVolumeConfiguration](#ecsefsvolumeconfiguration)
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaImageDefinition
+
+Image-packaged Lambda deploy definition. The image must already exist in ECR (typically pushed by the upstream build step's `ecr` destination).
+
+<ResponseField name="package_type" type="enum" required>
+  Definition type discriminator.
+
+  Allowed values: `image`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="image_uri" type="string" required>
+  Full ECR image URI. Prefer `&lt;repo&gt;@sha256:&lt;digest&gt;` form for reproducibility — Lambda resolves a mutable tag at deploy time and silently pins it, but the dep...
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+### LambdaZipDefinition
+
+Zip-packaged Lambda deploy definition. The code object must already exist in S3 (typically uploaded by the upstream build step's `s3-zip` destination).
+
+<ResponseField name="package_type" type="enum" required>
+  Definition type discriminator.
+
+  Allowed values: `zip`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="s3_key" type="string" required>
+  S3 key the build step uploaded into.
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+### LambdaDeadLetterConfig
+
+Dead-letter destination for async invocations.
+
+<ResponseField name="target_arn" type="string | null">
+  SQS queue ARN or SNS topic ARN.
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaEnvironment
+
+Lambda function environment block. Mirrors AWS Lambda's `Environment` shape — a single `variables` map of string → string.
+
+<ResponseField name="variables" type="map<string,string> | null">
+  Environment variables applied to the function. Replaces the existing variable set on AWS — the API doesn't merge.
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaEphemeralStorage
+
+Function-level ephemeral storage (`/tmp`) size in MiB.
+
+<ResponseField name="size" type="integer" required>
+  Size in MiB. 512–10240.
+
+  _(format:int32,min:512,max:10240; templateable)_
+</ResponseField>
+
+### LambdaFileSystemConfig
+
+EFS file system attached to the function.
+
+<ResponseField name="arn" type="string" required>
+  EFS access point ARN.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="local_mount_path" type="string" required>
+  Mount path inside the container — must start with `/mnt/`.
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaImageConfig
+
+Container image configuration overrides — image-packaged functions only.
+
+<ResponseField name="command" type="string[] | null">
+  Override the image's CMD.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="entry_point" type="string[] | null">
+  Override the image's ENTRYPOINT.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="working_directory" type="string | null">
+  Override the image's WORKDIR.
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaLoggingConfig
+
+Function logging configuration (CloudWatch destination + log levels).
+
+<ResponseField name="log_format" type="enum | null">
+  Format the logs are emitted in.
+
+  Allowed values: `JSON` | `Text`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="application_log_level" type="enum | null">
+  Application log level — only valid when `log_format` is JSON.
+
+  Allowed values: `TRACE` | `DEBUG` | `INFO` | `WARN` | `ERROR` | `FATAL`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="system_log_level" type="enum | null">
+  System log level — only valid when `log_format` is JSON.
+
+  Allowed values: `DEBUG` | `INFO` | `WARN`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="log_group" type="string | null">
+  Destination CloudWatch log group.
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaSnapStart
+
+SnapStart configuration.
+
+<ResponseField name="apply_on" type="enum" required>
+  When to take the snapshot. `None` disables SnapStart; `PublishedVersions` snapshots each `PublishVersion` call.
+
+  Allowed values: `None` | `PublishedVersions`
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaTracingConfig
+
+AWS X-Ray tracing configuration.
+
+<ResponseField name="mode" type="enum" required>
+  Active samples + traces requests; PassThrough only propagates an upstream sampling decision.
+
+  Allowed values: `Active` | `PassThrough`
+
+  _(templateable)_
+</ResponseField>
+
+### LambdaVpcConfig
+
+VPC configuration for a Lambda function.
+
+<ResponseField name="subnet_ids" type="string[] | null">
+  Subnet IDs the function's ENIs are placed into.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="security_group_ids" type="string[] | null">
+  Security group IDs attached to the function's ENIs.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="ipv6_allowed_for_dual_stack" type="boolean | null">
+  Whether the function gets dual-stack IPv6 networking.
 
   _(templateable)_
 </ResponseField>
@@ -3854,6 +4467,14 @@ UI configuration for the module.
   _(templateable)_
 </ResponseField>
 
+<ResponseField name="logs" type="UILog[] | null">
+  Log sources displayed on the module's Logs tab. Each entry is a CloudWatch log group the module emits to.
+
+  See: [UILog](#uilog)
+
+  _(templateable)_
+</ResponseField>
+
 ### UILink
 
 A link displayed in the module UI.
@@ -3866,6 +4487,30 @@ A link displayed in the module UI.
 
 <ResponseField name="href" type="string" required>
   URL — can use template syntax like &lt;&lt; output.xxx &gt;&gt; for dynamic values
+
+  _(templateable)_
+</ResponseField>
+
+### UILog
+
+A log source displayed in the module UI's Logs tab. Every field is templateable so module authors can pass an entire log definition (or individual fields) fr...
+
+<ResponseField name="id" type="string" required>
+  Stable identifier for the log source, used as the React key / scope id.
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Display name for the log source (shown as the source label).
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="source" type="LogSource" required>
+  Data source for the logs. Discriminated union — currently `cloudwatch`.
+
+  See: [LogSource](#logsource)
 
   _(templateable)_
 </ResponseField>
@@ -3899,6 +4544,36 @@ A metric displayed in the module UI.
 
   See: [MetricSource](#metricsource)
 
+  _(templateable)_
+</ResponseField>
+
+### LogSource
+
+A CloudWatch Logs source for a module log stream. Mirrors
+
+<ResponseField name="type" type="enum" required>
+  Allowed values: `cloudwatch`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="aws_account_id" type="string" required>
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="region" type="string" required>
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="log_group" type="string" required>
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="log_stream_prefix" type="string | null">
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="filter_pattern" type="string | null">
   _(templateable)_
 </ResponseField>
 
@@ -3958,6 +4633,36 @@ Allowed values:
 
 - `line`
 - `bar`
+
+### CloudWatchLogSource
+
+A CloudWatch Logs source for a module log stream. Mirrors
+
+<ResponseField name="type" type="enum" required>
+  Allowed values: `cloudwatch`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="aws_account_id" type="string" required>
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="region" type="string" required>
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="log_group" type="string" required>
+  _(minLen:1; templateable)_
+</ResponseField>
+
+<ResponseField name="log_stream_prefix" type="string | null">
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="filter_pattern" type="string | null">
+  _(templateable)_
+</ResponseField>
 
 ### CloudWatchMetricSource
 
@@ -4034,3 +4739,19 @@ Ternary: `<< condition ? trueVal : falseVal >>`. Default fallback: `<< input.x |
 Access: `array[0]`, `map["key"]`, `map.key`. Functions: `len()`, `upper()`, `lower()`.
 
 Available namespaces: `module.input.*`, `stack.id`, `trigger.payload.{branch,commit,ref,repository,event,tag}`.
+
+Array spreads can insert an array expression into an array field:
+
+  ```yaml
+  logs:
+    - ...<< map(module.input.enabled_cloudwatch_logs_exports, {
+        "id":"rds_" + # + "_logs",
+        "name":"RDS " + # + " logs",
+        "source":{
+          "type":"cloudwatch",
+          "aws_account_id":module.input.aws_account_id,
+          "region":stack.output.region,
+          "log_group":"/aws/rds/instance/" + stack.output.db_instance_identifier + "/" + #
+        }
+      }) >>
+  ```

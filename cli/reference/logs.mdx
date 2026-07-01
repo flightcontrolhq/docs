@@ -32,3 +32,22 @@ ravion logs cloudwatch [flags]
 | `--log-stream-prefix <string>` |  | Log stream prefix to filter by |
 | `--start-time <string>` |  | Start time for historical logs (ISO 8601) |
 | `--tail` |  | Switch to live tail mode after fetching historical logs |
+
+### `ravion logs pipeline-step`
+
+Stream logs for a pipeline step execution
+
+```bash
+ravion logs pipeline-step <step-execution-id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--end-time <string>` |  | End time for historical logs (ISO 8601) |
+| `--filter-pattern <string>` |  | Optional CloudWatch FilterPattern |
+| `--json` |  | emit response as JSON |
+| `--start-time <string>` |  | Start time for historical logs (ISO 8601) |
+| `--tail` |  | Switch to live tail mode after fetching historical logs |
+
