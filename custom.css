@@ -111,8 +111,18 @@ h4,
 h5,
 h6 {
   letter-spacing: 0 !important;
-  line-height: 1.1 !important;
   font-weight: 400 !important;
+}
+
+h1,
+h4,
+h5,
+h6 {
+  line-height: 1.2 !important;
+}
+h2,
+h3 {
+  line-height: 1.5 !important;
 }
 
 /* Headings stay at weight 400 even when they carry the font-semibold utility */

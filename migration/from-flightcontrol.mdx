@@ -6,23 +6,57 @@ description: "Migrate an existing Flightcontrol project to Ravion: map services 
 
 Ravion was designed and built by the Flightcontrol team to keep all the great things about Flightcontrol while fixing all the problems.
 
+## Ravion solves these Flightcontrol problems
+
+### 1. "The biggest drift": manual changes and a separate Terraform repo
+
+In Flightcontrol, anything not supported by a service type — an extra IAM role or policy, a VPC tweak, an SQS queue — had to be added manually in the AWS console or managed in a separate Terraform repo with its own deploy process. Over time you end up with three sources of truth: Flightcontrol, Terraform, and undocumented manual changes.
+
+Ravion consolidates the world into one config-driven system. Ancillary resources like IAM roles and policies are just modules that live alongside your services, and your existing Terraform can run in Ravion with the Terraform Stack module — with plan and apply steps, optional manual approval, and full state history showing the diff of every resource over time. One tool, one source of truth.
+
+### 2. Separate projects forced per AWS account
+
+Flightcontrol forced separate projects for separate AWS accounts. Ravion projects and environments are lightweight containers, so you can combine everything into one project with production and staging environments, spanning multiple AWS accounts and repos.
+
+### 3. No control over public vs private subnet deployment
+
+Flightcontrol decided for you which subnet your services ran in. Every Ravion module lets you choose public or private subnet placement for all services.
+
+### 4. Limited control over build and deploy order and orchestration
+
+Flightcontrol only gave you watch paths, pre/post deploy commands, and limited dependency config. Ravion pipelines are a full-featured CI/CD system that runs in your account, letting you orchestrate builds and deploys in any sequence or parallelization — for example, deploying a module that must go first before the rest of your services. Outputs of build steps are explicitly mapped into deploy inputs — more clear and explicit, less magic.
+
+### 5. Extremely limited logs and metrics
+
+Flightcontrol's logs and metrics were extremely limited. Ravion adds many more metric charts — nearly everything AWS supports — and full-featured logs and metrics viewers with search, sorting, filtering, and configurable time ranges and periods, across all tasks and log streams. If a chart you want is missing, it's just a few lines of config to add it.
+
+### 6. No ARM or Spot instance support
+
+You can now enable Fargate, Fargate Spot, and EC2 capacity providers on the ECS cluster module and choose ARM Graviton instance types — for services and for builders — to bring down your AWS costs significantly. EC2 Spot builders are supported too.
+
+### 7. A load balancer and cluster for every single service
+
+Flightcontrol created a dedicated cluster and load balancer per service. Ravion's ECS cluster is a standalone module with shared load balancers, so multiple services can share a cluster and a load balancer — including running multiple apps on the same EC2 instances. That's a direct cost savings from not having a load balancer per service, plus less complexity.
+
+### 8. Config changes are slow because they trigger a full deploy
+
+In Flightcontrol, every config change triggered a full code build and deploy. If your code deploys are very long, a one-line infrastructure change was painfully slow. In Ravion, infrastructure changes apply through their own path without a code deployment, and vice versa.
+
+### 9. "I just want to redeploy this one service"
+
+When a Flightcontrol deploy touched eight services and one failed, you had to re-run the whole thing. In Ravion, every module has its own deploy button — deploy a new image ref, redeploy an existing one, or roll back, directly from the dashboard, API, or CLI.
+
+### 10. CloudFront forced in front of your API
+
+Flightcontrol put CloudFront in front of every ECS web service, whether you needed it or not — leaving you fighting header behavior you didn't ask for. In Ravion, CloudFront is a separate optional module you attach only where you want it.
+
+### 11. Only showing logs from one instance during a deploy
+
+Ravion shows you the full ECS task definition JSON with diffs between deploys, the entire container lifecycle and logs for every instance both at runtime and during a deploy (so you can see exactly which instance failed and why — including when Fargate Spot reclaims a container), plus container and listener details.
+
 ## Key differences from Flightcontrol
 
-### Some features still missing as of June 24, 2026
-
-Ravion will have full feature parity with Flightcontrol, but the following are still to come:
-
-- Lambda module
-- Managed custom domain for ECS web services
-  - Workaround is to create your own ACM certificate and set its ARN in the ECS cluster module, then add the hostname routing rule in the ECS web module.
-- Managed custom domain for static sites
-  - Workaround is to create your own ACM certificate and set its ARN in the static site module
-- CloudFront module to use with ECS services
-- Managing environment variables through Ravion
-  - Workaround is manage them in AWS console and use parameter store and secrets manager references in Ravion
-- Preview environments
-
-### Projects and environments are now lightweight containers not coupled with git or AWS accounts
+### 1. Projects and environments are now lightweight containers not coupled with git or AWS accounts
 
 Creating a project no longer requires a git repo.
 
@@ -30,17 +64,17 @@ You can now have multiple AWS accounts within a project or even within an enviro
 
 And you can easily move modules between environments and projects.
 
-### Service types are now modules
+### 2. Service types are now modules
 
 Ravion modules are much more flexible and can contain just infrastructure without deployments or just deployments without infrastructure or all the features at once.
 
-### Infrastructure changes are decoupled from code deployments
+### 3. Infrastructure changes are decoupled from code deployments
 
 In Flightcontrol, any type of config change would execute both an infrastructure sync and a code deployment.
 
 But in Ravion the infrastructure is a standalone Terraform stack under the hood. And changes to it do not require a code deployment. Likewise code deployments are a separate system which do not cause other infrastructure config sync.
 
-### Pipelines are now a standalone feature. Environments no longer automatically build and deploy together.
+### 4. Pipelines are now a standalone feature. Environments no longer automatically build and deploy together.
 
 Flightcontrol gave you very little control over the build and deploy pipeline. You basically only had watch paths, pre & post deploy commands, and a limited dependency config.
 
@@ -48,25 +82,78 @@ Ravion now has a full featured CI/CD system like GitHub actions, but that runs e
 
 You can easily define the sequence and parallelization of builds and deploys exactly as you want.
 
-Builds of subsequent runs can now start executing while the previous deploy is still in progress.
+Builds of new deploys can now run while the previous deploy is still in progress.
 
 You can have a pipeline that builds and deploys your entire environment just like Flightcontrol. Or you could have multiple pipelines that only deploy sub groups of services within the environment.
 
 And you can have modules that are deployed as a standalone service without any pipeline. You can always deploy a single module directly from the dashboard, API, or CLI.
 
-### You can now run your custom Terraform stack in Ravion alongside your other services
+### 5. You can now run your custom Terraform stack in Ravion alongside your other services
 
-### Ravion's standard library of modules now support almost every AWS config option
+Use the Terraform Stack module to manage and visualize your Terraform state in Ravion. You can continue using your existing Terraform state backend or import your state into our managed state backend.
 
-### You can add your own "service types" (modules)
+### 6. Ravion's standard library of modules now support almost every AWS config option
 
-## Ravion can be used alongside Flightcontrol at the same time
+No more hacks to set or override AWS settings that Flightcontrol didn't expose. Essentially every option is now exposed. And if it's not, it's just a simple config change for us to add it. Or you can even fork our standard modules and customize it as you please.
 
-Ravion and Flightcontrol both use the same Organization and memberships, but all other data is separate.
+### 7. You can add your own "service types" (modules)
+
+Your organization has a module catalogue that has our standard libary of modules by default. But you can fork, replace, or add your own modules.
+
+## Other Ravion features and improvements
+
+- **100% complete public API** — the Ravion dashboard itself runs on it
+- **Comprehensive CLI** — including config file push and pull
+- **Docs MCP** — plus API endpoints for schemas and config designed for agent workflows
+- **Completely infrastructure-as-code driven** — everything is Terraform under the hood, and our Terraform modules are open source
+- **Deep deploy visibility** — full task definition JSON with diffs, entire container lifecycle and logs for every instance at runtime and during deploys, and container and listener details
+- **More metric charts** — nearly every metric AWS supports, with configurable periods and time ranges
+- **Full-featured logs viewer** — search, filtering, histogram, and time ranges across all tasks and log streams, plus environment-level logs across all your services in one stream
+- **Instant static site deploys and rollbacks** — deployed versions are switched via CloudFront Key Value Store instead of a slow CloudFront update
+- **IAM module** — create any IAM role or policy as part of your environment
+
+## Mapping of Flightcontrol service types to Ravion modules
+
+| Flightcontrol concept                                     | Ravion module(s)                                     | Notes                                                                                                                              |
+| --------------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Environment VPC**<br />`vpc`                            | `rvn-aws-network`                                    | Was built into each environment. Now a standalone module referenced by other modules.                                              |
+| **Web server**<br />`web` or `fargate`                    | `rvn-ecs-web` + `rvn-ecs-cluster` + `rvn-cloudfront` | Cluster and public load balancer are now standalone and can be shared by multiple services. CloudFront becomes an optional module. |
+| **Private web**<br />`web-private`                        | `rvn-ecs-web` + `rvn-ecs-cluster`                    | Cluster and private load balancer are now standalone and can be shared by multiple services.                                       |
+| **Worker**<br />`worker` or `fargate-worker`              | `rvn-ecs-worker` + `rvn-ecs-cluster`                 | Background workloads now reference the standalone cluster.                                                                         |
+| **Network server**<br />`network-server`                  | `rvn-ecs-nlb` + `rvn-ecs-cluster`                    | TCP, UDP, or TLS workloads behind a Network Load Balancer. References the standalone cluster.                                      |
+| **Private network server**<br />`network-server-private`  | `rvn-ecs-nlb` + `rvn-ecs-cluster`                    | Same network service module, with private load balancer routing.                                                                   |
+| **Static site**<br />`static`                             | `rvn-aws-static`                                     | S3-backed static sites and assets served through CloudFront.                                                                       |
+| **Lambda function**<br />`lambda-function`                | `rvn-lambda`                                         | Zip or container image deployments.                                                                                                |
+| **RDS database**<br />`rds`                               | `rvn-rds`                                            | PostgreSQL, MySQL, MariaDB, Oracle, or SQL Server.                                                                                 |
+| **ElastiCache**<br />`elasticache`                        | `rvn-elasticache`                                    | Redis, Valkey, Memcached, or serverless Redis-compatible caches.                                                                   |
+| **S3 bucket**<br />`s3`                                   | `rvn-s3`                                             | Buckets with policies, encryption, versioning, and lifecycle rules.                                                                |
+| **Job Scheduler**<br />`scheduler` or `fargate-scheduler` | Not available yet                                    | Job scheduler support is still coming.                                                                                             |
 
 ## Migrating services
 
-We plan to build but don't yet have any migration tooling or prompts. This will be coming in the following weeks.
+**Ravion can be used alongside Flightcontrol at the same time**. They both use the same Organization and memberships, but all other data is separate. So you can migrate piecemeal, service by service, instead of all at once.
+
+We plan to build but don't yet have any migration tooling or prompts. This will follow in the coming weeks.
+
+### Some features still missing as of July 3, 2026
+
+Ravion will have full feature parity with Flightcontrol, but the following are still to come:
+
+- Job scheduler
+- Preview environments
+- CloudFront module to use with ECS services
+- Managed custom domain for ECS web services
+  - Workaround is to create your own ACM certificate and set its ARN in the ECS cluster module, then add the hostname routing rule in the ECS web module.
+- Managed custom domain for static sites
+  - Workaround is to create your own ACM certificate and set its ARN in the static site module
+- Managing environment variables through Ravion
+  - Workaround is manage them in AWS console and use parameter store and secrets manager references in Ravion
+
+### Environment
+
+When you migrate an environment, create the shared foundation modules first. Most ECS migrations start with a `rvn-aws-network` module, then a `rvn-ecs-cluster` module, then one or more ECS service modules that reference that cluster.
+
+If your services need to keep running in existing infrastructure — for example, a VPC that was imported into Flightcontrol or created outside of it — you don't have to create a new network module. Anywhere a module references a VPC or other resource, you can enter the values manually instead of referencing a Ravion module.
 
 ### ECS services
 
@@ -81,26 +168,8 @@ Ravion's ECS cluster is now a standalone module that includes shared load balanc
 
 ### Static site
 
-We recommend provisioning a new static site in Ravion and then updating DNS records to migrate traffic.
+Ravion's setup supports instant deploys and rolbacks so we recommend provisioning a new static site in Ravion and then updating DNS records to migrate traffic.
 
-Because Ravion's static site supports instance deploys and instant rollbacks because the deployed version is managed by a CloudFront Key Value Store instead of requiring a CloudFront update like Flightcontrol.
+Ravion's deployed version is managed by a CloudFront Key Value Store instead of requiring a CloudFront update like Flightcontrol.
 
-### Lambda
-
-TBD
-
-### Job scheduler
-
-TBD
-
-### RDS
-
-TBD
-
-### ElastiCache
-
-TBD
-
-### S3 bucket
-
-TBD
+### Other migration guides to come
