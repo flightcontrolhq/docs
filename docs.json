@@ -46,7 +46,8 @@
           {
             "group": "Concepts",
             "pages": [
-              "concepts/containers",
+              "concepts/core-concepts",
+              "concepts/projects-and-environments",
               "concepts/modules",
               "concepts/pipelines",
               "concepts/infrastructure-as-code"

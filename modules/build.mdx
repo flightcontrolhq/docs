@@ -1,9 +1,109 @@
 ---
-title: "Module build facet"
+title: "Module builds"
 sidebarTitle: "Build"
-description: "Build container images, Lambda functions, and static assets for a Ravion module, including build commands, cache, and artifact storage."
+description: "Build a Ravion module's code — container images, static assets, or Lambda packages — with a one-line pipeline step, and feed the artifact to a deploy."
 ---
 
-The build facet covers `build:image`, `build:lambda`, and `build:static` outputs consumed by deployments.
+Modules with the build capability know how to build their own code. The module's definition carries the full build config — source repo, builder, and artifact destinations — so you build it from a pipeline with a one-line `build` step instead of copying that config into every pipeline.
 
-{/* TODO: Expand this page. */}
+Depending on the module, a build produces a **container image** (pushed to ECR), a **directory of static assets** (uploaded to S3), or a **Lambda zip package** (uploaded to S3).
+
+<Note>
+  **Builds only run through pipelines.** There is no standalone build command or dashboard button.
+  You either add a `build` step to a Ravion pipeline, or [build in an external CI
+  system](#building-outside-ravion) and hand Ravion the finished artifact at deploy time.
+</Note>
+
+## Build config is part of the module config
+
+You configure a module's build the same way you configure everything else about it: through the module instance's inputs, alongside its runtime config. There is no separate build file. For example, the `web-app` module in a [project config file](/config-as-code/project-config-file) sets its build inputs next to its port and health check:
+
+```yaml
+- givenId: web-app
+  type: rvn-ecs-web
+  version: 0.5.0
+  input:
+    # build config
+    build_type: dockerfile
+    source_repo: my-org/my-repo
+    dockerfile: Dockerfile
+    # runtime config
+    container_port: 80
+    health_check_path: /
+```
+
+## Running a build
+
+Add a `build` step to your pipeline and point it at the module instance:
+
+```yaml
+- id: build_web_app
+  type: build
+  module_instance: << pipeline.variant.id >>.web-app
+  input:
+    image_tag: << pipeline.input.commit >>
+```
+
+- `module_instance` accepts a unique ID (`mi_…`), `environment.module`, or `project.environment.module`.
+- `input` passes build-time values the module accepts, such as a tag, branch, or commit. Check the module's docs or schema (`ravion module schema <module-type>`) for what it takes.
+
+Builds run on temporary EC2 instances in your cloud account, so your source code never enters the Ravion control plane. Image builds reuse Docker layer caching from the destination registry, so repeat builds are fast.
+
+<Note>
+  Building something that isn't a module? Use the standalone `build:image` or `build:static` [CI
+  steps](/pipelines/step-types#ci-steps), which take the full build config inline.
+</Note>
+
+## Inspecting builds
+
+A build is a pipeline step execution — there's no separate build entity or command. Find it in the pipeline run:
+
+```bash
+ravion pipeline run get <pipeline-run-id>
+ravion logs pipeline-step <step-execution-id>
+```
+
+## Feeding the artifact to a deploy
+
+Every build step outputs **`build_ref`** — the canonical reference to the artifact it produced:
+
+| Build kind | `build_ref` value                  |
+| ---------- | ---------------------------------- |
+| Image      | Digest-pinned image URI            |
+| Static     | S3 directory containing the assets |
+| Lambda     | S3 key of the uploaded zip         |
+
+Pass it to the [deploy step](/modules/deploy):
+
+```yaml
+- id: deploy_web_app
+  type: deploy
+  module_instance: << pipeline.variant.id >>.web-app
+  input:
+    image_ref: << steps.build_web_app.output.build_ref >>
+```
+
+This is the whole build-to-deploy contract: the build step produces a pinned artifact reference, and the deploy step releases exactly that artifact. Type-specific outputs are also available when you need them — `image_uri`, `image_digest`, `s3_bucket`, `s3_directory`, `s3_key`, and more.
+
+## Building outside Ravion
+
+You don't have to build in Ravion at all. Module definitions typically include a prebuilt image or package option for teams that build in GitHub Actions, CircleCI, or another external system. For example, `rvn-ecs-web` supports these `build_type` values:
+
+| Build type                | What you configure on the module                                                                    | What the deploy takes as `image_ref` |
+| ------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `nixpacks` / `dockerfile` | Git repo and build settings — Ravion builds and pushes to the module's ECR repo                     | Digest from the build step           |
+| `prebuilt_image`          | The image repository (Docker Hub, GHCR, ECR, …) without a tag, plus registry credentials if private | The tag or digest to deploy          |
+
+So with an external build, the flow is: your CI builds and pushes the image, then triggers the release with the artifact reference:
+
+```bash
+ravion deploy create --module-instance-id <mi-id> \
+  --description "Release $GITHUB_SHA" \
+  --inputs '{"image_ref": "'"$IMAGE_TAG"'"}'
+```
+
+Ravion still handles the rollout, deploy history, events, and rollback — it just doesn't do the building.
+
+## For module authors
+
+How a definition declares its build config — builders (`dockerfile`, `nixpacks`), destinations, build inputs, and templating — is covered in the [module definition schema](/module-definitions/definition-schema).

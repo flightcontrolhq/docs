@@ -1,11 +1,11 @@
 A module is the core primitive in Ravion for both tracking and managing your services and supporting infrastructure.
 
-A module can optionally have one or more of the following facets:
+A module's definition determines which **capabilities** its instances have — a Terraform stack, build config, deploy manager, and so on:
 
 ```mermaid
 %%{init: {'flowchart': {'defaultRenderer': 'elk'}}}%%
 flowchart LR
-  Module[Module] -. optional .-> IaCState["<div style='width: 225px; text-align: left;'>IaC state management</div>"]
+  Module[Module] -. optional .-> IaCState["<div style='width: 225px; text-align: left;'>Stack (Terraform state)</div>"]
   Module -. optional .-> BuildConfig["<div style='width: 225px; text-align: left;'>Build config</div>"]
   Module -. optional .-> DeployManager["<div style='width: 225px; text-align: left;'>Deploy manager</div>"]
   Module -. optional .-> CertificateDomain["<div style='width: 225px; text-align: left;'>Certificate & domain manager</div>"]
@@ -27,7 +27,9 @@ flowchart LR
   click Logs "/modules/logs" "Open logs docs"
 ```
 
-For example, our **VPC Network** module has only IaC state management. But the **ECS Web Server** module has _all_ of the above facets.
+For example, our **VPC Network** module has only a stack. But the **ECS Web Server** module has _all_ of the above capabilities.
+
+For how modules relate to stacks, deploys, and pipelines, see [Core concepts](/concepts/core-concepts).
 
 By default, you have access to the Ravion standard library of module definitions. You can see the available module definitions via the _Catalog_ page in the dashboard or via the `/module-definitions` endpoint.
 

@@ -6,11 +6,13 @@ description: "Complete, validated pipeline configuration examples: sequential bu
 
 Copy these complete pipeline configs as starting points. Each example is a full config file you can apply with `ravion pipeline config apply <pipeline-id> --file <file>` — see [Pipeline config file](/config-as-code/pipeline-config-file).
 
-All examples reference module instances as `<< pipeline.variant.id >>.module-given-id`, so the variant ID must match your environment given ID. Adjust module given IDs, repos, and AWS references to match your project. For every field and step type, see the [configuration reference](/pipelines/config-reference) and [step types](/pipelines/step-types).
+A pipeline describes a workflow, not an environment — name it after what it does, like **Build & Deploy**, and reuse it across environments with [variants](/pipelines/variants). Every example references module instances as `<< pipeline.variant.id >>.module-given-id`, so with variant IDs that match your environment given IDs, the same steps deploy to whichever environment a run targets. Adjust module given IDs, repos, and AWS references to match your project. For every field and step type, see the [configuration reference](/pipelines/config-reference) and [step types](/pipelines/step-types).
 
 ## Build and deploy
 
 The simplest pipeline: build one module, then deploy it. Steps run sequentially in list order. The deploy pins the exact artifact by consuming the build's `image_digest` output.
+
+One pipeline serves both environments: running the `staging` variant deploys `staging.web-app`, and the `production` variant deploys `production.web-app` — no duplicate pipeline needed.
 
 ```yaml pipeline.yaml
 inputs:
@@ -20,6 +22,8 @@ inputs:
 variants:
   - id: production
     name: Production
+  - id: staging
+    name: Staging
 steps:
   - id: build_web_app
     name: Build web-app
@@ -34,6 +38,11 @@ steps:
     input:
       image_ref: << steps.build_web_app.output.image_digest >>
 ```
+
+<Note>
+  The remaining examples declare a single variant for brevity. Add a variant per environment the
+  same way — the steps don't change.
+</Note>
 
 ## Parallel builds, then parallel deploys
 

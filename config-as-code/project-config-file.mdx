@@ -111,7 +111,7 @@ Store the config file in your repository and manage it with the CLI.
 
   </Step>
   <Step title="Review and approve the stack run">
-    Applying a config change starts a stack change pipeline run when the affected module has a Terraform stack. The stack run creates a Terraform plan and waits for manual approval before applying, unless you pass `--autoapprove` to an apply command that supports it.
+    Applying a config change starts a [stack change pipeline run](/modules/stack#stacks-change-through-pipelines) when the affected module has a Terraform stack. The stack run creates a Terraform plan and waits for manual approval before applying, unless you pass `--autoapprove` to an apply command that supports it.
 
     After the stack run starts, inspect the run and its Terraform results with these commands:
 

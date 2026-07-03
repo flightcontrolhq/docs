@@ -57,7 +57,7 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 
 Create `.github/workflows/ravion.yml`. Define your projects and pipelines once in the top-level `env.PROJECTS` and `env.PIPELINES` lists, each entry pairing a resource's unique ID (`proj_` or `pipe_`) with the path to its config file.
 
-Set `RAVION_CLI_VERSION` to the [CLI release](/cli/releases) you want CI to use. Leave `RAVION_AUTOAPPROVE` as `"false"` to require manual approval of stack change pipeline runs in the Ravion dashboard, or set it to `"true"` to auto-approve project applies.
+Set `RAVION_CLI_VERSION` to the [CLI release](/cli/releases) you want CI to use. Leave `RAVION_AUTOAPPROVE` as `"false"` to require manual approval of [stack change pipeline runs](/modules/stack#stacks-change-through-pipelines) in the Ravion dashboard, or set it to `"true"` to auto-approve project applies.
 
 ````yaml .github/workflows/ravion.yml
 name: Ravion config

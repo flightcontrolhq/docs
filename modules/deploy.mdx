@@ -1,9 +1,87 @@
 ---
-title: "Module deploy facet"
+title: "Module deploys"
 sidebarTitle: "Deploy"
-description: "Deploy Ravion modules to ECS and static hosting with blue-green rollout, traffic shifting, health checks, and one-command rollback."
+description: "A deploy is a single release of application code to a Ravion module instance, with statuses, instance-level events, and one-command rollback."
 ---
 
-The deploy facet manages ECS and static deployments, including blue-green swaps and rollback.
+A **deploy** (deployment) is a single release of application code to one module instance. Where the [stack](/modules/stack) tracks a module's infrastructure changes, deploys track its code releases. The two are separate: a deploy never runs Terraform, and a stack change never redeploys your code.
 
-{/* TODO: Expand this page. */}
+Each deploy records:
+
+- A **description** and the **artifact inputs** it was given, such as a digest-pinned image URI.
+- A **status**: `PENDING` → `IN_PROGRESS` → `SUCCESS`, `ERROR`, or `CANCELLED` (plus `ROLLING_BACK` and `ROLLED_BACK`).
+- A **timeline of deployment events** and instance-level resource status.
+- A **snapshot of what was released** — for ECS, the full task definition — which is what rollback replays.
+
+## Deployment types
+
+The module's definition determines how a deploy rolls out:
+
+| Type           | What a deploy does                                                                                                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ECS**        | Creates a new task definition revision and rolls the service. Strategies: `rolling` (default), `blue_green`, `canary`, and `linear`, with configurable bake times and pause stages. |
+| **Kubernetes** | _Coming soon_                                                                                                                                                                       |
+| **EC2**        | _Coming soon_                                                                                                                                                                       |
+| **Lambda**     | Updates the function code and config, publishes a new version, and flips the alias to it.                                                                                           |
+| **Static**     | Promotes a new S3 directory of assets and optionally invalidates the CloudFront cache.                                                                                              |
+
+ECS deploys also support `pre_deploy` and `post_deploy` hooks — one-off tasks like database migrations that run before or after the rollout. A failed pre-deploy hook aborts the deploy.
+
+Deploys are locked per module instance, so concurrent triggers queue instead of colliding.
+
+## How deploys are triggered
+
+<Steps>
+  <Step title="From a Ravion pipeline">
+    A `deploy` step passes a preceding build step's output to the module's deploy manager:
+
+    ```yaml
+    - id: deploy_web_app
+      type: deploy
+      module_instance: << pipeline.variant.id >>.web-app
+      input:
+        image_ref: << steps.build_web_app.output.image_digest >>
+    ```
+
+    The deploy records which pipeline run and step created it. See [step types](/pipelines/step-types).
+
+  </Step>
+  <Step title="From the API or CLI">
+    External CI systems like GitHub Actions build the artifact themselves, then trigger the deploy:
+
+    ```bash
+    ravion deploy create --module-instance-id <mi-id> \
+      --description "Release v1.4.2" \
+      --inputs '{"image_ref": "<digest-pinned-image-uri>"}'
+    ```
+
+  </Step>
+  <Step title="From the dashboard">
+    Trigger a deploy manually from the module instance page.
+  </Step>
+</Steps>
+
+## Watching a deploy
+
+Ravion surfaces every low-level event during a rollout — far more than a CI log line:
+
+- **Deploy phases**: provision, snapshot, pre-deploy hook, update, wait-for-healthy, post-deploy hook, activate, complete — with traffic-shift, bake, and pause sub-phases for blue-green style strategies.
+- **Resource-level status**: each ECS task's status ladder (provisioning → pending → running) and target-group health.
+- **AWS infrastructure events**: task state changes, service actions, and deployment state changes ingested from EventBridge.
+
+All of this streams live to the dashboard and is available via the API and `ravion deploy get`.
+
+## Rollback, redeploy, cancel
+
+- **Rollback** starts a _new_ deploy that replays a previous successful deploy's snapshot. List valid targets (previous successes whose images still exist in the registry), then roll back:
+
+  ```bash
+  ravion deploy rollback-candidates <deployment-id>
+  ravion deploy rollback <deployment-id-to-roll-back-to>
+  ```
+
+- **Redeploy** (`ravion deploy redeploy <id>`) starts a new deploy with the same definition as a previous one.
+- **Cancel** (`ravion deploy cancel <id>`) stops an in-progress deploy; ECS traffic-shift deploys still in their rollback window are rolled back natively by ECS.
+- **Continue** (`ravion deploy continue <id>`) resumes a deploy paused on a pause-stage hook.
+
+See the [`ravion deploy`](/cli/reference/deploy) CLI reference.
