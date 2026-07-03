@@ -4,6 +4,155 @@ sidebarTitle: "Templating"
 description: "Reference pipeline inputs, run context, and step outputs inside step configuration with Ravion's expression and templating syntax."
 ---
 
-Use template expressions such as `<< pipeline.input.x >>`, `<< steps.id.output.y >>`, and `<< trigger.payload.z >>`. Expressions resolve in DAG dependency order.
+Template expressions let you insert dynamic values into pipeline config. Wrap a dot-path expression in `<< ... >>` inside any templateable field value:
 
-{/* TODO: Expand this page. */}
+```yaml
+- id: deploy_web_app
+  type: deploy
+  module_instance: << pipeline.variant.id >>.web-app
+  input:
+    image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+Expressions are simple dot paths — there are no operators, functions, or conditionals. Each expression resolves to a value from one of the [context namespaces](#context-namespaces) below.
+
+## Syntax
+
+### Block expressions
+
+When the entire value is a single `<< ... >>` expression, the resolved value keeps its original type. This is how you pass numbers, booleans, objects, and arrays through templates:
+
+```yaml
+timeout: << pipeline.input.timeout >> # resolves to a number, e.g. 300
+if: << pipeline.input.should_deploy >> # resolves to a boolean
+```
+
+### String interpolation
+
+Mix one or more expressions with literal text. Each expression is evaluated, converted to a string, and concatenated. The result is always a string:
+
+```yaml
+name: Deploy << pipeline.input.app_name >> to << pipeline.variant.id >>
+module_instance: << pipeline.variant.id >>.web-app
+```
+
+## Context namespaces
+
+| Namespace             | Available in              | Description                                                    |
+| --------------------- | ------------------------- | -------------------------------------------------------------- |
+| `pipeline.input.*`    | steps, rollback, variants | Declared [pipeline inputs](/pipelines/config-reference#inputs) |
+| `pipeline.run.*`      | steps, rollback           | Run metadata: `id`, `description`                              |
+| `pipeline.variant.*`  | steps, rollback           | Current variant: `id`, `name`                                  |
+| `steps.{id}.output.*` | steps, rollback           | Outputs of a previous step                                     |
+| `steps.{id}.input.*`  | steps, rollback           | Inputs of a previous step                                      |
+| `step.input.*`        | current step only         | The current step's own input values                            |
+| `trigger.payload.*`   | `triggers[].run` only     | Trigger payload fields                                         |
+
+### pipeline.input
+
+References the values of inputs declared in the pipeline's `inputs` list. Input values come from, in order of precedence: hard-coded variant `input` values, values passed when the run is triggered, then the input's `default`.
+
+```yaml
+inputs:
+  - id: branch
+    type: string
+    default: main
+steps:
+  - id: build_web_app
+    type: build
+    module_instance: << pipeline.variant.id >>.web-app
+    input:
+      branch: << pipeline.input.branch >>
+```
+
+### pipeline.run and pipeline.variant
+
+Run metadata and the variant the run was started with:
+
+| Expression                       | Value                                     |
+| -------------------------------- | ----------------------------------------- |
+| `<< pipeline.run.id >>`          | Unique run ID for this pipeline execution |
+| `<< pipeline.run.description >>` | User-provided run description             |
+| `<< pipeline.variant.id >>`      | Variant identifier, e.g. `production`     |
+| `<< pipeline.variant.name >>`    | Variant display name, e.g. `Production`   |
+
+Variants plus templating are how one pipeline serves multiple environments: name your variant IDs after your environment given IDs, then reference modules as `<< pipeline.variant.id >>.web-app`. See [Pipeline variants](/pipelines/variants).
+
+### steps
+
+References the outputs and inputs of other steps. The step ID must exist in the pipeline — referencing an unknown step fails validation — and expressions resolve in DAG dependency order, so a step referencing `steps.build_web_app.output.*` runs after `build_web_app` completes.
+
+```yaml
+- id: deploy_web_app
+  type: deploy
+  module_instance: prod.web-app
+  input:
+    image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+Available outputs depend on the step type. For example, [`build` steps](/pipelines/config-reference#buildstep) output `build_ref`, `image_uri`, `image_digest`, and `status`, while [`deploy` steps](/pipelines/config-reference#deploystep) output `deployment_id`, `status`, and `success`. CI steps additionally output `exit_code`, `success`, and `duration_ms`.
+
+### trigger.payload
+
+Only available inside a trigger's `run` block, to map event data into pipeline inputs:
+
+```yaml
+triggers:
+  - id: github_push
+    type: webhook:github
+    event: push
+    repo: https://github.com/my-org/my-repo
+    filter:
+      branch: main
+    run:
+      production:
+        input:
+          branch: << trigger.payload.branch >>
+          commit: << trigger.payload.commit >>
+```
+
+| Field                              | Value                                  |
+| ---------------------------------- | -------------------------------------- |
+| `<< trigger.payload.branch >>`     | Git branch that triggered the run      |
+| `<< trigger.payload.commit >>`     | Git commit SHA                         |
+| `<< trigger.payload.ref >>`        | Git ref (branch or tag)                |
+| `<< trigger.payload.repository >>` | Repository name in `owner/repo` format |
+| `<< trigger.payload.event >>`      | Webhook event type, e.g. `push`        |
+| `<< trigger.payload.tag >>`        | Git tag name, if tag-triggered         |
+
+## Templateable fields
+
+Not every field accepts templates. Templateable fields are marked in the [pipeline configuration reference](/pipelines/config-reference). Highlights:
+
+- Common step fields: `timeout`, `if`
+- Module steps: `module_instance`, `description`, `input`
+- CI build steps: `source`, `builder` and its nested fields (`dockerfile`, `context`, `build_cmd`, ...), `environment_variables`, `debug`
+
+Fields that identify structure — like step `id`, `name`, and `type` — are not templateable.
+
+## Conditional steps with `if`
+
+The `if` field accepts a boolean literal or a full block expression that resolves to a boolean:
+
+```yaml
+- id: deploy_web_app
+  type: deploy
+  module_instance: << pipeline.variant.id >>.web-app
+  if: << pipeline.input.should_deploy >>
+  input:
+    image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+## Type rules
+
+After resolution, the value must match the field's declared type:
+
+| Field type | Accepted resolved values                   |
+| ---------- | ------------------------------------------ |
+| `string`   | strings, or any interpolated result        |
+| `number`   | numbers (whole numbers for integer fields) |
+| `boolean`  | `true` or `false`                          |
+| `object`   | maps/objects                               |
+| `array`    | arrays                                     |
+
+A mismatch — for example, a `timeout` expression resolving to a string — fails with a `template_type_mismatch` error.

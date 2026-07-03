@@ -1,0 +1,172 @@
+---
+title: "Pipeline examples"
+sidebarTitle: "Examples"
+description: "Complete, validated pipeline configuration examples: sequential build and deploy, parallel builds and deploys, CI steps alongside module builds, and one image build feeding multiple deploys."
+---
+
+Copy these complete pipeline configs as starting points. Each example is a full config file you can apply with `ravion pipeline config apply <pipeline-id> --file <file>` — see [Pipeline config file](/config-as-code/pipeline-config-file).
+
+All examples reference module instances as `<< pipeline.variant.id >>.module-given-id`, so the variant ID must match your environment given ID. Adjust module given IDs, repos, and AWS references to match your project. For every field and step type, see the [configuration reference](/pipelines/config-reference) and [step types](/pipelines/step-types).
+
+## Build and deploy
+
+The simplest pipeline: build one module, then deploy it. Steps run sequentially in list order. The deploy pins the exact artifact by consuming the build's `image_digest` output.
+
+```yaml pipeline.yaml
+inputs:
+  - id: branch
+    type: string
+    default: main
+variants:
+  - id: production
+    name: Production
+steps:
+  - id: build_web_app
+    name: Build web-app
+    type: build
+    module_instance: << pipeline.variant.id >>.web-app
+    input:
+      branch: << pipeline.input.branch >>
+  - id: deploy_web_app
+    name: Deploy web-app
+    type: deploy
+    module_instance: << pipeline.variant.id >>.web-app
+    input:
+      image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+## Parallel builds, then parallel deploys
+
+Build two modules concurrently, and once both builds succeed, deploy both concurrently. Each `parallel` block completes before the next step starts, so no deploy begins until both builds finish. The build block sets `fail_strategy: finish-all`, so if one build fails the other still runs to completion before the block fails — the default `cancel-all` would cancel it instead.
+
+```yaml pipeline.yaml
+inputs:
+  - id: branch
+    type: string
+    default: main
+variants:
+  - id: production
+    name: Production
+steps:
+  - parallel:
+      - id: build_web_app
+        name: Build web-app
+        type: build
+        module_instance: << pipeline.variant.id >>.web-app
+        input:
+          branch: << pipeline.input.branch >>
+      - id: build_worker
+        name: Build worker
+        type: build
+        module_instance: << pipeline.variant.id >>.worker
+        input:
+          branch: << pipeline.input.branch >>
+    fail_strategy: finish-all
+  - parallel:
+      - id: deploy_web_app
+        name: Deploy web-app
+        type: deploy
+        module_instance: << pipeline.variant.id >>.web-app
+        input:
+          image_ref: << steps.build_web_app.output.image_digest >>
+      - id: deploy_worker
+        name: Deploy worker
+        type: deploy
+        module_instance: << pipeline.variant.id >>.worker
+        input:
+          image_ref: << steps.build_worker.output.image_digest >>
+```
+
+## Build and test in parallel, then deploy
+
+Run the module build and a [`custom` CI step](/pipelines/step-types#custom) side by side, then deploy only after both succeed. The test step runs your commands on provisioned compute selected by the `infrastructure` block — reference a pre-configured execution environment with `execution_environment_id`, or an AWS account and region as shown here. The runner starts as a bare instance, so use `setup` actions to install tools like Node.js before your commands run.
+
+```yaml pipeline.yaml
+inputs:
+  - id: branch
+    type: string
+    default: main
+variants:
+  - id: production
+    name: Production
+steps:
+  - parallel:
+      - id: build_web_app
+        name: Build web-app
+        type: build
+        module_instance: << pipeline.variant.id >>.web-app
+        input:
+          branch: << pipeline.input.branch >>
+      - id: run_tests
+        name: Run tests
+        type: custom
+        source:
+          type: git
+          repo: https://github.com/my-org/my-repo
+          branch: << pipeline.input.branch >>
+        setup:
+          - uses: node
+            with:
+              node-version: "22"
+        commands:
+          - npm ci
+          - npm test
+        infrastructure:
+          type: ec2
+          instance_size: t3.medium
+          aws_account_id: awsacct_123
+          region: us-east-1
+  - id: deploy_web_app
+    name: Deploy web-app
+    type: deploy
+    module_instance: << pipeline.variant.id >>.web-app
+    input:
+      image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+## One image build, two deploys
+
+Build a Docker image once with a [`build:image` CI step](/pipelines/step-types#build%3Aimage), then deploy it to two module instances in parallel — for example, a web app and a worker that share the same image. The build pushes the image to ECR tagged with the `commit` input, and both deploys pin the exact pushed image by consuming the build's `image_digest` output.
+
+```yaml pipeline.yaml
+inputs:
+  - id: commit
+    type: string
+variants:
+  - id: production
+    name: Production
+steps:
+  - id: build_image
+    name: Build image
+    type: build:image
+    source:
+      type: git
+      repo: https://github.com/my-org/my-repo
+      branch: main
+    builder:
+      type: dockerfile
+    destinations:
+      - id: ecr
+        type: ecr
+        repository_arn: arn:aws:ecr:us-east-1:123456789012:repository/my-app
+        tags:
+          - << pipeline.input.commit >>
+    infrastructure:
+      type: ec2
+      instance_size: c7a.4xlarge
+      aws_account_id: prod-aws
+      region: us-east-1
+  - parallel:
+      - id: deploy_web_app
+        name: Deploy web-app
+        type: deploy
+        module_instance: << pipeline.variant.id >>.web-app
+        input:
+          image_ref: << steps.build_image.output.image_digest >>
+      - id: deploy_worker
+        name: Deploy worker
+        type: deploy
+        module_instance: << pipeline.variant.id >>.worker
+        input:
+          image_ref: << steps.build_image.output.image_digest >>
+```

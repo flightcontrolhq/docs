@@ -1,0 +1,111 @@
+---
+title: "Pipeline variants"
+sidebarTitle: "Variants"
+description: "Reuse one Ravion pipeline across production, staging, and other environments with variants, and hard-code input values per variant."
+---
+
+A variant is a named way to run a pipeline. Every pipeline run executes exactly one variant — you choose it when you start the run from the dashboard, CLI, or API, or a trigger selects it for you.
+
+Instead of maintaining a separate pipeline per environment, define the steps once and add a variant for each environment:
+
+```yaml
+variants:
+  - id: production
+    name: Production
+  - id: staging
+    name: Staging
+```
+
+## Reuse one pipeline for multiple environments
+
+Steps reference the current variant with `<< pipeline.variant.id >>` and `<< pipeline.variant.name >>` [template expressions](/pipelines/templating). Name your variant IDs after your environment given IDs, and one set of steps deploys to whichever environment the run targets:
+
+```yaml
+variants:
+  - id: production
+    name: Production
+  - id: staging
+    name: Staging
+steps:
+  - id: build_web_app
+    type: build
+    module_instance: << pipeline.variant.id >>.web-app
+  - id: deploy_web_app
+    type: deploy
+    module_instance: << pipeline.variant.id >>.web-app
+    input:
+      image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+Triggering the `production` variant resolves `module_instance` to `production.web-app`; the `staging` variant resolves it to `staging.web-app`.
+
+## Hard-code input values per variant
+
+A variant's `input` map locks specific [pipeline inputs](/pipelines/config-reference#inputs) to fixed values. Locked values cannot be overridden by triggers or at run time — attempting to override one fails validation with `variant_locked_override`.
+
+```yaml
+inputs:
+  - id: env
+    type: string
+  - id: execution_environment_id
+    type: string
+variants:
+  - id: production
+    name: Production
+    input:
+      env: production
+      execution_environment_id: prod-builders
+  - id: staging
+    name: Staging
+    input:
+      env: staging
+      execution_environment_id: staging-builders
+steps:
+  - id: test
+    type: custom
+    infrastructure:
+      execution_environment_id: << pipeline.input.execution_environment_id >>
+      type: ec2
+      instance_size: large
+    input:
+      commands:
+        - npm test
+```
+
+Use this to guarantee environment-specific settings — the production variant always runs CI steps in the `prod-builders` execution environment, no matter how the run is started.
+
+Input values resolve with this precedence:
+
+1. Variant hard-coded `input` values
+2. Values provided when the run starts — manually or from a [trigger's `run` config](/pipelines/config-reference#triggerrunvariantconfig)
+3. The input's `default`
+
+<Note>
+  Every key in a variant's `input` map must match a declared input under top-level `inputs`. If any
+  variant or trigger provides input values, the pipeline must declare explicit `inputs`.
+</Note>
+
+## Triggers select a variant
+
+A trigger's `run` map is keyed by variant ID, so one trigger can start runs for one or more variants — each with its own input values:
+
+```yaml
+triggers:
+  - id: github_push
+    type: webhook:github
+    event: push
+    repo: https://github.com/my-org/my-repo
+    filter:
+      branch: main
+    run:
+      production:
+        input:
+          branch: << trigger.payload.branch >>
+          commit: << trigger.payload.commit >>
+```
+
+Every variant ID in `run` must match a declared variant, and any required input without a default must be satisfied by the variant's hard-coded values or the trigger's `run` inputs.
+
+## Schema reference
+
+See [VariantDefinition](/pipelines/config-reference#variantdefinition) for every field.

@@ -61,8 +61,8 @@
             ]
           },
           {
-            "group": "Migration",
-            "pages": ["migration/from-flightcontrol"]
+            "group": "Migrate",
+            "pages": ["migrate/from-flightcontrol"]
           },
           {
             "group": "Modules",
@@ -80,38 +80,18 @@
             "group": "Pipelines",
             "pages": [
               "pipelines/overview",
+              "pipelines/examples",
               "pipelines/config-reference",
               "pipelines/step-types",
-              "pipelines/templating",
-              "pipelines/concurrency-and-locking",
-              "pipelines/triggers"
+              "pipelines/variants",
+              "pipelines/templating"
             ]
           },
           {
-            "group": "Terraform stacks",
+            "group": "Module definitions",
             "pages": [
-              "terraform-stacks/overview",
-              "terraform-stacks/resources",
-              "terraform-stacks/runs"
-            ]
-          },
-          {
-            "group": "Module catalog",
-            "pages": [
-              "catalog/overview",
-              "catalog/create-a-definition",
-              "catalog/definition-schema",
-              "catalog/versioning",
-              "catalog/inputs-and-config"
-            ]
-          },
-          {
-            "group": "Integrations",
-            "pages": [
-              "integrations/overview",
-              "integrations/aws",
-              "integrations/github",
-              "integrations/gitlab"
+              "module-definitions/catalog",
+              "module-definitions/definition-schema"
             ]
           }
         ]
