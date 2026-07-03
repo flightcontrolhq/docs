@@ -1,33 +1,59 @@
 ---
 title: "Simplify cloud infrastructure without sacrificing control"
 sidebarTitle: "Introduction"
-description: "Ravion lets developers and AI agents ship cloud infrastructure quickly while platform and DevOps teams retain guardrails and full control."
+description: "Ravion turns IaC into self-service building blocks: developers and AI agents ship without touching Terraform, platform teams keep full control."
 ---
 
-Use these docs to turn Terraform into reusable interfaces, provision infrastructure, deploy applications, and keep infrastructure, deployments, logs, and metrics visible from one place.
+Ravion lets developers and AI agents provision infrastructure, deploy code, and monitor services in your own cloud account — with deployments, metrics, logs, and alarms attached to the same building blocks, everything in one place.
+
+### For small teams
+
+Ship on day 1 like on a PaaS: create web services, databases, caches, and networking from the standard library of production-ready modules — no Terraform to write, no DevOps hire needed. And because it all runs in your own AWS account, there's no platform to outgrow and nothing to migrate off later.
+
+### For platform teams
+
+Ravion is a framework for internal developer platforms. It turns your existing IaC into self-service building blocks: developers and agents create, update, and monitor services without touching Terraform or pinging you, while you keep full control of the underlying modules — fork, replace, or lock down every default module and pipeline. Your IaC, your standards, packaged behind interfaces your developers actually enjoy.
+
+<Frame caption="The module canvas: a live graph of an environment, with deploy status and metrics on every module.">
+  <img
+    src="/images/module-canvas.jpg"
+    alt="Ravion module canvas showing a production environment as a connected graph: a VPC linked to RDS, an ECS cluster with live metrics, and Redis, feeding a web app that is deploying and a worker that is live."
+  />
+</Frame>
+
+Two short pages give you the full picture:
 
 <CardGroup cols={2}>
-  <Card title="Start here" icon="rocket" href="/start-here">
-    Set up Ravion for agents and give them the commands they need.
-  </Card>
-  <Card title="How it works" icon="diagram-project" href="/how-ravion-works">
-    Learn how Ravion provisions, builds, deploys, and monitors in your cloud account.
+  <Card title="How Ravion works" icon="diagram-project" href="/how-ravion-works">
+    Follow the path from connecting your AWS account to a running, monitored app.
   </Card>
   <Card title="Core concepts" icon="sitemap" href="/concepts/core-concepts">
-    How modules, stacks, deploys, and pipelines fit together.
-  </Card>
-  <Card title="Product philosophy" icon="book-open" href="/philosophy">
-    Learn why Ravion balances developer speed with DevOps control.
-  </Card>
-  <Card title="Book a demo" icon="calendar" href="https://cal.com/team/ravion/demo">
-    See how Ravion unifies every cloud, provider, and workflow.
+    The mental model in five minutes: modules, stacks, deploys, and pipelines.
   </Card>
 </CardGroup>
 
-## What Ravion helps you do
+## What you can do
 
-- Provision battle-tested IaC modules with developer and agent friendly interfaces
-- See every IaC-managed resource and its changes over time
-- Deploy any app while watching every detail in one UI
-- Monitor infrastructure, deployments, logs, and metrics from a single canvas
-- Create preview environments that are automatically provisioned and deprovisioned
+- **[Turn your Terraform into reusable modules](/module-definitions/definition-schema)** with typed inputs, so consuming a VPC or database is filling in a form, not reading HCL
+- **[Provision infrastructure](/modules/stack)** with reviewable plans, approval gates, and every resource change tracked over time
+- **[Build](/modules/build) and [deploy](/modules/deploy) any app** with blue-green rollouts, instance-level visibility, and one-command rollback
+- **[Run CI/CD pipelines](/concepts/pipelines)** securely inside your own VPC — or keep your existing CI and trigger deploys from it
+- **[Manage everything as code](/config-as-code/project-config-file)** — environments, modules, and pipelines from declarative files in your repo
+- **[Let AI agents self-serve](/start-here)** with a CLI, API, and MCP server built for safe agent workflows
+
+## Ready to start?
+
+<CardGroup cols={2}>
+  <Card title="Start here" icon="rocket" href="/start-here">
+    Connect AWS, install the CLI, and ship your first module in minutes.
+  </Card>
+  <Card
+    title="Migrate from Flightcontrol"
+    icon="arrow-right-arrow-left"
+    href="/migrate/from-flightcontrol"
+  >
+    Bring your existing projects over with a guided migration.
+  </Card>
+</CardGroup>
+
+Prefer a guided tour? [Book a demo](https://cal.com/team/ravion/demo), or read the [product philosophy](/philosophy) for why we built a framework instead of another PaaS.
