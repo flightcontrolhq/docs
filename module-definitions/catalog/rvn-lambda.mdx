@@ -8,15 +8,36 @@ description: "AWS Lambda function with zip or container image deployments, alias
 
 **Type:** `rvn-lambda` · **Latest version:** `0.2.0`
 
+## Dependencies and consumers
+
+```mermaid
+flowchart BT
+  rvn_lambda["<strong>Lambda Function</strong>"] -.-> rvn_aws_network["rvn-aws-network"]
+
+  class rvn_lambda current
+  class rvn_aws_network dependency
+
+  classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
+  classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
+  classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
+  classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
+
+  click rvn_aws_network "/module-definitions/catalog/rvn-aws-network" "Open rvn-aws-network docs"
+```
+
+_Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._
+
+## Readme
+
 AWS Lambda function with zip or container image deployments, alias-based releases, IAM, logs, and optional function URLs.
 
-## Overview
+### Overview
 
 The Lambda Function module creates an AWS Lambda function, execution role, CloudWatch log group, optional artifact bucket, and a live alias that Ravion updates during deployments. Terraform provisions the long-lived function infrastructure with either a bootstrap zip package or a bootstrap container image. Deployments publish a new function version and move the live alias.
 
 Terraform source: [flightcontrolhq/modules/compute/lambda](https://github.com/flightcontrolhq/modules/tree/rvn-lambda@0.2.0/compute/lambda)
 
-## Use cases
+### Use cases
 
 | Scenario | Lambda Function helps by... |
 | -------- | --------------------------- |
@@ -26,7 +47,7 @@ Terraform source: [flightcontrolhq/modules/compute/lambda](https://github.com/fl
 | Zip deployments | Building a package from Git and promoting it through a stable alias |
 | Container image deployments | Building or deploying Lambda-compatible images from Amazon ECR |
 
-## Build and deployment
+### Build and deployment
 
 Lambda type and package type are immutable after creation. Lambda@Edge functions must be created in us-east-1, and AWS Lambda does not support changing an existing function between zip packages and container images.
 
@@ -38,15 +59,15 @@ For container image functions, Nixpacks and Dockerfile builds produce a Lambda-c
 
 Terraform creates image package functions by pushing a small Lambda-compatible bootstrap image into a module-managed ECR repository during the same apply. For prebuilt image mode, that bootstrap image lets the function be created before the first deployment promotes the configured ECR image tag or digest.
 
-## Function configuration
+### Function configuration
 
 Runtime, handler, memory, timeout, architecture, environment variables, layers, tracing, image config, and ephemeral storage are managed by the stack. Handler, runtime, layers, code signing, SnapStart, Lambda@Edge constraints, and the code bucket apply only to zip package functions. Change these settings through a stack change so Terraform remains the source of truth for function configuration. The deploy step focuses on code promotion.
 
-## Networking and integrations
+### Networking and integrations
 
 Connect to a VPC when the function needs private subnet access to databases, caches, or internal services. Invoke permissions let AWS services or accounts call the function. Event source mappings connect queues and streams directly to the function. File systems mount EFS access points under /mnt paths.
 
-## Configuration
+### Configuration
 
 | Section | Field | Required | Default | Notes |
 | ------- | ----- | -------- | ------- | ----- |
@@ -73,7 +94,7 @@ Connect to a VPC when the function needs private subnet access to databases, cac
 | Image registry lifecycle | Scan images on push | No | true | ECR basic vulnerability scanning for the module-managed repository |
 | Terraform settings | Advanced Terraform variables | No | \{\} | Escape hatch for uncommon Terraform inputs |
 
-## Design decisions
+### Design decisions
 
 - Lambda type is immutable. Create a new Lambda module/function to migrate between Regional Lambda and CloudFront Lambda@Edge, especially when the existing function is outside us-east-1.
 - Package type is immutable. Create a new Lambda module/function to migrate between zip packages and container images.
@@ -83,7 +104,7 @@ Connect to a VPC when the function needs private subnet access to databases, cac
 - Runtime configuration stays in Terraform to avoid deploy-time configuration drift.
 - The zip code bucket is versioned, but the build output currently passes the S3 key as the primary deploy input.
 
-## Learn more
+### Learn more
 
 - [AWS Lambda developer guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
 - [Configuring Lambda functions](https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html)

@@ -8,15 +8,17 @@ description: "AWS IAM role with configurable trust relationships, managed polici
 
 **Type:** `rvn-aws-iam-role` · **Latest version:** `0.2.1`
 
+## Readme
+
 AWS IAM role with configurable trust relationships, managed policies, inline policies, permission boundaries, and optional instance profiles.
 
-## Overview
+### Overview
 
 Use this module to create an IAM role for AWS services, cross-account access, OIDC workloads, SAML federation, or EC2 instance profiles. The module builds the trust policy from structured inputs by default, attaches managed policies, and can add inline policy documents or structured inline statements.
 
 IAM roles are security-sensitive resources. Start with the narrowest trust relationship and policy permissions that work, then expand only when a workload needs additional access.
 
-## Use cases
+### Use cases
 
 | Scenario | Benefit |
 | --- | --- |
@@ -25,7 +27,7 @@ IAM roles are security-sensitive resources. Start with the narrowest trust relat
 | GitHub Actions or EKS OIDC access | Trust an OIDC provider and constrain access with token claims. |
 | EC2 instance role | Create an instance profile alongside the role for EC2 attachment. |
 
-## Trust relationships
+### Trust relationships
 
 Trusted AWS services accepts service principals such as ecs-tasks.amazonaws.com, lambda.amazonaws.com, or ec2.amazonaws.com.
 
@@ -37,7 +39,7 @@ Trusted SAML providers accepts IAM SAML provider ARNs for federated access.
 
 Custom assume role policy JSON is an escape hatch. When set, it replaces the generated trust policy from the structured trust inputs.
 
-## Permission policies
+### Permission policies
 
 Managed policy ARNs attaches existing AWS managed or customer managed policies to the role.
 
@@ -47,11 +49,11 @@ Inline policy statements builds one inline policy from structured statement entr
 
 Permission boundary ARN sets a maximum permissions boundary for the role. Use this when an organization requires roles to stay within a managed boundary policy.
 
-## Instance profiles
+### Instance profiles
 
 Enable Create instance profile when EC2 instances need to use this role. The instance profile name and path default to the role settings unless you provide specific values.
 
-## Configuration
+### Configuration
 
 | Setting | Required | Default | Notes |
 | --- | --- | --- | --- |
@@ -79,7 +81,7 @@ Enable Create instance profile when EC2 instances need to use this role. The ins
 | Terraform execution environment | No | None | Optional runner environment override. |
 | Advanced Terraform variables | No | Empty object | Escape hatch for one-off Terraform variable overrides. |
 
-## Design decisions
+### Design decisions
 
 The module definition asks for an explicit role name instead of exposing name prefixes. Stable names make downstream references and audits easier to understand.
 
@@ -87,7 +89,7 @@ Trust relationships are structured by default so common service, cross-account, 
 
 Ravion adds standard tags for ownership and traceability. User-provided Tags are merged on top for team, cost, or environment metadata.
 
-## Learn more
+### Learn more
 
 - [IAM roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html)
 - [IAM JSON policy elements](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements.html)

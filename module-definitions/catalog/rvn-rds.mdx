@@ -8,15 +8,36 @@ description: "Creates and manages an Amazon RDS database. Supports PostgreSQL, M
 
 **Type:** `rvn-rds` · **Latest version:** `0.4.1`
 
+## Dependencies and consumers
+
+```mermaid
+flowchart BT
+  rvn_rds["<strong>RDS Database</strong>"] --> rvn_aws_network["rvn-aws-network"]
+
+  class rvn_rds current
+  class rvn_aws_network dependency
+
+  classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
+  classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
+  classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
+  classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
+
+  click rvn_aws_network "/module-definitions/catalog/rvn-aws-network" "Open rvn-aws-network docs"
+```
+
+_Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._
+
+## Readme
+
 Creates and manages an Amazon RDS database. Supports PostgreSQL, MySQL, MariaDB, Oracle, and SQL Server engines.
 
-## Overview
+### Overview
 
 Use this module when an application needs a managed relational database in AWS. It provisions an RDS instance with subnet placement, security group access, backups, monitoring, optional read replicas, and CloudWatch alarms.
 
 The module supports PostgreSQL, MySQL, MariaDB, Oracle, and SQL Server engines. Aurora uses a different AWS resource model and is not configured by this module.
 
-## Use cases
+### Use cases
 
 | Scenario | Benefit |
 | --- | --- |
@@ -25,25 +46,25 @@ The module supports PostgreSQL, MySQL, MariaDB, Oracle, and SQL Server engines. 
 | Read-heavy workload | Add read replicas for supported engines. |
 | Sensitive data | Keep public access disabled, use encryption, manage credentials in Secrets Manager, and restrict ingress. |
 
-## Networking
+### Networking
 
 Select a VPC network first. Ravion maps the network's AWS account, region, VPC ID, and private subnet IDs into this module. The database subnet group uses the selected private subnets by default.
 
 Public access is disabled by default. Keep it disabled for normal application databases and allow access through security group IDs from application services or controlled CIDR blocks.
 
-## Database engine and sizing
+### Database engine and sizing
 
 Choose the engine, optional engine major version, optional engine minor version, instance class, and allocated storage. If engine major version is blank, AWS selects the latest available version for that engine.
 
 Storage type defaults to gp3. Max allocated storage controls RDS storage autoscaling; keep it at 0 to disable autoscaling. AWS supports increasing allocated storage after creation, but not reducing it in place.
 
-## Credentials and security
+### Credentials and security
 
 Manage password in Secrets Manager is enabled by default, so AWS creates and stores the master password for the database. Disable it only when you need to provide a master password yourself.
 
 Storage encryption is enabled by default. Provide a storage KMS key ARN when you need a customer-managed key for storage. IAM database authentication is shown only for MySQL and PostgreSQL.
 
-## Availability, backups, and maintenance
+### Availability, backups, and maintenance
 
 Multi-AZ creates a standby in another availability zone for failover. The single availability zone field is hidden when Multi-AZ is enabled. Read replicas are shown only for engines that support RDS read replicas and are hidden for SQL Server.
 
@@ -51,13 +72,13 @@ Automated backups default to 7 days. You can set the backup window and control f
 
 Automatic minor engine version upgrades are configured next to the engine version fields and, when enabled, happen during the configured maintenance window. Major version upgrades and immediate changes are opt-in.
 
-## Observability
+### Observability
 
 Performance insights is enabled by default with 7 days of retention. Enhanced monitoring can be enabled by setting a monitoring interval.
 
 CloudWatch alarms are optional. When enabled, the module can alarm on CPU utilization, free storage space, and database connections. The free storage alarm threshold is entered in GiB in Ravion and converted to bytes for Terraform. The Ravion UI also shows RDS CloudWatch metrics for CPU, free storage, connections, read IOPS, and write IOPS.
 
-## Configuration
+### Configuration
 
 | Field | Required | Default | Notes |
 | --- | --- | --- | --- |
@@ -84,19 +105,19 @@ CloudWatch alarms are optional. When enabled, the module can alarm on CPU utiliz
 | Free storage alarm threshold | No | 5 GiB | Converted to bytes before Terraform runs. |
 | Tags | No | Blank | Merged with Ravion standard tags. |
 
-## Advanced configuration
+### Advanced configuration
 
 Use parameter group settings for engine parameters. Oracle settings and SQL Server settings are shown in separate engine-specific sections. Option group settings are shown only for Oracle and SQL Server engines; blue/green updates are shown only for MySQL and MariaDB. Use advanced Terraform variables for one-off overrides not represented directly in the UI. Values in advanced Terraform variables override generated variables.
 
 Terraform settings let you override the OpenTofu version, Terraform execution environment inherited from the VPC network, and Ravion state backend workspace name.
 
-## Design decisions
+### Design decisions
 
 RDS instances are placed in private subnets by default through the VPC network reference. Secrets Manager password management, encryption at rest, performance insights, and deletion protection default on because they are safer defaults for long-lived databases.
 
 The module keeps primary database choices visible and tucks optional engine, engine-specific, storage, backup, monitoring, maintenance, parameter group, and option group details behind collapsible controls. Source repository and stack plumbing remain managed by Ravion.
 
-## Learn more
+### Learn more
 
 - [Amazon RDS documentation](https://docs.aws.amazon.com/rds/)
 - [RDS DB instance classes](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html)

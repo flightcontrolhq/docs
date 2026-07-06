@@ -8,9 +8,37 @@ description: "Creates and manages an Amazon EFS file system with mount targets, 
 
 **Type:** `rvn-efs` · **Latest version:** `0.1.0`
 
+## Dependencies and consumers
+
+```mermaid
+flowchart BT
+  rvn_ecs_nlb["rvn-ecs-nlb"] -.-> rvn_efs["<strong>EFS File System</strong>"]
+  rvn_ecs_web["rvn-ecs-web"] -.-> rvn_efs
+  rvn_ecs_worker["rvn-ecs-worker"] -.-> rvn_efs
+  rvn_efs --> rvn_aws_network["rvn-aws-network"]
+
+  class rvn_efs current
+  class rvn_aws_network dependency
+  class rvn_ecs_nlb,rvn_ecs_web,rvn_ecs_worker consumer
+
+  classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
+  classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
+  classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
+  classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
+
+  click rvn_ecs_nlb "/module-definitions/catalog/rvn-ecs-nlb" "Open rvn-ecs-nlb docs"
+  click rvn_ecs_web "/module-definitions/catalog/rvn-ecs-web" "Open rvn-ecs-web docs"
+  click rvn_ecs_worker "/module-definitions/catalog/rvn-ecs-worker" "Open rvn-ecs-worker docs"
+  click rvn_aws_network "/module-definitions/catalog/rvn-aws-network" "Open rvn-aws-network docs"
+```
+
+_Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._
+
+## Readme
+
 Amazon EFS file system with mount targets, security groups, automatic backups, and an optional access point.
 
-## Overview
+### Overview
 
 Use this module to create an encrypted Amazon EFS file system inside a VPC. Select a VPC network and Ravion provisions the file system, one mount target per private subnet, a mount-target security group, a client security group for consumers, an automatic backup policy, and optionally an access point with fixed POSIX ownership.
 
@@ -18,7 +46,7 @@ ECS services can reference this module directly: the service mounts the file sys
 
 Terraform source: [flightcontrolhq/modules/storage/efs](https://github.com/flightcontrolhq/modules/tree/rvn-efs@0.1.0/storage/efs)
 
-## Use cases
+### Use cases
 
 | Scenario | Benefit |
 | --- | --- |
@@ -27,7 +55,7 @@ Terraform source: [flightcontrolhq/modules/storage/efs](https://github.com/fligh
 | Multi-service shared storage | Several services mount the same file system through their own mount points. |
 | Cost-optimized cold data | Lifecycle policies move idle files to Infrequent Access or Archive storage. |
 
-## Security model
+### Security model
 
 The module creates two security groups:
 
@@ -36,7 +64,7 @@ The module creates two security groups:
 
 This keeps NFS access closed by default and means no security group changes are needed when consumers are added or removed.
 
-## File system settings
+### File system settings
 
 Encryption at rest is enabled by default and cannot be changed after creation. Leave KMS key ARN blank to use the AWS managed key.
 
@@ -46,19 +74,19 @@ Encryption at rest is enabled by default and cannot be changed after creation. L
 | Throughput mode | Bursting | Elastic scales with demand; Provisioned gives fixed throughput. |
 | Provisioned throughput | 128 MiB/s | Applies only to the provisioned throughput mode. |
 
-## Lifecycle and backups
+### Lifecycle and backups
 
 Lifecycle policies reduce storage cost for files that are not accessed frequently. Transition to Infrequent Access moves idle files to cheaper storage; Transition to Archive requires an Infrequent Access period and suits rarely-read data; Transition back to Standard returns a file to primary storage on first access.
 
 Automatic backups through AWS Backup are enabled by default.
 
-## Access point
+### Access point
 
 Enable the access point when clients should be scoped to one directory with fixed POSIX ownership instead of the file system root. EFS creates the root directory path with the configured user ID, group ID, and permissions on first use. All requests through the access point act as that POSIX user.
 
 ECS services that reference this file system mount through the access point automatically when it is enabled.
 
-## Configuration
+### Configuration
 
 | Field | Required | Default | Description |
 | --- | --- | --- | --- |
@@ -86,14 +114,14 @@ ECS services that reference this file system mount through the access point auto
 
 *Conditionally required based on the selected throughput mode or access point setting.
 
-## Design decisions
+### Design decisions
 
 - Mount targets are created in the private subnets of the selected VPC network. EFS is internal storage; it is never exposed publicly.
 - The client security group pattern keeps the mount-target security group static. Consumers gain access by attaching the client group, not by editing ingress rules.
 - Encryption at rest defaults to on because it cannot be enabled later without recreating the file system.
 - A single optional access point covers the common case of scoping an application to one directory. Additional access points can be managed outside this module.
 
-## Learn more
+### Learn more
 
 - [Amazon EFS documentation](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html)
 - [EFS performance and throughput modes](https://docs.aws.amazon.com/efs/latest/ug/performance.html)

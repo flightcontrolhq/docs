@@ -1,0 +1,49 @@
+{/* Prompt-style card that opens the Mintlify assistant and submits the question.
+    Uses the `?assistant=<message>` URL parameter, which only works on preview
+    and production deployments (not local dev). */}
+
+export const AskAssistant = ({ question, children }) => {
+  const message =
+    question ?? (typeof children === "string" ? children : "");
+  const search = `?assistant=${encodeURIComponent(message)}`;
+  return (
+  <a
+    href={search}
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.assign(`${window.location.pathname}${search}`);
+    }}
+    className="group not-prose block rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.03] px-5 py-4 my-5 no-underline hover:border-orange-400 dark:hover:border-orange-400/60 transition-colors"
+  >
+    <div className="flex gap-3.5">
+      <span className="flex-none flex items-center h-6 text-orange-500">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+          <path d="M20 3v4" />
+          <path d="M22 5h-4" />
+        </svg>
+      </span>
+      <span className="flex min-w-0 flex-col gap-2">
+        <span className="block text-sm leading-6 text-gray-700 dark:text-gray-300">
+          {children ?? question}
+        </span>
+        <span className="block text-xs font-medium leading-4 text-orange-500 dark:text-orange-400 group-hover:text-orange-600 dark:group-hover:text-orange-300 transition-colors">
+          Ask the assistant →
+        </span>
+      </span>
+    </div>
+  </a>
+  );
+};

@@ -8,9 +8,37 @@ description: "Network Load Balanced ECS service for running TCP, UDP, or TLS wor
 
 **Type:** `rvn-ecs-nlb` · **Latest version:** `0.1.4`
 
+## Dependencies and consumers
+
+```mermaid
+flowchart BT
+  rvn_ecs_nlb["<strong>ECS Network Service</strong>"] --> rvn_ecs_cluster["rvn-ecs-cluster"]
+  rvn_ecs_nlb -.-> rvn_efs["rvn-efs"]
+  rvn_ecs_cluster --> rvn_aws_network["rvn-aws-network"]
+  rvn_efs --> rvn_aws_network
+
+  class rvn_ecs_nlb current
+  class rvn_ecs_cluster,rvn_efs dependency
+  class rvn_aws_network upstream
+
+  classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
+  classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
+  classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
+  classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
+  linkStyle 2,3 stroke:#CBD5E1,color:#94A3B8
+
+  click rvn_ecs_cluster "/module-definitions/catalog/rvn-ecs-cluster" "Open rvn-ecs-cluster docs"
+  click rvn_efs "/module-definitions/catalog/rvn-efs" "Open rvn-efs docs"
+  click rvn_aws_network "/module-definitions/catalog/rvn-aws-network" "Open rvn-aws-network docs"
+```
+
+_Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._
+
+## Readme
+
 Network Load Balanced ECS service for running TCP, UDP, or TLS workloads behind an ECS cluster Network Load Balancer.
 
-## Overview
+### Overview
 
 The ECS Network Service module creates an ECS service in an existing Ravion ECS cluster and attaches it to a public or private Network Load Balancer. Select an ECS cluster, choose how the container image is built or supplied, configure the NLB listener and target group health checks, and Ravion provisions the service, target groups, listener, IAM roles, security group, ECR repository when needed, and autoscaling settings.
 
@@ -18,7 +46,7 @@ The module is intentionally focused on Layer 4 services behind a Network Load Ba
 
 Terraform source: [flightcontrolhq/modules/compute/ecs_service](https://github.com/flightcontrolhq/modules/tree/rvn-ecs-nlb@0.1.4/compute/ecs_service)
 
-## Use cases
+### Use cases
 
 | Scenario                         | ECS Network Service helps by...                                  |
 | -------------------------------- | --------------------------------------------------------------- |
@@ -31,7 +59,7 @@ Terraform source: [flightcontrolhq/modules/compute/ecs_service](https://github.c
 | Tuning production capacity       | Combining Fargate, Fargate Spot, or EC2 with autoscaling        |
 | Running release tasks            | Running pre-deploy or post-deploy ECS tasks with the app image  |
 
-## Cluster and networking
+### Cluster and networking
 
 An ECS cluster is required. The cluster reference supplies the cluster ARN, VPC ID, public and private subnet IDs, Network Load Balancer ARNs, NLB security groups, capacity provider names, AWS account, region, and execution environment.
 
@@ -41,7 +69,7 @@ Use Run in private subnets for most production services. Private subnets keep ta
 
 NLB ingress CIDRs controls which IPv4 CIDR blocks can reach the public listener. It defaults to `0.0.0.0/0`. Private NLB ingress CIDRs applies when Public network service is off and defaults to the RFC 1918 private ranges: `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`.
 
-## Build and image options
+### Build and image options
 
 | Build type                   | When to use it                                                   |
 | ---------------------------- | ---------------------------------------------------------------- |
@@ -53,7 +81,7 @@ For Nixpacks and Dockerfile builds, provide Git repository, Git branch, and opti
 
 For Prebuilt image from registry, provide the image repository without the tag. At deploy time, provide the tag to use. Use Registry credentials secret ARN for private registries that require ECS repository credentials. Use Start command to override the image default CMD when the prebuilt image needs a different service command.
 
-## Listener and target group
+### Listener and target group
 
 The service always creates an NLB listener and target group on the selected cluster Network Load Balancer. Configure Listener port for the port clients connect to and Container port for the port the app listens on inside the ECS task. Ravion also sets the `PORT` runtime environment variable from Container port.
 
@@ -67,7 +95,7 @@ TLS listeners require TLS certificate ARN. TLS SSL policy defaults to `ELBSecuri
 
 Source IP stickiness is off by default. Enable it when repeat traffic from the same source IP should stay on the same task when possible.
 
-## Health checks
+### Health checks
 
 Health checks default to TCP, which is the safest default for generic Layer 4 workloads. Use HTTP or HTTPS only when the container exposes an HTTP-compatible health endpoint.
 
@@ -85,7 +113,7 @@ Health checks default to TCP, which is the safest default for generic Layer 4 wo
 
 Increase the grace period for services with slow startup. Lower the deregistration delay only when fast replacement is more important than giving existing connections time to drain.
 
-## Capacity and runtime
+### Capacity and runtime
 
 Choose one primary Capacity provider:
 
@@ -101,7 +129,7 @@ For Fargate and Fargate Spot, App size defaults to 2 vCPU and 4 GB memory. App e
 
 CPU architecture defaults to x86_64 for broad compatibility. Choose ARM64 only when the image and native dependencies support it.
 
-## Autoscaling
+### Autoscaling
 
 Autoscaling is enabled by default with one minimum task and three maximum tasks. For production, start with at least two minimum tasks when availability matters. When autoscaling is disabled, Desired tasks controls how many tasks the ECS service keeps running.
 
@@ -119,7 +147,7 @@ Autoscaling is enabled by default with one minimum task and three maximum tasks.
 
 Scheduled scaling actions and custom metric scaling policies are available for advanced capacity patterns.
 
-## Application configuration
+### Application configuration
 
 Use Runtime environment variables for plain container environment values. Ravion also sets PORT from Container port.
 
@@ -127,13 +155,13 @@ Use Runtime secrets for sensitive values. Secrets are injected into the ECS task
 
 Use Build environment variables for values needed during image builds. Values can be plain strings or references loaded from Parameter Store or Secrets Manager. For Dockerfile builds, enable Inject environment variables in Dockerfile to pass those values as Docker build arguments.
 
-## Persistent storage
+### Persistent storage
 
 Enable the EFS file system setting, select a Ravion EFS module, and set the EFS mount path. Ravion adds the task volume, mounts it into the app container, attaches the file system's client security group to the service so NFS traffic is allowed, and mounts through the file system's access point when one is enabled. Sidecars mount the same file system through their Mount points setting with `efs` as the source volume.
 
 EFS volumes work with Fargate and EC2 Linux tasks and keep data across task replacement. Transit encryption is enabled by default. Enable EFS IAM authorization to authorize file system access with the task role; the task role must allow elasticfilesystem:ClientMount, plus elasticfilesystem:ClientWrite or elasticfilesystem:ClientRootAccess as needed.
 
-## Deployment
+### Deployment
 
 Deployment strategy defaults to Rolling. Blue/green, Linear, and Canary use the native ECS traffic-shift controller with production and alternate target groups. The deployment strategy can change between deploys without changing Terraform infrastructure.
 
@@ -150,13 +178,13 @@ Run pre-deploy command and Run post-deploy command start optional one-off ECS ta
 
 Use pre-deploy commands for work that must complete before the service updates, such as database migrations. Use post-deploy commands for work that should happen after a successful deployment, such as cache warming. Commands are ECS command argument arrays. For shell behavior, use `/bin/sh`, `-lc`, and your shell command as separate arguments.
 
-## Logging and observability
+### Logging and observability
 
 CloudWatch logging is enabled by default and appears in the Logs tab. Enable FireLens log routing when app logs should also go to destinations such as Datadog, Splunk, Firehose, OpenSearch, or S3. Keep CloudWatch output enabled unless logs should go exclusively to an external destination.
 
 The Metrics tab includes common ECS service metrics plus Network Load Balancer target group health metrics for healthy and unhealthy hosts.
 
-## Configuration
+### Configuration
 
 | Field                            | Required | Default                  | Description                                      |
 | -------------------------------- | -------- | ------------------------ | ------------------------------------------------ |
@@ -207,7 +235,7 @@ The Metrics tab includes common ECS service metrics plus Network Load Balancer t
 
 *Conditionally required based on the selected listener protocol, health check protocol, build type, autoscaling mode, or capacity provider.
 
-## Design decisions
+### Design decisions
 
 - The module always models a Layer 4 service behind a Network Load Balancer. HTTP host and path routing are intentionally outside this module definition.
 - The listener is created by the service stack on the selected public or private cluster NLB, so each ECS Network Service owns its listener port.
@@ -217,7 +245,7 @@ The Metrics tab includes common ECS service metrics plus Network Load Balancer t
 - Desired count uses the autoscaling minimum when autoscaling is enabled and the Desired tasks input when autoscaling is disabled.
 - Advanced Terraform variables exist for exceptional lower-level overrides. Prefer the typed Ravion fields whenever possible.
 
-## Learn more
+### Learn more
 
 - [Amazon ECS services](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html)
 - [Network Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html)

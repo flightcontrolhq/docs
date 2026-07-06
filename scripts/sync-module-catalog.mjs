@@ -47,6 +47,24 @@ function escapeMdx(markdown) {
   return out.join("\n");
 }
 
+// Demote ATX headings by one level (## -> ###) so readme content nests under
+// the page's own "## Readme" heading. Skips fenced code blocks.
+function demoteHeadings(markdown) {
+  const lines = markdown.split("\n");
+  let inFence = false;
+  return lines
+    .map((line) => {
+      const trimmed = line.trimStart();
+      if (trimmed.startsWith("```") || trimmed.startsWith("~~~")) {
+        inFence = !inFence;
+        return line;
+      }
+      if (inFence) return line;
+      return line.replace(/^(#{1,5})(\s)/, "#$1$2");
+    })
+    .join("\n");
+}
+
 function inlineCode(value) {
   const str = typeof value === "string" ? value : JSON.stringify(value);
   if (str === "") return "`\"\"`";
@@ -151,7 +169,154 @@ function yamlString(value) {
   return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
-function renderPage(definition, version) {
+// --- Module relationship graph ---------------------------------------------
+// Dependencies between standard-library modules are encoded as inputs whose
+// type is "$ref:<module-type>". We collect those (including refs nested in
+// item_inputs) to build a graph of dependencies and downstream consumers.
+
+function collectModuleRefs(inputs, refs = [], nested = false) {
+  for (const input of inputs ?? []) {
+    if (typeof input?.type === "string" && input.type.startsWith("$ref:")) {
+      refs.push({
+        target: input.type.slice("$ref:".length),
+        inputId: input.id,
+        // Refs nested inside list items or gated behind show_when are not
+        // unconditionally required, so treat them as optional edges.
+        optional: nested || !input.required || Boolean(input.show_when),
+      });
+    }
+    if (Array.isArray(input?.item_inputs)) {
+      collectModuleRefs(input.item_inputs, refs, true);
+    }
+  }
+  return refs;
+}
+
+function buildRelationGraph(definitions, versionsByType) {
+  const graph = new Map();
+  for (const d of definitions) {
+    graph.set(d.type, {deps: new Map(), consumers: new Map()});
+  }
+  for (const d of definitions) {
+    const inputs = versionsByType.get(d.type)?.config?.inputs;
+    for (const ref of collectModuleRefs(inputs)) {
+      const deps = graph.get(d.type).deps;
+      const existing = deps.get(ref.target);
+      // Prefer the required edge if the same target is referenced twice.
+      if (!existing || (existing.optional && !ref.optional)) {
+        deps.set(ref.target, ref);
+      }
+    }
+  }
+  for (const [type, node] of graph) {
+    for (const [target, ref] of node.deps) {
+      graph.get(target)?.consumers.set(type, ref);
+    }
+  }
+  return graph;
+}
+
+function mermaidId(type) {
+  return type.replace(/[^A-Za-z0-9]/g, "_");
+}
+
+function renderRelationsDiagram(type, graph, currentLabel = type) {
+  const node = graph.get(type);
+  const deps = node?.deps ?? new Map();
+  const consumers = node?.consumers ?? new Map();
+  if (deps.size === 0 && consumers.size === 0) return null;
+
+  const edges = [];
+  const depNodes = new Set();
+  const consumerNodes = new Set();
+  const fadedNodes = new Set();
+
+  for (const [consumer, ref] of [...consumers].sort(([a], [b]) => a.localeCompare(b))) {
+    edges.push({from: consumer, to: type, optional: ref.optional, faded: false});
+    consumerNodes.add(consumer);
+  }
+  for (const [target, ref] of deps) {
+    edges.push({from: type, to: target, optional: ref.optional, faded: false});
+    depNodes.add(target);
+  }
+
+  // Upstream dependencies of dependencies, rendered faded.
+  const queue = [...deps.keys()];
+  const expanded = new Set([type, ...deps.keys()]);
+  while (queue.length > 0) {
+    const current = queue.shift();
+    for (const [target, ref] of graph.get(current)?.deps ?? new Map()) {
+      edges.push({from: current, to: target, optional: ref.optional, faded: true});
+      if (!depNodes.has(target) && !consumerNodes.has(target) && target !== type) {
+        fadedNodes.add(target);
+      }
+      if (!expanded.has(target)) {
+        expanded.add(target);
+        queue.push(target);
+      }
+    }
+  }
+
+  const lines = ["```mermaid", "flowchart BT"];
+  const declared = new Set();
+  const declare = (t) => {
+    if (declared.has(t)) return mermaidId(t);
+    declared.add(t);
+    const label = t === type ? `<strong>${currentLabel}</strong>` : t;
+    return `${mermaidId(t)}["${label.replace(/"/g, "#quot;")}"]`;
+  };
+
+  const fadedEdgeIndexes = [];
+  edges.forEach((edge, i) => {
+    const arrow = edge.optional ? "-.->" : "-->";
+    lines.push(`  ${declare(edge.from)} ${arrow} ${declare(edge.to)}`);
+    if (edge.faded) fadedEdgeIndexes.push(i);
+  });
+
+  lines.push("");
+  lines.push(`  class ${mermaidId(type)} current`);
+  if (depNodes.size > 0) {
+    lines.push(`  class ${[...depNodes].map(mermaidId).join(",")} dependency`);
+  }
+  if (consumerNodes.size > 0) {
+    lines.push(`  class ${[...consumerNodes].map(mermaidId).join(",")} consumer`);
+  }
+  if (fadedNodes.size > 0) {
+    lines.push(`  class ${[...fadedNodes].map(mermaidId).join(",")} upstream`);
+  }
+
+  lines.push("");
+  lines.push("  classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764");
+  lines.push("  classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9");
+  lines.push("  classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563");
+  lines.push("  classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8");
+  if (fadedEdgeIndexes.length > 0) {
+    lines.push(`  linkStyle ${fadedEdgeIndexes.join(",")} stroke:#CBD5E1,color:#94A3B8`);
+  }
+
+  lines.push("");
+  for (const t of new Set([...consumerNodes, ...depNodes, ...fadedNodes])) {
+    if (!graph.has(t)) continue;
+    lines.push(`  click ${mermaidId(t)} "/module-definitions/catalog/${t}" "Open ${t} docs"`);
+  }
+
+  lines.push("```");
+  return {diagram: lines.join("\n"), hasFaded: fadedNodes.size > 0};
+}
+
+function renderRelationsSection(definition, graph) {
+  const rendered = renderRelationsDiagram(definition.type, graph, definition.name);
+  if (!rendered) return null;
+  return [
+    "## Dependencies and consumers",
+    "",
+    rendered.diagram,
+    "",
+    "_Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._",
+  ].join("\n");
+}
+
+function renderPage(definition, version, graph) {
   const config = version.config ?? {};
   const readme = (config.readme ?? "").trim();
   const inputs = Array.isArray(config.inputs) ? config.inputs : [];
@@ -171,8 +336,13 @@ function renderPage(definition, version) {
 
   const sections = [frontmatter, "", banner, "", meta];
 
+  const relations = renderRelationsSection(definition, graph);
+  if (relations) {
+    sections.push("", relations);
+  }
+
   if (readme) {
-    sections.push("", escapeMdx(readme));
+    sections.push("", "## Readme", "", escapeMdx(demoteHeadings(readme)));
   }
 
   if (inputs.length > 0) {
@@ -238,10 +408,21 @@ mkdirSync(targetDir, {recursive: true});
 const generatedFiles = new Set();
 const pageSlugs = [];
 
+// Fetch every version first so the relationship graph can span the whole
+// catalog before any page renders.
+const versionsByType = new Map();
 for (const definition of definitions) {
-  const version = ravion(["module", "version", "get", definition.latestVersionId, "--json"]);
+  versionsByType.set(
+    definition.type,
+    ravion(["module", "version", "get", definition.latestVersionId, "--json"]),
+  );
+}
+const relationGraph = buildRelationGraph(definitions, versionsByType);
+
+for (const definition of definitions) {
+  const version = versionsByType.get(definition.type);
   const fileName = `${definition.type}.mdx`;
-  writeFileSync(path.join(targetDir, fileName), renderPage(definition, version));
+  writeFileSync(path.join(targetDir, fileName), renderPage(definition, version, relationGraph));
   generatedFiles.add(fileName);
   pageSlugs.push(`module-definitions/catalog/${definition.type}`);
   console.log(`generated ${fileName} (v${definition.latestVersion})`);

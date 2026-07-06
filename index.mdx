@@ -4,15 +4,27 @@ sidebarTitle: "Overview"
 description: "Ravion turns IaC into self-service building blocks: developers and AI agents ship without touching Terraform, platform teams keep full control."
 ---
 
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
+
 Ravion lets developers and AI agents provision infrastructure, deploy code, and monitor services in your own cloud account — with deployments, metrics, logs, and alarms attached to the same building blocks, everything in one place.
 
 ### For small teams
 
 Ship on day 1 like on a PaaS: create web services, databases, caches, and networking from the [standard library](/module-definitions/standard-library) of production-ready modules — no Terraform to write, no DevOps hire needed. And because it all runs in your own AWS account, there's no platform to outgrow and nothing to migrate off later.
 
+<AskAssistant question="How does Ravion work for a small team without DevOps, and what does it give me over a PaaS like Heroku or Vercel?">
+  "How does Ravion work for a small team without DevOps, and what does it give
+  me over a PaaS like Heroku or Vercel?"
+</AskAssistant>
+
 ### For platform teams
 
 Ravion is a framework for internal developer platforms. It turns your existing IaC into self-service building blocks: developers and agents create, update, and monitor services without touching Terraform or pinging you, while you keep full control of the underlying modules — fork, replace, or lock down every default module and pipeline. Your IaC, your standards, packaged behind interfaces your developers actually enjoy.
+
+<AskAssistant question="How does Ravion turn my existing Terraform into self-service building blocks, and how does my platform team keep control?">
+  "How does Ravion turn my existing Terraform into self-service building
+  blocks, and how does my platform team keep control?"
+</AskAssistant>
 
 <Frame caption="The module canvas: a live graph of an environment, with deploy status and metrics on every module.">
   <img

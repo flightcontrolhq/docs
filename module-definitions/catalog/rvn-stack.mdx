@@ -8,9 +8,11 @@ description: "Automate Terraform and OpenTofu workflows with git-driven deployme
 
 **Type:** `rvn-stack` · **Latest version:** `1.2.1`
 
+## Readme
+
 Automate Terraform and OpenTofu workflows with git-driven deployments and managed state.
 
-## Overview
+### Overview
 
 A Stack represents a single Terraform or OpenTofu project connected to a git repository. Ravion monitors your repository for changes and automatically executes infrastructure workflows when code is pushed or pull requests are opened.
 
@@ -20,7 +22,7 @@ Stacks provide:
 - **Manual execution** for ad-hoc plans, applies, and destroys on the primary branch
 - **Managed state backend** (optional) replacing external state configuration
 
-## Use cases
+### Use cases
 
 | Scenario                         | Stack helps by...                                 |
 | -------------------------------- | ------------------------------------------------- |
@@ -30,9 +32,9 @@ Stacks provide:
 | Team collaboration               | Centralizing execution with audit trails          |
 | Drift detection                  | Running manual plans to compare state vs. reality |
 
-## Workflow types
+### Workflow types
 
-### Git-triggered workflows
+#### Git-triggered workflows
 
 Ravion automatically responds to repository events:
 
@@ -44,7 +46,7 @@ Ravion automatically responds to repository events:
 
 **Watch paths** control which file changes trigger workflows. By default, any file change (`**/*`) triggers a run. Configure specific paths or patterns to limit triggers to relevant files.
 
-### Manual workflows
+#### Manual workflows
 
 Execute workflows on-demand from the Ravion dashboard or API:
 
@@ -54,7 +56,7 @@ Execute workflows on-demand from the Ravion dashboard or API:
 | Apply   | Execute the most recent plan                     |
 | Destroy | Remove all resources managed by this stack       |
 
-## Pipeline integration
+### Pipeline integration
 
 Stacks execute using your organization's **default pipelines**. Pipelines are configured separately and define:
 
@@ -65,7 +67,7 @@ Stacks execute using your organization's **default pipelines**. Pipelines are co
 
 When you create a Stack, it automatically inherits the default change pipeline (for plan/apply) and destroy pipeline. This ensures consistent workflow behavior across all stacks in your organization.
 
-## Configuration
+### Configuration
 
 | Source Code Fields          | Required | Description                                            |
 | -------------- | -------- | ------------------------------------------------------ |
@@ -85,18 +87,18 @@ When you create a Stack, it automatically inherits the default change pipeline (
 | Version              | Specific tool version to use                                             |
 | Ravion state backend | Enable managed state storage (overrides any backend config in your code) |
 
-## State management
+### State management
 
 Terraform and OpenTofu track infrastructure in a state file. Ravion offers two options:
 
 - **Managed state (default):** Ravion stores and manages your state file. No external backend configuration needed. State is versioned and securely stored.
 - **Self-managed state:** Disable the Ravion backend and configure your own (S3, GCS, Azure Storage, etc.) in your Terraform configuration.
 
-## Terraform vs OpenTofu
+### Terraform vs OpenTofu
 
 **OpenTofu is recommended.** In 2023, HashiCorp changed Terraform's license from open-source to BSL. The open-source Terraform versions are limited to \< 1.6.0. OpenTofu is the community fork that continues active development under a true open-source license (MPL 2.0).
 
-## Learn more
+### Learn more
 
 [Curated list of Terraform resources and learning material](https://github.com/shuaibiyy/awesome-tf)
 

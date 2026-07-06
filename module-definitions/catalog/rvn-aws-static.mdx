@@ -8,9 +8,11 @@ description: "Static file hosting for S3-backed sites and assets delivered throu
 
 **Type:** `rvn-aws-static` · **Latest version:** `0.1.4`
 
+## Readme
+
 Static file hosting for S3-backed sites and assets delivered through CloudFront.
 
-## Overview
+### Overview
 
 The Static Hosting module creates an AWS S3 hosting bucket, a CloudFront distribution, CloudFront KeyValueStore version routing, and the supporting edge functions needed to serve versioned static files.
 
@@ -20,7 +22,7 @@ Every deployment is versioned. The deploy step promotes an S3 directory by updat
 
 Terraform source: [flightcontrolhq/modules/hosting/static_site](https://github.com/flightcontrolhq/modules/tree/rvn-aws-static@0.1.4/hosting/static_site)
 
-## Use cases
+### Use cases
 
 | Scenario | Static Hosting helps by... |
 | --- | --- |
@@ -32,7 +34,7 @@ Terraform source: [flightcontrolhq/modules/hosting/static_site](https://github.c
 | Tuning cache behavior | Managing HTML and asset Cache-Control headers separately |
 | Auditing access | Enabling CloudFront access logs with automatic log bucket creation |
 
-## Hosting and routing
+### Hosting and routing
 
 Choose an AWS account and Region for the S3 bucket. CloudFront and the CloudFront KeyValueStore are global services and use us-east-1 behind the scenes; the Region field controls the hosting bucket region.
 
@@ -47,7 +49,7 @@ Routing mode controls how viewer paths resolve inside the active version prefix.
 
 Default root object defaults to index.html. Default version prefix defaults to main and is used before any deploy has promoted a different active version.
 
-## Build options
+### Build options
 
 | Build type | When to use it |
 | --- | --- |
@@ -63,7 +65,7 @@ Docker settings let you choose the Dockerfile path and Docker build context. Inj
 
 Build environment variables are available to static builds and can be plain values or references loaded from Parameter Store or Secrets Manager.
 
-## CloudFront distribution
+### CloudFront distribution
 
 The module exposes one CloudFront distribution. Domain aliases are optional. Leave them empty to use the default cloudfront.net domain. If you set domain aliases, provide an ACM certificate ARN from us-east-1.
 
@@ -73,7 +75,7 @@ Price class controls the CloudFront edge location footprint. PriceClass_All uses
 
 Geo restriction can be none, whitelist, or blacklist. When whitelist or blacklist is selected, provide ISO country codes in Geo restriction country codes.
 
-## Cache and headers
+### Cache and headers
 
 Manage Cache-Control headers is enabled by default. When enabled, the module attaches a CloudFront Function that sets different browser cache headers for HTML-like responses and static assets.
 
@@ -88,13 +90,13 @@ Manage Cache-Control headers is enabled by default. When enabled, the module att
 
 Use Response headers policy ID to attach an existing CloudFront response headers policy. Use Managed response headers policy when this module should create one for security headers, CORS, custom headers, or removed headers. Avoid putting Cache-Control into a response headers policy unless you intentionally want to override the cache-control function.
 
-## Access logging
+### Access logging
 
 CloudFront access logging is off by default. When enabled, the module automatically creates a logging bucket and stores CloudFront access logs there.
 
 Logging retention days defaults to 90 and controls how long logs are retained in the automatically created logging bucket.
 
-## Deploy behavior
+### Deploy behavior
 
 The deploy step uses an S3 directory value. For Ravion builds, use the directory produced by the build/upload flow. For Disabled builds, enter the existing S3 prefix that already contains the files to promote.
 
@@ -102,7 +104,7 @@ CloudFront invalidation paths defaults to /*. This invalidates the full distribu
 
 Successful deploys to retain defaults to 20. Older deploy directories are pruned from the hosting bucket based on this setting.
 
-## Builder config
+### Builder config
 
 Builder config is only used for Nixpacks and Dockerfile builds.
 
@@ -115,7 +117,7 @@ Builder config is only used for Nixpacks and Dockerfile builds.
 
 EC2 Spot can reduce build cost, but builds may wait longer or be interrupted. Start with the default builder size, then adjust based on build resource usage.
 
-## Configuration
+### Configuration
 
 | Section | Field | Required | Default | Notes |
 | --- | --- | --- | --- | --- |
@@ -144,7 +146,7 @@ EC2 Spot can reduce build cost, but builds may wait longer or be interrupted. St
 | Terraform settings | Advanced Terraform variables | No | \{\} | Escape hatch for uncommon Terraform inputs |
 | Terraform settings | Tags | No | none | Additional tags; Ravion also adds standard ownership tags |
 
-## Design decisions
+### Design decisions
 
 The module exposes one CloudFront distribution instead of the full Terraform distributions map. This keeps the Ravion form focused on the common case while still supporting custom domains and certificate configuration.
 
@@ -154,7 +156,7 @@ Access logging automatically creates its logging bucket when enabled. This avoid
 
 CloudFront and KVS behavior is intentionally versioned. Promotions change which S3 prefix is active rather than overwriting files in place.
 
-## Learn more
+### Learn more
 
 - [Amazon CloudFront documentation](https://docs.aws.amazon.com/cloudfront/)
 - [CloudFront KeyValueStore](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/kvs-with-functions.html)

@@ -8,9 +8,37 @@ description: "Production-ready AWS ECS cluster with Fargate, Fargate Spot, optio
 
 **Type:** `rvn-ecs-cluster` · **Latest version:** `0.2.1`
 
+## Dependencies and consumers
+
+```mermaid
+flowchart BT
+  rvn_ecs_nlb["rvn-ecs-nlb"] --> rvn_ecs_cluster["<strong>ECS Cluster</strong>"]
+  rvn_ecs_web["rvn-ecs-web"] --> rvn_ecs_cluster
+  rvn_ecs_worker["rvn-ecs-worker"] --> rvn_ecs_cluster
+  rvn_ecs_cluster --> rvn_aws_network["rvn-aws-network"]
+
+  class rvn_ecs_cluster current
+  class rvn_aws_network dependency
+  class rvn_ecs_nlb,rvn_ecs_web,rvn_ecs_worker consumer
+
+  classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
+  classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
+  classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
+  classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
+
+  click rvn_ecs_nlb "/module-definitions/catalog/rvn-ecs-nlb" "Open rvn-ecs-nlb docs"
+  click rvn_ecs_web "/module-definitions/catalog/rvn-ecs-web" "Open rvn-ecs-web docs"
+  click rvn_ecs_worker "/module-definitions/catalog/rvn-ecs-worker" "Open rvn-ecs-worker docs"
+  click rvn_aws_network "/module-definitions/catalog/rvn-aws-network" "Open rvn-aws-network docs"
+```
+
+_Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._
+
+## Readme
+
 Production-ready AWS ECS cluster with Fargate, Fargate Spot, optional EC2 capacity, and shared load balancers.
 
-## Overview
+### Overview
 
 Amazon ECS (Elastic Container Service) runs containerized workloads on AWS. This module creates an ECS cluster inside your selected VPC and configures the capacity providers and shared load balancers that services can use.
 
@@ -24,7 +52,7 @@ The ECS cluster module provides:
 
 Terraform source: [flightcontrolhq/modules/compute/ecs_cluster](https://github.com/flightcontrolhq/modules/tree/rvn-ecs-cluster@0.2.1/compute/ecs_cluster)
 
-## Use cases
+### Use cases
 
 | Scenario                       | ECS cluster helps by...                                          |
 | ------------------------------ | ---------------------------------------------------------------- |
@@ -35,25 +63,25 @@ Terraform source: [flightcontrolhq/modules/compute/ecs_cluster](https://github.c
 | Operating production workloads | Enabling Container Insights metrics for tasks, services, and EC2 |
 | Supporting custom runtimes     | Adding EC2 capacity when workloads need host-level control       |
 
-## Capacity providers
+### Capacity providers
 
-### Fargate
+#### Fargate
 
 Fargate runs containers without managing EC2 instances. It is the simplest option for most web apps, APIs, workers, and scheduled tasks.
 
-### Fargate Spot
+#### Fargate Spot
 
 Fargate Spot uses spare AWS capacity at a lower cost. It is best for interruptible workloads such as queues, batch jobs, background workers, and services that can tolerate replacement tasks.
 
-### EC2 capacity
+#### EC2 capacity
 
 EC2 capacity creates an Auto Scaling Group and ECS capacity provider for tasks that need host-level control, custom AMIs, SSH access, special networking, or lower long-running compute costs.
 
 Select an **EC2 instance type** to enable EC2 capacity. Leave it blank for a Fargate-only cluster.
 
-## Load balancers
+### Load balancers
 
-### Public application load balancer
+#### Public application load balancer
 
 Creates an internet-facing Application Load Balancer for services that should receive public HTTP or HTTPS traffic, such as websites, public APIs, and webhook endpoints.
 
@@ -64,7 +92,7 @@ Use the public ALB for:
 - Webhooks
 - HTTP/HTTPS traffic with host or path routing
 
-### Private application load balancer
+#### Private application load balancer
 
 Creates an internal Application Load Balancer for services reachable only inside the VPC or private network, such as internal APIs, admin tools, and service-to-service traffic.
 
@@ -75,11 +103,11 @@ Use the private ALB for:
 - Backend services
 - Private HTTP/HTTPS routing
 
-### Network load balancers
+#### Network load balancers
 
 Use Network Load Balancers for TCP/UDP workloads, static IP requirements, very high-throughput connections, or protocols that do not need HTTP routing. For normal web apps and HTTP APIs, prefer an Application Load Balancer.
 
-## Observability
+### Observability
 
 Container Insights collects ECS cluster, service, and task CPU, memory, network, and storage metrics in CloudWatch. The module dashboard includes:
 
@@ -92,7 +120,7 @@ Container Insights collects ECS cluster, service, and task CPU, memory, network,
 
 Metrics appear only after tasks are running in the cluster. EC2-specific charts appear only when EC2 capacity exists and the required Container Insights instance metrics are available.
 
-## Configuration
+### Configuration
 
 | Field                 | Required | Default              | Description                                                   |
 | --------------------- | -------- | -------------------- | ------------------------------------------------------------- |
@@ -108,7 +136,7 @@ Metrics appear only after tasks are running in the cluster. EC2-specific charts 
 | Private NLB           | No       | `false`              | Create an internal Network Load Balancer                      |
 | Tags                  | No       | Environment, Project | Custom tags applied to all resources                          |
 
-## EC2 capacity settings
+### EC2 capacity settings
 
 | Field                           | Description                                             |
 | ------------------------------- | ------------------------------------------------------- |
@@ -122,7 +150,7 @@ Metrics appear only after tasks are running in the cluster. EC2-specific charts 
 | Key pair name                   | EC2 key pair for SSH access                             |
 | Managed scaling target capacity | Spare capacity target for ECS managed scaling           |
 
-## Design decisions
+### Design decisions
 
 This ECS cluster follows AWS ECS production patterns:
 
@@ -134,7 +162,7 @@ This ECS cluster follows AWS ECS production patterns:
 - **Private ingress by default:** Private ALBs use Terraform's default RFC1918 private CIDR ranges unless overridden
 - **Container Insights enabled:** Production metrics are collected by default for operational visibility
 
-## Learn more
+### Learn more
 
 **Amazon ECS**
 

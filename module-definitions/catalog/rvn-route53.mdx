@@ -8,9 +8,11 @@ description: "Manage Route 53 hosted zones, DNS records, query logging, and DNSS
 
 **Type:** `rvn-route53` · **Latest version:** `0.2.0`
 
+## Readme
+
 Manage Route 53 hosted zones, DNS records, query logging, and DNSSEC.
 
-## Overview
+### Overview
 
 Use this module to create a Route 53 public or private hosted zone, manage DNS records in a created or existing zone, and optionally enable query logging or DNSSEC signing.
 
@@ -18,7 +20,7 @@ A hosted zone is Route 53's term for the DNS zone and name-server setup for a do
 
 The module supports standard records, alias records for AWS targets, and advanced Route 53 routing policies such as weighted, failover, latency, geolocation, and multivalue answer routing.
 
-## Use cases
+### Use cases
 
 | Scenario | Benefit |
 | --- | --- |
@@ -28,13 +30,13 @@ The module supports standard records, alias records for AWS targets, and advance
 | Private service discovery | Create a private hosted zone associated with one or more VPCs. |
 | Advanced traffic routing | Use Route 53 routing policies for weighted, failover, latency, geolocation, or multivalue records. |
 
-## Hosted zone mode
+### Hosted zone mode
 
 Enable Create hosted zone to create a new public or private hosted zone. In practical terms, this creates the Route 53-managed DNS zone that provides the name servers for your domain. Public zones return AWS name servers that you can delegate from your registrar or parent zone. Private zones require at least one VPC association.
 
 Disable Create hosted zone when the zone already exists and you only want this stack to manage records in it. In that mode, provide Hosted zone ID.
 
-## DNS records
+### DNS records
 
 DNS records are configured as structured entries. Terraform derives each resource key from the record name, type, and optional set identifier. Each record includes a record name, record type, and either standard record values with a TTL or an alias target.
 
@@ -42,17 +44,17 @@ Standard records use TTL seconds and Record values. CNAME and SOA records use a 
 
 Routing policy is optional. Use Set identifier for records that share the same name and type with weighted, failover, latency, or geolocation routing.
 
-## Query logging
+### Query logging
 
 Query logging streams Route 53 DNS query logs for public hosted zones to CloudWatch Logs. By default, the module creates the log group and resource policy in us-east-1, which is where Route 53 requires query logging destinations and permissions.
 
 Disable Create query log group only when you want to reuse an existing us-east-1 CloudWatch Logs log group. In that mode, provide Query log group ARN. The module still creates the resource policy that allows Route 53 to create log streams and write log events.
 
-## DNSSEC
+### DNSSEC
 
 DNSSEC signing is supported for public hosted zones and requires a customer-managed KMS key in us-east-1 with a key policy that allows Route 53 DNSSEC signing. After enabling DNSSEC, publish the DS record from the stack output in the parent zone or registrar.
 
-## Configuration
+### Configuration
 
 | Setting | Required | Default | Notes |
 | --- | --- | --- | --- |
@@ -80,7 +82,7 @@ DNSSEC signing is supported for public hosted zones and requires a customer-mana
 | Terraform execution environment | No | None | Optional runner environment override. |
 | Advanced Terraform variables | No | Empty object | Escape hatch for one-off Terraform variable overrides. |
 
-## Design decisions
+### Design decisions
 
 Hosted zone identity inputs are immutable because changing them can move records between zones or create a different zone. Operational settings such as records, query logging, DNSSEC status, and tags remain editable.
 
@@ -88,7 +90,7 @@ Route 53 hosted zones are global resources. The Region input controls where the 
 
 Ravion adds standard tags for ownership and traceability. User-provided Tags are merged on top for team, cost, or environment metadata.
 
-## Learn more
+### Learn more
 
 - [Route 53 hosted zones](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html)
 - [Route 53 resource record sets](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/rrsets-working-with.html)

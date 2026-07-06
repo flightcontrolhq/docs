@@ -8,13 +8,15 @@ description: "S3 bucket with public access blocking, encryption, versioning, lif
 
 **Type:** `rvn-s3` · **Latest version:** `0.1.1`
 
+## Readme
+
 S3 bucket with public access blocking, encryption, versioning, lifecycle rules, and configurable bucket policies.
 
-## Overview
+### Overview
 
 Use this module to create an Amazon S3 bucket with secure defaults and common operational controls exposed in Ravion. The module blocks public access by default, enables server-side encryption, and can manage versioning, lifecycle rules, and bucket policy statements.
 
-## Use cases
+### Use cases
 
 | Scenario | Benefit |
 | --- | --- |
@@ -23,17 +25,17 @@ Use this module to create an Amazon S3 bucket with secure defaults and common op
 | Compliance retention | Enable versioning and lifecycle rules for noncurrent versions. |
 | Custom integrations | Attach custom bucket policy statements while preserving public access block settings. |
 
-## Security defaults
+### Security defaults
 
 Public access block settings are enabled by default: Block public ACLs, Block public policies, Ignore public ACLs, and Restrict public buckets. Leave these enabled for private application buckets and log buckets unless you have a specific public bucket design.
 
 The bucket uses SSE-S3 AES256 encryption by default. Set KMS key ID to use SSE-KMS. Bucket key remains enabled by default for SSE-KMS to reduce KMS request volume.
 
-## Lifecycle rules
+### Lifecycle rules
 
 Lifecycle rules can expire current objects, expire noncurrent versions, transition current or noncurrent versions to colder storage classes, and abort incomplete multipart uploads. The lifecycle rule form covers the common one-transition-per-rule cases. Advanced lifecycle rules accept the Terraform lifecycle rule shape, including id, enabled, prefix, tags, expiration, noncurrent_version_expiration, transitions, noncurrent_version_transitions, and abort_incomplete_multipart_upload_days.
 
-## Bucket policies
+### Bucket policies
 
 Policy templates add statements for common AWS service integrations:
 
@@ -46,7 +48,7 @@ Policy templates add statements for common AWS service integrations:
 
 Custom policy JSON can be provided for additional statements. When templates and custom policy are both set, the module merges their statements into one bucket policy.
 
-## Configuration
+### Configuration
 
 | Setting | Required | Default | Notes |
 | --- | --- | --- | --- |
@@ -66,7 +68,7 @@ Custom policy JSON can be provided for additional statements. When templates and
 | Advanced Terraform variables | No | Empty object | Escape hatch for one-off Terraform variable overrides. |
 | Ravion Terraform workspace name | No | Generated from project, environment, module, and stack IDs | Override only when you need a specific backend workspace name. |
 
-## Design decisions
+### Design decisions
 
 The module defaults to private, encrypted buckets. Public access settings are exposed because some AWS integrations need carefully scoped policies, but the secure defaults should remain enabled for most buckets.
 
@@ -74,7 +76,7 @@ Bucket policy creation is inferred from selected policy templates or Custom poli
 
 Ravion adds standard tags for ownership and traceability. User-provided Tags are merged on top for team, cost, or environment metadata.
 
-## Learn more
+### Learn more
 
 - [Amazon S3 bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html)
 - [Blocking public access to your Amazon S3 storage](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html)

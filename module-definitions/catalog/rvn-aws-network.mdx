@@ -8,9 +8,38 @@ description: "Production-ready AWS VPC with public and private subnets, NAT gate
 
 **Type:** `rvn-aws-network` · **Latest version:** `0.2.2`
 
+## Dependencies and consumers
+
+```mermaid
+flowchart BT
+  rvn_ecs_cluster["rvn-ecs-cluster"] --> rvn_aws_network["<strong>VPC Network</strong>"]
+  rvn_efs["rvn-efs"] --> rvn_aws_network
+  rvn_elasticache["rvn-elasticache"] --> rvn_aws_network
+  rvn_lambda["rvn-lambda"] -.-> rvn_aws_network
+  rvn_rds["rvn-rds"] --> rvn_aws_network
+
+  class rvn_aws_network current
+  class rvn_ecs_cluster,rvn_efs,rvn_elasticache,rvn_lambda,rvn_rds consumer
+
+  classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
+  classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
+  classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
+  classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
+
+  click rvn_ecs_cluster "/module-definitions/catalog/rvn-ecs-cluster" "Open rvn-ecs-cluster docs"
+  click rvn_efs "/module-definitions/catalog/rvn-efs" "Open rvn-efs docs"
+  click rvn_elasticache "/module-definitions/catalog/rvn-elasticache" "Open rvn-elasticache docs"
+  click rvn_lambda "/module-definitions/catalog/rvn-lambda" "Open rvn-lambda docs"
+  click rvn_rds "/module-definitions/catalog/rvn-rds" "Open rvn-rds docs"
+```
+
+_Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._
+
+## Readme
+
 Production-ready AWS VPC with public and private subnets, NAT gateways, and compliance-ready flow logs.
 
-## Overview
+### Overview
 
 A VPC (Virtual Private Cloud) is the foundational networking layer for your AWS infrastructure. This module creates an isolated virtual network with public and private subnets spanning multiple availability zones, giving you complete control over your networking environment.
 
@@ -23,7 +52,7 @@ The VPC module provides:
 
  Terraform source: [flightcontrolhq/modules/networking/vpc](https://github.com/flightcontrolhq/modules/tree/rvn-aws-network@0.2.2/networking/vpc)
 
-## Use cases
+### Use cases
 
 | Scenario                     | VPC helps by...                                            |
 | ---------------------------- | ---------------------------------------------------------- |
@@ -34,9 +63,9 @@ The VPC module provides:
 | Multi-region architecture    | Peering VPCs across regions for low-latency communication  |
 | Partner IP allowlisting      | Using stable NAT Gateway IPs with pre-allocated EIPs       |
 
-## Subnet types
+### Subnet types
 
-### Public subnets
+#### Public subnets
 
 Public subnets have direct internet access via a free Internet Gateway. Resources in public subnets do not receive public IP addresses automatically; attach public IPs explicitly when needed. Use these for:
 
@@ -44,7 +73,7 @@ Public subnets have direct internet access via a free Internet Gateway. Resource
 - Bastion hosts
 - NAT Gateways
 
-### Private subnets
+#### Private subnets
 
 Private subnets have no direct internet access. Outbound traffic routes through NAT Gateway(s) when enabled. Use these for:
 
@@ -53,7 +82,7 @@ Private subnets have no direct internet access. Outbound traffic routes through 
 - ElastiCache clusters
 - Lambda functions with VPC access
 
-## NAT Gateway
+### NAT Gateway
 
 NAT Gateway gives your private subnets two things:
 
@@ -66,13 +95,13 @@ NAT Gateway gives your private subnets two things:
 | Single (default)  | One NAT Gateway serves all availability zones        | ~$32/mo |
 | High availability | One NAT Gateway per AZ, avoids cross-AZ data charges | ~$96/mo |
 
-### Keeping your IP stable
+#### Keeping your IP stable
 
 By default, the module creates a new Elastic IP for each NAT Gateway. If you ever reprovision the VPC, that IP changes.
 
 To keep the same IP permanently, create your Elastic IPs separately and pass in the allocation IDs. This way, even if you destroy and recreate the entire VPC, your NAT Gateway will use the same public IP — no need to update partner allowlists or firewall rules.
 
-## Configuration
+### Configuration
 
 | Field                          | Required | Default              | Description                                                            |
 | ------------------------------ | -------- | -------------------- | ---------------------------------------------------------------------- |
@@ -87,7 +116,7 @@ To keep the same IP permanently, create your Elastic IPs separately and pass in 
 | Flow Logs                      | No       | `false`              | Enable VPC Flow Logs (required for SOC 2)                              |
 | Tags                           | No       | Environment, Project | Custom tags applied to all resources                                   |
 
-## VPC Peering
+### VPC Peering
 
 Connect this VPC to existing VPCs for private communication without traversing the internet. Peering supports:
 
@@ -103,7 +132,7 @@ Connect this VPC to existing VPCs for private communication without traversing t
 | Add to Public/Private Routes | Whether to add routes in this VPC's route tables                      |
 | Peer Route Table IDs         | Route tables in the peer VPC to add return routes (same-account only) |
 
-## SOC 2 compliance
+### SOC 2 compliance
 
 Enable **Flow Logs** to capture network traffic metadata for security auditing. Flow logs record:
 
@@ -114,7 +143,7 @@ Enable **Flow Logs** to capture network traffic metadata for security auditing. 
 
 Logs are stored in CloudWatch Logs with configurable retention. This satisfies SOC 2 requirements for network traffic monitoring and audit trails.
 
-## Design decisions
+### Design decisions
 
 This VPC follows [AWS VPC best practices](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-best-practices.html):
 
@@ -124,7 +153,7 @@ This VPC follows [AWS VPC best practices](https://docs.aws.amazon.com/vpc/latest
 - **Single route table for public:** All public subnets share one route table with an Internet Gateway route
 - **Per-AZ route tables when HA NAT:** Each private subnet gets its own route table pointing to the NAT in its AZ
 
-## Learn more
+### Learn more
 
 **AWS VPC**
 

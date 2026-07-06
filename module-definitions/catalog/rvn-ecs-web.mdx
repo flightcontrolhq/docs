@@ -8,9 +8,37 @@ description: "Web server ECS service for running an HTTP application behind an E
 
 **Type:** `rvn-ecs-web` · **Latest version:** `0.7.4`
 
+## Dependencies and consumers
+
+```mermaid
+flowchart BT
+  rvn_ecs_web["<strong>ECS Web Service</strong>"] --> rvn_ecs_cluster["rvn-ecs-cluster"]
+  rvn_ecs_web -.-> rvn_efs["rvn-efs"]
+  rvn_ecs_cluster --> rvn_aws_network["rvn-aws-network"]
+  rvn_efs --> rvn_aws_network
+
+  class rvn_ecs_web current
+  class rvn_ecs_cluster,rvn_efs dependency
+  class rvn_aws_network upstream
+
+  classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
+  classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
+  classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
+  classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
+  linkStyle 2,3 stroke:#CBD5E1,color:#94A3B8
+
+  click rvn_ecs_cluster "/module-definitions/catalog/rvn-ecs-cluster" "Open rvn-ecs-cluster docs"
+  click rvn_efs "/module-definitions/catalog/rvn-efs" "Open rvn-efs docs"
+  click rvn_aws_network "/module-definitions/catalog/rvn-aws-network" "Open rvn-aws-network docs"
+```
+
+_Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._
+
+## Readme
+
 Web server ECS service for running an HTTP application behind an ECS cluster load balancer.
 
-## Overview
+### Overview
 
 The ECS Web Server module creates an ECS service for HTTP traffic in an existing Ravion ECS cluster. Select an ECS cluster, choose how the container image is built or supplied, configure routing and health checks, and Ravion provisions the service, target group, listener rule, IAM roles, security group, ECR repository when needed, and autoscaling settings.
 
@@ -18,7 +46,7 @@ The module is intentionally focused on web services behind an Application Load B
 
 Terraform source: [flightcontrolhq/modules/compute/ecs_service](https://github.com/flightcontrolhq/modules/tree/rvn-ecs-web@0.7.4/compute/ecs_service)
 
-## Use cases
+### Use cases
 
 | Scenario                         | ECS Web Server helps by...                                      |
 | -------------------------------- | --------------------------------------------------------------- |
@@ -30,7 +58,7 @@ Terraform source: [flightcontrolhq/modules/compute/ecs_service](https://github.c
 | Running release tasks            | Running pre-deploy or post-deploy ECS tasks with the app image   |
 | Debugging running tasks          | Enabling ECS Exec when shell access is needed                    |
 
-## Cluster and networking
+### Cluster and networking
 
 An ECS cluster is required. The cluster reference supplies the cluster ARN, VPC ID, public and private subnet IDs, load balancer listeners, load balancer security groups, capacity provider names, AWS account, region, and execution environment.
 
@@ -38,7 +66,7 @@ Use Public web service when the service should be reachable through the public A
 
 Use Run in private subnets for most production services. Private subnets keep tasks off the public internet and route outbound traffic through NAT or equivalent egress. Turning it off runs tasks in public subnets and assigns public IPs.
 
-## Build and image options
+### Build and image options
 
 | Build type      | When to use it                                                    |
 | --------------- | ----------------------------------------------------------------- |
@@ -51,7 +79,7 @@ For Nixpacks and Dockerfile builds, provide Git repository, Git branch, and opti
 
 For Prebuilt image from registry, provide the image repository without the tag. At deploy time, provide the tag to use. Use Registry credentials secret ARN for private registries that require ECS repository credentials. Use Start command to override the image default CMD when the prebuilt image needs a different service command.
 
-## Routing and health checks
+### Routing and health checks
 
 The service always attaches to an Application Load Balancer target group. Route traffic with Domain host rules, Path rules, or both.
 
@@ -72,7 +100,7 @@ Health check settings control when the load balancer considers tasks healthy:
 
 Increase the grace period for apps with slow boot times. Keep health check endpoints lightweight and unauthenticated.
 
-## Capacity and runtime
+### Capacity and runtime
 
 Choose one primary Capacity provider:
 
@@ -88,7 +116,7 @@ For Fargate and Fargate Spot, App size defaults to 2 vCPU and 4 GB memory. App e
 
 CPU architecture defaults to x86_64 for broad compatibility. Choose ARM64 only when the image and native dependencies support it.
 
-## Autoscaling
+### Autoscaling
 
 Autoscaling is enabled by default with one minimum task and three maximum tasks. For production, start with at least two minimum tasks when availability matters. When autoscaling is disabled, Desired tasks controls how many web tasks the ECS service keeps running.
 
@@ -104,7 +132,7 @@ Autoscaling is enabled by default with one minimum task and three maximum tasks.
 | Scale-out cooldown (secs)| 300     | Delay before another scale-out action          |
 | Scale-in disabled        | false   | Prevents autoscaling from reducing task count  |
 
-## Application configuration
+### Application configuration
 
 Use Runtime environment variables for plain container environment values. Ravion also sets PORT from Container port.
 
@@ -112,13 +140,13 @@ Use Runtime secrets for sensitive values. Secrets are injected into the ECS task
 
 Use Build environment variables for values needed during image builds. Values can be plain strings or references loaded from Parameter Store or Secrets Manager. For Dockerfile builds, enable Inject environment variables in Dockerfile to pass those values as Docker build arguments.
 
-## Persistent storage
+### Persistent storage
 
 Enable the EFS file system setting, select a Ravion EFS module, and set the EFS mount path. Ravion adds the task volume, mounts it into the app container, attaches the file system's client security group to the service so NFS traffic is allowed, and mounts through the file system's access point when one is enabled. Sidecars mount the same file system through their Mount points setting with `efs` as the source volume.
 
 EFS volumes work with Fargate and EC2 Linux tasks and keep data across task replacement. Transit encryption is enabled by default. Enable EFS IAM authorization to authorize file system access with the task role; the task role must allow elasticfilesystem:ClientMount, plus elasticfilesystem:ClientWrite or elasticfilesystem:ClientRootAccess as needed.
 
-## Deployment
+### Deployment
 
 Deployment strategy defaults to Rolling. Blue/green, Linear, and Canary use the native ECS traffic-shift controller with production and alternate target groups. The deployment strategy can change between deploys without changing Terraform infrastructure.
 
@@ -138,7 +166,7 @@ Use pre-deploy commands for work that must complete before the service updates, 
 
 Hook-specific environment variables are appended to the app container override for the one-off task. Optional hook CPU, memory, ephemeral storage, and timeout settings let release tasks use different resources from the web service without changing the steady-state app task.
 
-## Standby validation traffic
+### Standby validation traffic
 
 For Blue/green, Linear, and Canary deployments, Ravion creates a test listener rule on the same Application Load Balancer listener as the production rule. During the test traffic stage, requests that match the service's normal Domain host rules and Path rules and include the standby selector route to the standby, or green, task set on the alternate target group.
 
@@ -175,7 +203,7 @@ To use an HTTP header instead of a query parameter:
 
 Then send requests with `X-Ravion-Test: 1`. A service can use either the query-string selector or the header selector, not both at once.
 
-## Sticky sessions and traffic shifts
+### Sticky sessions and traffic shifts
 
 The module definition sets Sticky sessions to true by default. When that setting is enabled, Ravion configures target-group stickiness for the service's production and alternate target groups, so the load balancer keeps repeat requests on the same task when possible. With the default Load balancer cookie stickiness type, the target-level cookie is `AWSALB`; AWS may also set `AWSALBCORS` for CORS support. With Application cookie stickiness, the target-level cookie is the configured Application cookie name, and AWS may also set `AWSALBAPP-*` cookies.
 
@@ -185,7 +213,7 @@ The ALB group stickiness cookie is `AWSALBTG`. For CORS requests, AWS may also s
 
 To clear stickiness for a browser, open the browser developer tools, go to Application or Storage > Cookies for the service domain, and delete the relevant cookies: `AWSALBTG` and `AWSALBTGCORS` for ALB group stickiness; `AWSALB` and `AWSALBCORS` for the default target-level stickiness; and the configured Application cookie name plus any `AWSALBAPP-*` cookies when Application cookie stickiness is selected. For API clients, remove those cookie names from the cookie jar or stop sending them in the `Cookie` header. The next request can then enter the current traffic split like a new client. If Sticky sessions is turned off, Ravion does not enable target-group stickiness or ALB group stickiness for this behavior.
 
-## Builder settings
+### Builder settings
 
 Builder settings apply to Nixpacks and Dockerfile builds.
 
@@ -198,7 +226,7 @@ Builder settings apply to Nixpacks and Dockerfile builds.
 
 Start with the default builder size, then adjust based on build duration and resource usage.
 
-## Configuration
+### Configuration
 
 | Field                           | Required | Default                    | Description                                        |
 | ------------------------------- | -------- | -------------------------- | -------------------------------------------------- |
@@ -250,7 +278,7 @@ Start with the default builder size, then adjust based on build duration and res
 
 *Conditionally required based on the selected build type or capacity provider.
 
-## Design decisions
+### Design decisions
 
 - The module always models an HTTP web service behind an Application Load Balancer. NLB, worker, and service discovery patterns are intentionally outside this module definition.
 - Tasks default to private subnets even for public web services. The ALB is public; the tasks remain private when the VPC has NAT or equivalent egress.
@@ -258,7 +286,7 @@ Start with the default builder size, then adjust based on build duration and res
 - Desired count uses the autoscaling minimum when autoscaling is enabled and the Desired tasks input when autoscaling is disabled.
 - Advanced Terraform variables exist for exceptional lower-level overrides. Prefer the typed Ravion fields whenever possible.
 
-## Learn more
+### Learn more
 
 - [Amazon ECS services](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html)
 - [Application Load Balancer listener rules](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-update-rules.html)
