@@ -1,9 +1,9 @@
 name: Sync module catalog
 
 on:
-  schedule:
-    # Nightly at 06:15 UTC
-    - cron: "15 6 * * *"
+  repository_dispatch:
+    types:
+      - module-catalog-published
   workflow_dispatch:
 
 permissions:
