@@ -29,7 +29,12 @@
         "groups": [
           {
             "group": "Introduction",
-            "pages": ["start-here", "how-ravion-works", "philosophy", "contact-support"]
+            "pages": [
+              "start-here",
+              "how-ravion-works",
+              "philosophy",
+              "contact-support"
+            ]
           },
           {
             "group": "Use cases",
@@ -63,7 +68,9 @@
           },
           {
             "group": "Migrate",
-            "pages": ["migrate/from-flightcontrol"]
+            "pages": [
+              "migrate/from-flightcontrol"
+            ]
           },
           {
             "group": "Modules",
@@ -74,7 +81,28 @@
               "modules/deploy",
               "modules/metrics",
               "modules/logs",
-              "modules/links"
+              "modules/links",
+              {
+                "group": "Standard library",
+                "root": "module-definitions/standard-library",
+                "pages": [
+                  "module-definitions/catalog/rvn-acm-certificate",
+                  "module-definitions/catalog/rvn-aws-iam-role",
+                  "module-definitions/catalog/rvn-aws-network",
+                  "module-definitions/catalog/rvn-aws-static",
+                  "module-definitions/catalog/rvn-ecs-cluster",
+                  "module-definitions/catalog/rvn-ecs-nlb",
+                  "module-definitions/catalog/rvn-ecs-web",
+                  "module-definitions/catalog/rvn-ecs-worker",
+                  "module-definitions/catalog/rvn-efs",
+                  "module-definitions/catalog/rvn-elasticache",
+                  "module-definitions/catalog/rvn-lambda",
+                  "module-definitions/catalog/rvn-rds",
+                  "module-definitions/catalog/rvn-route53",
+                  "module-definitions/catalog/rvn-s3",
+                  "module-definitions/catalog/rvn-stack"
+                ]
+              }
             ]
           },
           {
@@ -102,7 +130,12 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": ["cli/overview", "cli/installation", "cli/authentication", "cli/releases"]
+            "pages": [
+              "cli/overview",
+              "cli/installation",
+              "cli/authentication",
+              "cli/releases"
+            ]
           },
           {
             "group": "Command reference",
@@ -146,7 +179,9 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": ["mcp/overview"]
+            "pages": [
+              "mcp/overview"
+            ]
           }
         ]
       },
@@ -155,7 +190,9 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": ["api-reference/overview"]
+            "pages": [
+              "api-reference/overview"
+            ]
           },
           {
             "group": "API reference",
@@ -189,7 +226,16 @@
     }
   },
   "contextual": {
-    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "mcp", "cursor", "vscode"]
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {

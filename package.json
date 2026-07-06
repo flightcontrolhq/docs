@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "mint dev",
     "sync:schema-reference": "node scripts/sync-schema-reference.mjs",
+    "sync:module-catalog": "node scripts/sync-module-catalog.mjs",
     "validate": "mint validate",
     "update": "mint update"
   },

@@ -1,0 +1,28 @@
+---
+title: "Standard library"
+description: "The Ravion standard library of production-ready modules: Terraform-backed building blocks for networking, compute, databases, storage, and DNS in your own AWS account."
+---
+
+import StandardLibraryIndex from "/snippets/standard-library-index.mdx";
+
+The standard library is a set of production-ready modules maintained by Ravion and included in every organization's [catalog](/module-definitions/catalog) by default.
+
+Standard library modules:
+
+- Have a type prefix of `rvn-*` and `organizationId=null`
+- Are backed by open source Terraform in [flightcontrolhq/modules](https://github.com/flightcontrolhq/modules)
+- Expose nearly every underlying AWS configuration option, with production-grade defaults
+- Are versioned, so your module instances only change when you upgrade them
+
+You can use them as-is, fork and customize them, or add your own [module definitions](/module-definitions/definition-schema) alongside them.
+
+<Note>
+  We will be adding the ability to remove standard library modules for teams that want to completely
+  control their own catalog. Reach out if you need this and we can prioritize it.
+</Note>
+
+## Modules
+
+Each module page includes the full readme and input schema reference for the latest version.
+
+<StandardLibraryIndex />
