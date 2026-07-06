@@ -18,6 +18,7 @@ flowchart BT
   rvn_ecs_web --> rvn_ecs_cluster
   rvn_ecs_web -.-> rvn_efs["rvn-efs"]
   rvn_ecs_cluster --> rvn_aws_network["rvn-aws-network"]
+  rvn_ecs_cluster -.-> rvn_acm_certificate
   rvn_efs --> rvn_aws_network
 
   class rvn_cloudfront current
@@ -28,7 +29,7 @@ flowchart BT
   classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
   classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
   classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
-  linkStyle 3,4,5,6 stroke:#CBD5E1,color:#94A3B8
+  linkStyle 3,4,5,6,7 stroke:#CBD5E1,color:#94A3B8
 
   click rvn_acm_certificate "/module-definitions/catalog/rvn-acm-certificate" "Open rvn-acm-certificate docs"
   click rvn_ecs_web "/module-definitions/catalog/rvn-ecs-web" "Open rvn-ecs-web docs"
