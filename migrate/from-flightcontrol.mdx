@@ -141,17 +141,16 @@ In the meantime, giving your agent the [Start here (human + agent)](../start-her
 
 </Note>
 
-### Some features still missing as of July 3, 2026
+### Some features still missing as of July 6, 2026
 
 Ravion will have full feature parity with Flightcontrol, but the following are still to come:
 
 - Job scheduler
 - Preview environments
-- CloudFront module to use with ECS services
 - Managed custom domain for ECS web services
-  - Workaround is to create your own ACM certificate and set its ARN in the ECS cluster module, then add the hostname routing rule in the ECS web module.
+  - Workaround is to create your own ACM certificate, validate it, then reference it in the ECS cluster module, then add the hostname routing rule in the ECS web module.
 - Managed custom domain for static sites
-  - Workaround is to create your own ACM certificate and set its ARN in the static site module
+  - Workaround is to create your own ACM certificate validate it, then reference it in the static site module
 - Managing environment variables through Ravion
   - Workaround is manage them in AWS console and use parameter store and secrets manager references in Ravion
 
