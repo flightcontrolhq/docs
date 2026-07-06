@@ -91,6 +91,7 @@
                   "module-definitions/catalog/rvn-aws-iam-role",
                   "module-definitions/catalog/rvn-aws-network",
                   "module-definitions/catalog/rvn-aws-static",
+                  "module-definitions/catalog/rvn-cloudfront",
                   "module-definitions/catalog/rvn-ecs-cluster",
                   "module-definitions/catalog/rvn-ecs-nlb",
                   "module-definitions/catalog/rvn-ecs-web",
