@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "mint",
   "name": "Ravion Docs",
   "colors": {
     "primary": "#FE6104",
@@ -29,12 +29,7 @@
         "groups": [
           {
             "group": "Introduction",
-            "pages": [
-              "start-here",
-              "how-ravion-works",
-              "philosophy",
-              "contact-support"
-            ]
+            "pages": ["index", "start-here", "how-ravion-works", "philosophy", "contact-support"]
           },
           {
             "group": "Use cases",
@@ -68,9 +63,7 @@
           },
           {
             "group": "Migrate",
-            "pages": [
-              "migrate/from-flightcontrol"
-            ]
+            "pages": ["migrate/from-flightcontrol"]
           },
           {
             "group": "Modules",
@@ -118,10 +111,7 @@
           },
           {
             "group": "Module definitions",
-            "pages": [
-              "module-definitions/catalog",
-              "module-definitions/definition-schema"
-            ]
+            "pages": ["module-definitions/catalog", "module-definitions/definition-schema"]
           }
         ]
       },
@@ -130,12 +120,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "cli/overview",
-              "cli/installation",
-              "cli/authentication",
-              "cli/releases"
-            ]
+            "pages": ["cli/overview", "cli/installation", "cli/authentication", "cli/releases"]
           },
           {
             "group": "Command reference",
@@ -179,9 +164,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "mcp/overview"
-            ]
+            "pages": ["mcp/overview"]
           }
         ]
       },
@@ -190,9 +173,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "api-reference/overview"
-            ]
+            "pages": ["api-reference/overview"]
           },
           {
             "group": "API reference",
@@ -204,20 +185,16 @@
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "dark": "/logo/dark.svg",
+    "href": "https://www.ravion.com"
   },
   "navbar": {
     "links": [
       {
-        "label": "Website",
-        "href": "https://www.ravion.com"
+        "label": "Dashboard",
+        "href": "https://app.ravion.com"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Open dashboard",
-      "href": "https://app.ravion.com"
-    }
+    ]
   },
   "integrations": {
     "posthog": {
@@ -226,16 +203,7 @@
     }
   },
   "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "mcp", "cursor", "vscode"]
   },
   "footer": {
     "socials": {

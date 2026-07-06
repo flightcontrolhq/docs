@@ -135,6 +135,24 @@ h6.font-semibold {
   font-weight: 400 !important;
 }
 
+/* Sidebar group titles are <h3> elements but should stay semibold,
+   exempt them from the heading weight reset above */
+.sidebar-group-header h3,
+h3.sidebar-title {
+  font-weight: 600 !important;
+}
+
+/* Tighten sidebar item spacing to match maple:
+   mint uses leading-6 (1.5rem) and 1px gaps between items,
+   maple used text-sm's default 1.25rem line-height with no gaps */
+#navigation-items {
+  line-height: 1.25rem;
+}
+
+#navigation-items .sidebar-group > * + * {
+  margin-top: 0 !important;
+}
+
 /* Card titles */
 [data-component-part="card-title"] {
   font-size: 1.2rem !important;
@@ -154,6 +172,31 @@ samp,
 [data-component-part="code-block"],
 [data-component-part="code-block"] * {
   letter-spacing: normal;
+}
+
+/* Full-width layout: remove the centered max-width container.
+   The body wrapper uses peer-variant classes (e.g. peer-[.is-not-custom]:max-w-8xl),
+   so match any class containing max-w-8xl */
+.max-w-8xl,
+[class*="max-w-8xl"] {
+  max-width: 100% !important;
+}
+
+/* Constrain and center the article column like the old maple theme
+   (maple used max-w-xl / 2xl:max-w-2xl on #content-area).
+   Mint's #content-area carries the sidebar offset padding, so cap its
+   children instead of the container itself */
+#content-area > * {
+  width: 100%;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 1536px) {
+  #content-area > * {
+    max-width: 42rem;
+  }
 }
 
 a[href="https://www.mintlify.com/?utm_campaign=poweredBy&utm_medium=referral&utm_source=ravion-b90c0359"],

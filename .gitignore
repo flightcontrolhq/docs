@@ -1,5 +1,4 @@
 node_modules/
-.mintlify/
 .mint/
 .DS_Store
 npm-debug.log*
