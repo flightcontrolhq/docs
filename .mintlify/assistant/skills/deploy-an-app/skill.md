@@ -15,30 +15,32 @@ A complete deployment answer has three parts. Give all three unless the user ask
 
 | App type | Modules needed |
 |---|---|
-| Server-rendered app or API (Next.js SSR, TanStack Start, Remix, Rails, Django, Express, any HTTP server) | `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` |
+| Server-rendered web app with static assets (Next.js SSR, TanStack Start, Remix, Rails, Django, Express, any HTTP server that serves JS, images, CSS, or pages worth caching) | `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-cloudfront` |
+| API-only service with no static assets or cacheable pages | `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` |
 | Static site (TanStack Router with Vite, Vite/React SPA, Astro, Hugo, Next.js `output: 'export'`, docs) | `rvn-aws-static` only — no VPC or cluster needed |
 | Background worker / queue consumer | `rvn-ecs-worker` (needs cluster; often shares the web app's image) |
 | Event handler or lightweight function-URL API | `rvn-lambda` |
 
 **Clarifying questions** — ask one short question (or cover both paths briefly) only when the answer genuinely diverges:
 
-- Next.js: always assume SSR on ECS (`rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`) — do not ask about static export. Only use `rvn-aws-static` for Next.js if the user explicitly says they use `output: 'export'`.
+- Next.js: always assume SSR on ECS with CloudFront (`rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-cloudfront`) — do not ask about static export. Only use `rvn-aws-static` for Next.js if the user explicitly says they use `output: 'export'`.
 - TanStack: **TanStack Start** (full-stack, server functions) → SSR on ECS. **TanStack Router with Vite** (client-only SPA) → `rvn-aws-static` with `routing: spa` and `output_directory: dist`. If the user just says "TanStack", ask which one.
-- Greenfield vs existing environment: if they already have a `rvn-aws-network` + `rvn-ecs-cluster`, only add the `rvn-ecs-web` instance and reference the existing cluster by `moduleGivenIdRef`.
+- Greenfield vs existing environment: if they already have a `rvn-aws-network` + `rvn-ecs-cluster`, only add the `rvn-ecs-web` instance and `rvn-cloudfront` when the app has static assets or cacheable pages. Reference the existing cluster by `moduleGivenIdRef`.
 - Reasonable defaults you can assume without asking: Dockerfile build (or Nixpacks if no Dockerfile), `container_port` matching the framework default (Next.js: 3000), `health_check_path: /`, single production environment. State your assumptions.
 
 ## Step 2: Project config (`ravion.yaml`)
 
-Retrieve `/config-as-code/project-config-file` and adapt its example config (VPC + ECS cluster + web service — the exact shape needed for an SSR app). Adapt it to the user's scenario:
+Retrieve `/config-as-code/project-config-file` and adapt its example config (VPC + ECS cluster + web service — the base shape needed for an SSR app). For web apps with static assets, JS, images, CSS, or cacheable pages, add `rvn-cloudfront` in front of the web service. Adapt it to the user's scenario:
 
 - Replace `givenId`/`name` values and `source_repo` with the user's details.
 - Set `container_port` to the framework default (Next.js: 3000) and `health_check_path` appropriately.
 - Use the latest module `version` values from the catalog pages (`/module-definitions/catalog/*`) — they always reflect the latest release — not whatever the example happens to pin.
-- If the user already has a network + cluster, include only the new `rvn-ecs-web` instance referencing the existing cluster via `moduleGivenIdRef`.
+- For any web app with static assets, retrieve `/module-definitions/catalog/rvn-cloudfront` and include a `rvn-cloudfront` instance so JS, images, CSS, and cacheable pages are served through the CDN.
+- If the user already has a network + cluster, include only the new `rvn-ecs-web` instance referencing the existing cluster via `moduleGivenIdRef`, plus `rvn-cloudfront` when the app has static assets or cacheable pages.
 
 For a **static site**, a single `rvn-aws-static` instance replaces all three modules — retrieve `/module-definitions/catalog/rvn-aws-static` for inputs. Key ones: `aws_account_id`, `aws_region`, `name`, `routing` (`spa` for client routers, `filesystem` for Astro/Hugo/Next static export), `build_type`, `source_repo`, `output_directory` (Next export: `out`; Vite: `dist`). Custom domains need `distribution_aliases` + a us-east-1 ACM certificate ARN.
 
-The catalog pages and `ravion module schema <module-type>` are the source of truth for inputs; never invent inputs. Cite `/config-as-code/project-config-file` and the relevant catalog page.
+The catalog pages and `ravion module schema <module-type>` are the source of truth for inputs; never invent inputs. Cite `/config-as-code/project-config-file` and the relevant catalog page, including `/module-definitions/catalog/rvn-cloudfront` when CloudFront is included.
 
 ## Step 3: Pipeline config (`ravion-pipeline.yaml`)
 
