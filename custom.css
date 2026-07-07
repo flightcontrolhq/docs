@@ -199,6 +199,21 @@ samp,
   }
 }
 
+/* Code block highlighted lines: Mintlify paints .line-highlight (background,
+   left border, and ::before/::after gutter fills) from the --primary-light
+   variable with !important, so recolor the variable itself inside code blocks.
+   Purple (violet-500 #8B5CF6) matches the module diagrams and avoids reading
+   as a "removed line" diff tint. */
+[data-component-part="code-block-root"],
+.code-block {
+  --primary-light: 139 92 246; /* #8B5CF6 */
+}
+
+:is(.dark, [data-theme="dark"]) [data-component-part="code-block-root"],
+:is(.dark, [data-theme="dark"]) .code-block {
+  --primary-light: 167 139 250; /* #A78BFA */
+}
+
 a[href="https://www.mintlify.com/?utm_campaign=poweredBy&utm_medium=referral&utm_source=ravion-b90c0359"],
 a[href*="mintlify.com"][href*="poweredBy"],
 a[href*="mintlify.com"][href*="powered-by"],

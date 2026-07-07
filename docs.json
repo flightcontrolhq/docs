@@ -119,6 +119,12 @@
             ]
           },
           {
+            "group": "Guides",
+            "pages": [
+              "guides/custom-domains"
+            ]
+          },
+          {
             "group": "Module definitions",
             "pages": [
               "module-definitions/catalog",
