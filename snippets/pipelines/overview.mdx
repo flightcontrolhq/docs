@@ -23,7 +23,7 @@ flowchart LR
 Pipelines fill two roles in Ravion, and you'll see both in your run history:
 
 1. **Pipelines you author** — build and deploy workflows triggered by git pushes, the API, or manually. These are the optional replacement for GitHub Actions described on this page.
-2. **Stack pipelines** — the change and destroy pipelines attached to every module [stack](/modules/stack), which run Terraform plan → approval → apply whenever a module's infrastructure config changes or the module is deleted. Ravion creates default versions automatically; your platform team can customize them.
+2. **Stack pipelines** — the change and destroy pipelines attached to every module [stack](/modules/stack), which run Terraform plan → approval → apply whenever a module's infrastructure config changes or the module is deleted. By default these are Ravion-managed system pipelines; your platform team can substitute custom ones.
 
 When other docs mention a "stack change pipeline run", it's the second kind: a normal pipeline run that was triggered by a config change instead of a git push.
 

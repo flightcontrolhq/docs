@@ -71,7 +71,7 @@ You never run `terraform apply` against a stack directly. Stacks are mutated thr
 - A **change pipeline**: plan → approval → apply. Runs when you create the module or change its config.
 - A **destroy pipeline**: plan (destroy) → approval → apply. Runs when you delete the module.
 
-Ravion auto-creates default versions of these pipelines, and your platform team can customize or replace them — for example to add policy checks. The approval gate is skipped when a run is started with `autoapprove` (the `--autoapprove` CLI flag).
+By default, stacks run through Ravion-managed system pipelines (`pipe_system_tf_change_pipeline` and `pipe_system_tf_destroy_pipeline`). These are read-only, but your platform team can replace them with custom pipelines at the organization, project, or environment level — for example to add policy checks. The approval gate is skipped when a run is started with `autoapprove` (the `--autoapprove` CLI flag).
 
 See [Stack](/modules/stack).
 

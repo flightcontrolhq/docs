@@ -58,14 +58,14 @@ Execute workflows on-demand from the Ravion dashboard or API:
 
 ### Pipeline integration
 
-Stacks execute using your organization's **default pipelines**. Pipelines are configured separately and define:
+Stacks execute using Ravion-managed **system pipelines** by default: `pipe_system_tf_change_pipeline` for plan/apply and `pipe_system_tf_destroy_pipeline` for destroys. Pipelines are configured separately and define:
 
 - Execution steps (init, plan, apply)
-- Approval requirements (default pipelines require manual approval before apply)
+- Approval requirements (system pipelines require manual approval before apply)
 - Environment and runner settings
 - Pre/post hooks
 
-When you create a Stack, it automatically inherits the default change pipeline (for plan/apply) and destroy pipeline. This ensures consistent workflow behavior across all stacks in your organization.
+System pipelines are read-only. To customize the workflow — for example to add policy checks — create your own pipeline and set it as the default at the organization, project, or environment level. See [System pipelines and customization](/modules/stack#system-pipelines-and-customization).
 
 ### Configuration
 

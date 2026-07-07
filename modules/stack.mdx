@@ -46,9 +46,54 @@ flowchart LR
 - The approval step is skipped when the plan has no changes, or when the run was started with **autoapprove** (for example `--autoapprove` on `ravion project config apply` or `ravion stack trigger-pipeline`). Autoapprove applies to change runs only — destroy runs always require manual approval.
 - Runs are locked per stack, so two runs can't apply to the same state concurrently.
 
-### Default pipelines and customization
+### System pipelines and customization
 
-Ravion automatically creates default change and destroy pipelines the first time a stack needs them, in a project named **Terraform Pipelines**. They are regular pipelines: your platform team can edit them — to add policy checks, notifications, or different approval rules — or point stacks at entirely custom pipelines through the module definition's `stack.pipelines` config. See the [module definition schema](/module-definitions/definition-schema).
+By default, every stack runs through Ravion-managed **system pipelines**:
+
+| Pipeline | ID                                |
+| -------- | --------------------------------- |
+| Change   | `pipe_system_tf_change_pipeline`  |
+| Destroy  | `pipe_system_tf_destroy_pipeline` |
+
+System pipelines are global and read-only — Ravion manages them, and you can't edit them. They give every organization a working plan → approval → apply workflow with zero setup.
+
+To customize the workflow — add policy checks, notifications, or different approval rules — create your own pipeline in your account and point stacks at it instead:
+
+<Steps>
+  <Step title="Create your pipeline">
+    Start from the system pipeline's config, or from scratch:
+
+    ```bash
+    # Pull the system pipeline config as a starting point
+    ravion pipeline config pull pipe_system_tf_change_pipeline --file change-pipeline.yaml
+
+    # Create your own pipeline and apply the edited config
+    ravion pipeline create --given-id tf-change --name "Terraform change" --project-id <project-id>
+    ravion pipeline config apply <pipeline-id> --file change-pipeline.yaml
+    ```
+
+    See [Pipeline config file](/config-as-code/pipeline-config-file).
+
+  </Step>
+
+  <Step title="Point stacks at it">
+    Stacks resolve their pipelines through [default values](/cli/reference/default-value) with the definition given IDs `change_pipeline_id` and `destroy_pipeline_id`. Set a value at the organization, project, or environment level — the most specific scope wins:
+
+    ```bash
+    # Find the change_pipeline_id / destroy_pipeline_id definitions in your org
+    ravion default-value definition list
+
+    # Set your pipeline as the default for the whole organization
+    ravion default-value create \
+      --default-value-definition-id <definition-id> \
+      --parent-type organization --parent-id <org-id> \
+      --value <your-pipeline-id>
+    ```
+
+  </Step>
+</Steps>
+
+A module definition can also pin explicit pipeline IDs through its `stack.pipelines` config, which takes precedence over the default values — but only if the definition exposes that config. See the [module definition schema](/module-definitions/definition-schema).
 
 ### Initial run when creating a module
 
