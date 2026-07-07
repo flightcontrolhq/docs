@@ -21,7 +21,7 @@ The process at a glance:
 
 Two different DNS records are involved, and they play separate roles:
 
-- The **validation record** is a CNAME that proves to ACM that you control the domain. It never receives traffic — ACM just checks that it resolves, then issues the certificate. It stays in place for automatic certificate renewal.
+- The **validation record** is a CNAME that proves to ACM that you control the domain. It never receives traffic — ACM just checks that it resolves, then issues the certificate. It stays in place for [automatic certificate renewal](#certificate-renewal).
 - The **traffic record** is the record users actually hit: `app.example.com` pointing at your CloudFront distribution or ECS cluster load balancer.
 
 Order matters. The certificate must be **validated** before AWS lets you attach it to an HTTPS or TLS listener, and the certificate must be **attached** before the endpoint can serve your domain. Only then do you change the traffic record — which means your current site keeps working untouched until the final cutover.
@@ -386,6 +386,17 @@ Traffic splits are approximate — DNS caching means clients move over gradually
   shifting traffic between application versions on the same endpoint, use the built-in blue/green,
   canary, and linear [deploy strategies](/modules/deploy) instead.
 </Note>
+
+## Certificate renewal
+
+ACM [renews DNS-validated certificates automatically](https://docs.aws.amazon.com/acm/latest/userguide/dns-renewal-validation.html). Starting 45 days before expiration, ACM re-validates and renews the certificate when both conditions hold:
+
+- The certificate is **in use** by an AWS service — attached to your ALB, NLB, or CloudFront distribution.
+- All validation CNAME records are still present and resolvable via public DNS.
+
+Renewal happens in place: the certificate keeps the **same ARN**, so your module references keep working with no config change, Terraform plan, or redeploy.
+
+Because of this, never delete the validation CNAME records after issuance — removing them (or detaching the certificate from every AWS resource) silently breaks the next renewal. If ACM can't re-validate, it notifies you through AWS Health and EventBridge events starting 30 days before expiration.
 
 ## Troubleshooting
 
