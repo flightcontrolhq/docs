@@ -107,7 +107,11 @@ With the CLI this is `ravion module create --initial-stack-run`.
 
 ## State storage
 
-Ravion can act as your managed Terraform state backend: set `ravion_state_backend_workspace` in the module definition's stack config and Ravion stores versioned state for you, with locking. Alternatively, use your own remote backend such as S3 and DynamoDB. Local state backends are not supported.
+Ravion can act as your managed Terraform state backend: set `ravion_state_backend_workspace` in the module definition's stack config and Ravion stores versioned state for you, with locking. By default, the workspace is named `{project}-{environment}-{module}-{stackId}` using given IDs plus the stack ID. Alternatively, use your own remote backend such as S3 and DynamoDB. Local state backends are not supported.
+
+<Note>
+  `ravion terraform state pull`, `list`, and `show` return a 404 for a managed workspace until the first state version is written. A workspace has no state until an apply runs, so a module created with `--initial-stack-run NONE` returns 404 until its first successful apply.
+</Note>
 
 ## Inspecting stacks
 
