@@ -900,7 +900,7 @@ Multi-line text area input property.
 
 ### ShowWhen
 
-Conditional visibility mapping.
+Conditional visibility mapping; array source values support contains and contains-all matching.
 
 Type: map&lt;string,[ShowWhenCondition](#showwhencondition)&gt;
 
@@ -1114,7 +1114,7 @@ A selectable option with a numeric value.
 
 ### ShowWhenComparableValue
 
-Value or values to compare against in a show_when condition.
+Value or values to compare against in a show_when condition; arrays mean membership for scalar sources and contains-all for array sources.
 
 One of: string \| integer \| boolean, string \| integer \| boolean[].
 
@@ -1235,7 +1235,7 @@ Pipeline trigger for generic webhooks.
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
-  Git repository in owner/repo format
+  Git repository in owner/repo or host/owner/repo format
 
   _(templateable)_
 </ResponseField>
@@ -1267,7 +1267,7 @@ Pipeline trigger for GitHub webhooks.
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
-  Git repository in owner/repo format
+  Git repository in owner/repo or host/owner/repo format
 
   _(templateable)_
 </ResponseField>
@@ -1305,7 +1305,7 @@ Pipeline trigger for GitLab webhooks.
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
-  Git repository in owner/repo format
+  Git repository in owner/repo or host/owner/repo format
 
   _(templateable)_
 </ResponseField>
@@ -1367,6 +1367,12 @@ Trigger filter configuration
 
   See: [Pipeline.PayloadCondition](#pipeline-payloadcondition)
 </ResponseField>
+
+### Pipeline.TriggerRepo
+
+Git repository identifier used by webhook triggers.
+
+Type: string
 
 ### Pipeline.TriggerRunVariantConfig
 

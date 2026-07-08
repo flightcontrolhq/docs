@@ -46,6 +46,20 @@ ravion code-source create [flags]
 | `--type <string>` | yes | type. Available values: GITLAB_SELF_HOSTED. |
 | `--json` |  | emit response as JSON |
 
+### `ravion code-source delete`
+
+Delete CodeSource
+
+```bash
+ravion code-source delete <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `-y, --yes` |  | skip confirmation prompt |
+
 ### `ravion code-source get`
 
 Get CodeSource by id
@@ -59,6 +73,23 @@ ravion code-source get <id> [flags]
 | Flag | Required | Description |
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
+
+### `ravion code-source list`
+
+List CodeSources
+
+```bash
+ravion code-source list [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--cursor <string>` |  | cursor |
+| `--json` |  | emit response as JSON |
+| `--limit <int>` |  | limit |
+| `-v, --verbose` |  | show full output |
 
 ### `ravion code-source module-yaml-exists`
 

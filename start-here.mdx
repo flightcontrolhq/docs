@@ -9,8 +9,25 @@ description: "Set up Ravion for an AI agent: connect human-owned accounts and po
 Complete these steps before asking an agent to create or change infrastructure.
 
 <Steps>
-  <Step title="Connect your AWS account from org settings">
-    Open the [Ravion dashboard](https://app.ravion.com) and connect the AWS account where Ravion should provision infrastructure.
+  <Step title="Connect your AWS account">
+    Open [AWS accounts](https://app.ravion.com/org/settings/aws-accounts?connect=%7B%7D) and connect the AWS account where Ravion should provision infrastructure.
+
+  </Step>
+
+  <Step title="Connect your Git repository">
+    Open [Git connections](https://app.ravion.com/org/settings/git-connections?modal=addConnection) and connect the Git repository(s) Ravion should use for app or Terraform source code.
+
+    Can be skipped if you just want Ravion to deploy images from an image registry.
+
+  </Step>
+
+  <Step title="Install the Docs MCP server">
+
+    ```bash
+    npx add-mcp https://docs.ravion.com/mcp
+    ```
+
+    The Docs MCP server lets agents search and read current Ravion documentation from their context window. See [Ravion Docs MCP](/mcp/overview).
 
   </Step>
 
@@ -40,15 +57,6 @@ Complete these steps before asking an agent to create or change infrastructure.
 
   </Step>
 
-  <Step title="Install the Docs MCP server">
-
-    ```bash
-    npx add-mcp https://docs.ravion.com/mcp
-    ```
-
-    The Docs MCP server lets agents search and read current Ravion documentation from their context window. See [Ravion Docs MCP](/mcp/overview).
-
-  </Step>
 </Steps>
 
 ## Agent workflow
@@ -89,7 +97,11 @@ After the human setup is complete, give the agent this checklist.
   <Card title="Project config file" icon="file-code" href="/config-as-code/project-config-file">
     Define environments and module instances from one file.
   </Card>
-  <Card title="Pipeline config file" icon="arrow-progress" href="/config-as-code/pipeline-config-file">
+  <Card
+    title="Pipeline config file"
+    icon="arrow-progress"
+    href="/config-as-code/pipeline-config-file"
+  >
     Define build, deploy, trigger, and approval workflows.
   </Card>
   <Card title="Module catalog" icon="boxes-stacked" href="/module-definitions/catalog">
