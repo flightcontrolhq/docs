@@ -1,0 +1,285 @@
+---
+title: "Import existing resources into a standard module"
+sidebarTitle: "Import into a standard module"
+description: "Bring existing infrastructure under Ravion management by importing it into a module's Terraform state without recreating anything."
+---
+
+Use this guide to bring infrastructure that already exists — a production S3 bucket, an RDS database, a VPC, or any other resource a Terraform provider can import — under the management of a Ravion [module](/modules/overview) without destroying or recreating anything. It works for [standard library modules](/module-definitions/catalog) and custom module definitions alike.
+
+<Note>
+  This page covers modules where the definition owns the Terraform source. If you're importing resources into your own Terraform code running through an `rvn-stack` module, see [Import into a Terraform Stack](/migrate/import-into-terraform-stack) — it has a simpler path using import blocks.
+</Note>
+
+## How it works
+
+1. Applying a [project config file](/config-as-code/project-config-file) that adds a stack-backed module creates the instance, its [managed state backend workspace](/modules/stack#state-storage), and starts a [change pipeline run](/modules/stack#stacks-change-through-pipelines) that stops at the approval gate.
+2. That run's plan enumerates exactly which resource addresses the module manages, so you know what to import. You cancel the run instead of approving it.
+3. `ravion terraform shell` wires your local `terraform`/`tofu` to the managed workspace, so `terraform import` writes directly into the module's state. Import only needs stub resource blocks locally — not the module's real Terraform source.
+4. Applying the config again plans against the imported state. When your module inputs match the real infrastructure, the plan shows no creates — only benign in-place updates such as tags.
+
+## Prerequisites
+
+- The [Ravion CLI](/cli/overview) installed and authenticated — verify with `ravion whoami`
+- Local credentials for the provider that owns the resources — for AWS, `aws sts get-caller-identity` must return the same account that's connected to Ravion (compare with `ravion aws account list --json`)
+- [OpenTofu](https://opentofu.org/docs/) (or Terraform, matching the module's tool) installed locally
+
+## Use an agent
+
+The import flow is mechanical but detail-heavy: reading resource addresses from the plan, inspecting real resource settings, matching module inputs, mapping addresses to import IDs. A coding agent with access to your provider's CLI handles it well. The steps are the [manual walkthrough](#manual-walkthrough) below — this prompt points your agent at it and sets the guardrails:
+
+<Prompt description="Create the module, import existing infrastructure into it, and verify a clean plan." icon="sparkles" actions={["copy", "cursor"]}>
+  Fetch https://docs.ravion.com/migrate/import-into-standard-module.md and follow its manual walkthrough to import existing infrastructure into a Ravion module so Ravion manages it without recreating anything. I will tell you what to import and which module type (for example, an existing RDS database into `rvn-rds`). Guardrails:
+
+- Verify the prerequisites before starting.
+- The flow imports into exactly one module instance. If I ask for infrastructure that belongs in separate modules, tell me and run the flow once per module instance.
+- The walkthrough's example is an RDS database — adapt the inspection commands and import IDs to my resource types and provider.
+- Show me every plan before anything is applied.
+- Stop before approval. Never approve a pipeline run unless I explicitly tell you to.
+
+</Prompt>
+
+## Manual walkthrough
+
+The example below imports an existing AWS RDS PostgreSQL instance into an `rvn-rds` module. The same flow applies to any module and any provider — only the resource inspection commands and import IDs change.
+
+<Steps>
+  <Step title="Add the module to your project config and apply">
+    Pull your project config if you don't already manage it in source control:
+
+    ```bash
+    # Project ID from: ravion project list --json
+    ravion project config pull <project-id> --file ravion.yaml
+    ```
+
+    Add the module instance. The inputs that identify the existing infrastructure — here the DB instance identifier (`name`), engine, region, and account — must match it exactly, since many are immutable after the first apply. Best-guess the rest; you'll refine them after seeing the plan. Check the schema with `ravion module schema rvn-rds`.
+
+    Since the existing database lives in a VPC that Ravion doesn't manage, set `network: null` and pass the VPC and subnets directly. (If the VPC is already an `rvn-aws-network` module, reference it instead: `network: {moduleGivenIdRef: <module-given-id>}`.)
+
+    ```yaml ravion.yaml
+    environments:
+      - givenId: production
+        name: Production
+        moduleInstances:
+          - givenId: my-db
+            name: My Database
+            type: rvn-rds
+            version: 0.4.1
+            input:
+              network: null
+              aws_account_id: <awsact-id>
+              aws_region: us-east-1
+              vpc_id: vpc-0f1e2d3c4b5a69788
+              subnet_ids:
+                - subnet-0aca23ae260d07a18
+                - subnet-05fa9ed3367b958af
+                - subnet-08fb2c1e74945c0c4
+              name: my-existing-db # must match the DB instance identifier
+              db_name: myapp_prod
+              engine: postgres
+              engine_major_version: "15"
+              instance_class: db.t4g.micro
+              allocated_storage: 20
+    ```
+
+    Preview, then apply — without `--autoapprove`:
+
+    ```bash
+    ravion project config apply <project-id> --file ravion.yaml --dry-run
+    ravion project config apply <project-id> --file ravion.yaml
+    ```
+
+    The apply creates the module, its managed state workspace, and starts a change run that stops at the approval gate. Nothing is provisioned until a plan is approved.
+
+    <Note>
+      Prefer managing modules through the config file. For a one-off without config as code, `ravion module create --initial-stack-run PLAN` gets you to the same place.
+    </Note>
+
+  </Step>
+
+  <Step title="Read the resource addresses from the plan">
+    The run that just started tells you exactly which resource addresses the module manages:
+
+    ```bash
+    # stackId from the module
+    ravion module list --project-id <project-id> --json
+
+    # Find the run attached to the stack
+    ravion pipeline run list --attached-entity-id <stack-id> --json
+
+    # Poll until the status is PENDING_APPROVAL
+    ravion pipeline run get <run-id> --json
+
+    ravion pipeline run get-plan <run-id>
+    ```
+
+    ```text Example output
+    ADDRESS                                                                 CHANGE_TYPE
+    aws_db_instance.this                                                    CREATE
+    aws_db_parameter_group.this[0]                                          CREATE
+    aws_db_subnet_group.this                                                CREATE
+    module.security_group[0].aws_security_group.this                        CREATE
+    module.security_group[0].aws_vpc_security_group_egress_rule.this["0"]   CREATE
+    ```
+
+    Each CREATE row is a resource to import. Cancel the run — you're importing instead of letting it create anything, and its plan becomes stale the moment you do:
+
+    ```bash
+    ravion pipeline run cancel <run-id>
+    ```
+
+  </Step>
+
+  <Step title="Match module inputs to the real resource">
+    Inspect the existing resource and record every setting the module's inputs cover:
+
+    ```bash
+    aws rds describe-db-instances --db-instance-identifier my-existing-db
+    aws rds describe-db-subnet-groups --db-subnet-group-name my-existing-db-subnets
+    aws rds describe-db-parameter-groups --db-parameter-group-name my-existing-db-params
+    aws ec2 describe-security-groups --group-ids sg-0123456789abcdef0
+    ```
+
+    For RDS, `describe-db-instances` covers most inputs in one call: engine and version, instance class, allocated storage, storage type, Multi-AZ, backup retention, Performance Insights, CloudWatch log exports, deletion protection, and the attached subnet group, parameter group, and security groups.
+
+    Update the module's inputs in the config file so they match reality — the closer the match, the cleaner the post-import plan. If the real resource has a setting the module's inputs can't express, note it and decide whether you can live without it before continuing. Don't apply yet; the apply after importing doubles as your verification run.
+
+  </Step>
+
+  <Step title="Write a stub config for the import">
+    `terraform import` requires each address to exist in configuration, but it doesn't validate resource arguments — so **empty stub blocks are enough**. You don't need the module's real Terraform source. In a scratch directory, write one stub per address from the plan, mirroring the address shapes exactly:
+
+    - An indexed address like `aws_db_parameter_group.this[0]` needs `count = 1` on its stub.
+    - A keyed address like `...egress_rule.this["0"]` needs a matching `for_each`.
+    - Addresses under `module.security_group[0]` need a stub child module with the same name.
+
+    ```hcl main.tf
+    terraform {
+      cloud {}
+    }
+
+    provider "aws" {
+      region = "us-east-1"
+    }
+
+    resource "aws_db_instance" "this" {}
+
+    resource "aws_db_parameter_group" "this" {
+      count = 1
+    }
+
+    resource "aws_db_subnet_group" "this" {}
+
+    module "security_group" {
+      count  = 1
+      source = "./security_group"
+    }
+    ```
+
+    ```hcl security_group/main.tf
+    resource "aws_security_group" "this" {}
+
+    resource "aws_vpc_security_group_egress_rule" "this" {
+      for_each = toset(["0"])
+    }
+    ```
+
+    <Note>
+      If you want to read the module's real source — for import ID formats or to understand conditional resources — the bottom of `ravion module schema <type>` links it. For custom module definitions, the `repo`, `ref`, and `base_path` are in the stack config from `ravion module version get <module-version-id> --json`. Viewing it is enough; there's no need to clone it.
+    </Note>
+
+  </Step>
+
+  <Step title="Import into the managed workspace">
+    From the stub config directory, get the workspace name from the stack, then initialize and import. `ravion terraform shell` wires `TF_CLOUD_*` and token env vars so `tofu` talks directly to Ravion's state backend:
+
+    ```bash
+    # ravionStateBackendWorkspace field
+    ravion stack get <stack-id> --json
+
+    ravion terraform shell --workspace <workspace> -- tofu init
+
+    export AWS_REGION=us-east-1
+    ravion terraform shell --workspace <workspace> -- tofu import aws_db_instance.this my-existing-db
+    ravion terraform shell --workspace <workspace> -- tofu import 'aws_db_parameter_group.this[0]' my-existing-db-params
+    ravion terraform shell --workspace <workspace> -- tofu import aws_db_subnet_group.this my-existing-db-subnets
+    ravion terraform shell --workspace <workspace> -- tofu import 'module.security_group[0].aws_security_group.this' sg-0123456789abcdef0
+    ravion terraform shell --workspace <workspace> -- tofu import 'module.security_group[0].aws_vpc_security_group_egress_rule.this["0"]' sgr-0123456789abcdef0
+    ```
+
+    Import IDs vary by resource type — the DB instance, parameter group, and subnet group import by name, while the security group and its egress rule import by AWS-assigned ID (`sg-...`, `sgr-...`). Each provider's docs list the format in the resource's **Import** section. Single-quote addresses containing `[` or `"` so the shell passes them through intact. Export whatever credentials and settings the provider needs (here, AWS credentials and the region).
+
+    <Warning>
+      Always verify the state after importing — we've seen rapid back-to-back imports occasionally drop a write:
+
+      ```bash
+      ravion terraform state list --workspace <workspace>
+      ```
+
+      Every imported address must appear in the list. Re-run any import that's missing.
+    </Warning>
+
+  </Step>
+
+  <Step title="Apply again and verify the plan">
+    Apply the config file with your refined inputs — the run it starts is your verification plan:
+
+    ```bash
+    ravion project config apply <project-id> --file ravion.yaml
+    ```
+
+    If the config file didn't change since the first apply, start the run manually instead:
+
+    ```bash
+    ravion stack trigger-pipeline <stack-id> --pipeline-type change \
+      --description "Verify plan after import"
+    ```
+
+    Inspect the plan:
+
+    ```bash
+    ravion pipeline run get-plan <run-id>
+    ```
+
+    A successful import shows **no CREATE rows**. Expect:
+
+    - `NO_OP` for resources whose inputs match exactly.
+    - An in-place `UPDATE` on the main resource for **tags** — Ravion merges standard ownership tags (`Owner`, `ProjectGivenId`, `EnvironmentGivenId`, `ModuleGivenId`, `ModuleId`) on top of yours. This is expected and safe.
+
+    Drill into any UPDATE to confirm it's benign:
+
+    ```bash
+    ravion terraform resource get <tfres-id> --json
+    ```
+
+    If the plan shows CREATE, DELETE, or REPLACE, your module inputs don't match the real infrastructure. Cancel the run, fix the inputs in the config file, apply, and re-check.
+
+    When the plan looks right, approve it in the dashboard or via the CLI:
+
+    ```bash
+    ravion pipeline step-execution list --pipeline-run-id <run-id> --json
+    ravion pipeline step-execution approve <sexec-id>
+    ```
+
+    After the apply succeeds, the resource is fully managed by the module — future config file changes flow through the normal [change pipeline](/modules/stack#stacks-change-through-pipelines).
+
+  </Step>
+</Steps>
+
+## Tips
+
+- **One module instance per pass**: a module usually manages several Terraform resources — an RDS module also manages the parameter group, DB subnet group, and security group — but unrelated infrastructure belongs in separate module instances. Repeat the flow for each.
+- **Immutable inputs**: inputs marked `immutable` in the schema (like the DB instance identifier, engine, and region) can't change after the first apply, so get them right in the config file before importing.
+- **Conditional resources**: some resources only exist when an input enables them. In `rvn-rds`, the parameter group and security group exist because `parameter_group_creation_enabled` and `security_group_creation_enabled` default to true — that's why their addresses are indexed with `[0]`. Match the inputs to reality: if the real database uses an existing security group, disable creation, pass its ID instead, and skip those imports.
+- **Data sources** (like `data.aws_vpc.this` and `data.aws_caller_identity.current` here) appear in `state list` output alongside resources; they don't need importing.
+- **Optional sub-resources you don't have**: if the plan wants to CREATE a sub-resource the real infrastructure genuinely lacks (rather than one you forgot to import), letting the apply create it is usually fine — review the diff to be sure.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Import into a Terraform Stack" href="/migrate/import-into-terraform-stack">
+    Importing into your own Terraform code? Import blocks make it much simpler.
+  </Card>
+  <Card title="Project config file" href="/config-as-code/project-config-file">
+    Manage your project's environments and modules declaratively from source control.
+  </Card>
+</CardGroup>

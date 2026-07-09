@@ -70,7 +70,9 @@
           {
             "group": "Migrate",
             "pages": [
-              "migrate/from-flightcontrol"
+              "migrate/from-flightcontrol",
+              "migrate/import-into-standard-module",
+              "migrate/import-into-terraform-stack"
             ]
           },
           {

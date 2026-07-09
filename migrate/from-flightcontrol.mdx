@@ -131,15 +131,14 @@ Your organization has a module catalogue that has our standard libary of modules
 
 ## Migrating services
 
-**Log into [Ravion](https://app.ravion.com) with your Flightcontrol credentials.**
+Log into [Ravion](https://app.ravion.com) with your Flightcontrol credentials.
 
 **Ravion can be used alongside Flightcontrol at the same time**. They both use the same Organization and memberships, but all other data is separate. So you can migrate piecemeal, service by service, instead of all at once.
 
 <Note>
-  We do not yet have any migration tooling or prompts. We plan to ship these and simple
-  import/migration tooling for things like RDS, Redis, and CloudFront. These will follow in the coming weeks.
+  To keep existing infrastructure like RDS, Redis, S3, and CloudFront running exactly as is, import it into a Ravion module instead of recreating it. See [Import into a standard module](/migrate/import-into-standard-module) and [Import into a Terraform Stack](/migrate/import-into-terraform-stack) — both include agent prompts that automate the flow.
 
-In the meantime, giving your agent the [Start here (human + agent)](../start-here) page and this migrate from Flightcontrol page should take you a long ways.
+Beyond imports, giving your agent the [Start here (human + agent)](../start-here) page and this migrate from Flightcontrol page should take you a long ways.
 
 </Note>
 
@@ -178,4 +177,6 @@ Ravion's setup supports instant deploys and rolbacks so we recommend provisionin
 
 Ravion's deployed version is managed by a CloudFront Key Value Store instead of requiring a CloudFront update like Flightcontrol.
 
-### Other migration guides to come
+### Other services like databases, caches, and buckets
+
+We will be adding 1-click import from Flightcontrol to Ravion. In the meantime, you can manually import existing resources like RDS, ElastiCache, and S3 into Ravion by following the [Import into a standard module](/migrate/import-into-standard-module) guide.
