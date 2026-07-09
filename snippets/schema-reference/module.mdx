@@ -1540,7 +1540,7 @@ Image build configuration for a module.
 </ResponseField>
 
 <ResponseField name="builder" type="Pipeline.ImageBuildConfig" required>
-  Builder configuration — dockerfile or nixpacks settings.
+  Builder configuration — dockerfile, nixpacks, or railpack settings.
 
   See: [Pipeline.ImageBuildConfig](#pipeline-imagebuildconfig)
 
@@ -1680,7 +1680,7 @@ Static build configuration for a module.
 </ResponseField>
 
 <ResponseField name="builder" type="Pipeline.StaticBuildConfig" required>
-  Builder configuration — dockerfile or nixpacks settings.
+  Builder configuration — dockerfile, nixpacks, or railpack settings.
 
   See: [Pipeline.StaticBuildConfig](#pipeline-staticbuildconfig)
 
@@ -1800,6 +1800,7 @@ Discriminated union. The `type` field selects which schema applies.
 | `disabled`   | [Pipeline.DisabledBuildConfig](#pipeline-disabledbuildconfig)               |
 | `dockerfile` | [Pipeline.ImageDockerfileBuildConfig](#pipeline-imagedockerfilebuildconfig) |
 | `nixpacks`   | [Pipeline.ImageNixpacksBuildConfig](#pipeline-imagenixpacksbuildconfig)     |
+| `railpack`   | [Pipeline.ImageRailpackBuildConfig](#pipeline-imagerailpackbuildconfig)     |
 
 ### Pipeline.StepInfrastructure
 
@@ -1917,6 +1918,7 @@ Discriminated union. The `type` field selects which schema applies.
 | ------------ | ----------------------------------------------------------------------------- |
 | `dockerfile` | [Pipeline.StaticDockerfileBuildConfig](#pipeline-staticdockerfilebuildconfig) |
 | `nixpacks`   | [Pipeline.StaticNixpacksBuildConfig](#pipeline-staticnixpacksbuildconfig)     |
+| `railpack`   | [Pipeline.StaticRailpackBuildConfig](#pipeline-staticrailpackbuildconfig)     |
 
 ### Pipeline.EnvironmentVariable
 
@@ -2018,6 +2020,50 @@ Nixpacks configuration for image builds
 
 <ResponseField name="nix_libs" type="string[] | null">
   Additional Nix libraries to install
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="install_cmd" type="string | null">
+  Custom install command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="build_cmd" type="string | null">
+  Custom build command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="start_cmd" type="string | null">
+  Application start command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="cache_from" type="Pipeline.CacheFromConfig">
+  Docker layer cache configuration
+
+  See: [Pipeline.CacheFromConfig](#pipeline-cachefromconfig)
+
+  _(templateable)_
+</ResponseField>
+
+### Pipeline.ImageRailpackBuildConfig
+
+Railpack configuration for image builds
+
+<ResponseField name="type" type="enum" required>
+  Build method — use Railpack auto-detection
+
+  Allowed values: `railpack`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="railpack_version" type="string | null">
+  Railpack version to use
 
   _(templateable)_
 </ResponseField>
@@ -2299,6 +2345,42 @@ Nixpacks configuration for static builds
 
 <ResponseField name="nix_libs" type="string[] | null">
   Additional Nix libraries to install
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="install_cmd" type="string | null">
+  Custom install command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="build_cmd" type="string | null">
+  Custom build command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="output_directory" type="string" required>
+  Directory inside the built image containing the static assets to upload This path is resolved relative to source.base_path
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+### Pipeline.StaticRailpackBuildConfig
+
+Railpack configuration for static builds
+
+<ResponseField name="type" type="enum" required>
+  Build method — use Railpack auto-detection
+
+  Allowed values: `railpack`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="railpack_version" type="string | null">
+  Railpack version to use
 
   _(templateable)_
 </ResponseField>

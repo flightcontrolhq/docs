@@ -12,6 +12,10 @@ See [Pipeline config file](/config-as-code/pipeline-config-file) to pull, edit, 
 
 For a compact, machine-readable version, fetch [https://api.ravion.com/pipelines/schema.md](https://api.ravion.com/pipelines/schema.md).
 
+<Note>
+  Pipeline builder configs still include `nixpacks` for existing pipelines, but it is deprecated. Use `railpack` for new `build:image` and `build:static` steps.
+</Note>
+
 <Visibility for="agents">
   > The full rendered schema reference is omitted from this Markdown view to save tokens.
   > Fetch [https://api.ravion.com/pipelines/schema.md](https://api.ravion.com/pipelines/schema.md) for the complete pipeline schema in a compact, machine-readable format.

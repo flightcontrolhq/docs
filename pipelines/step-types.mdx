@@ -64,9 +64,13 @@ See [RollbackStep schema](/pipelines/config-reference#rollbackstep).
 
 CI steps run on compute you provision through an `infrastructure` block, which selects an execution environment or an AWS account, region, instance type, and size. See [StepInfrastructure](/pipelines/config-reference#stepinfrastructure).
 
+<Note>
+  The `nixpacks` builder is deprecated for pipeline CI steps. Use `railpack` for automatic framework detection.
+</Note>
+
 ### build:image
 
-Builds a Docker image from a git source and pushes it to one or more ECR destinations. Build with a `dockerfile` or let `nixpacks` auto-detect the language and framework.
+Builds a Docker image from a git source and pushes it to one or more ECR destinations. Build with a `dockerfile` or let `railpack` auto-detect the language and framework.
 
 ```yaml
 - id: build_image
@@ -93,7 +97,7 @@ See [BuildImageCiStep schema](/pipelines/config-reference#buildimagecistep).
 
 ### build:static
 
-Builds static assets from a git source and uploads them to one or more S3 destinations. Build with a `dockerfile` or `nixpacks`.
+Builds static assets from a git source and uploads them to one or more S3 destinations. Build with a `dockerfile` or `railpack`.
 
 ```yaml
 - id: build_site
@@ -104,7 +108,7 @@ Builds static assets from a git source and uploads them to one or more S3 destin
     repo: https://github.com/my-org/my-repo
     branch: main
   builder:
-    type: nixpacks
+    type: railpack
   destinations:
     - id: s3
       type: s3

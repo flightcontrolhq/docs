@@ -822,7 +822,7 @@ Build image CI action step
 </ResponseField>
 
 <ResponseField name="builder" type="ImageBuildConfig" required>
-  Builder configuration — dockerfile or nixpacks settings for image builds
+  Builder configuration — dockerfile, nixpacks, or railpack settings for image builds
 
   See: [ImageBuildConfig](#imagebuildconfig)
 
@@ -904,7 +904,7 @@ Build static CI action step
 </ResponseField>
 
 <ResponseField name="builder" type="StaticBuildConfig" required>
-  Builder configuration — dockerfile or nixpacks settings
+  Builder configuration — dockerfile, nixpacks, or railpack settings
 
   See: [StaticBuildConfig](#staticbuildconfig)
 
@@ -1582,6 +1582,7 @@ Discriminated union. The `type` field selects which schema applies.
 | `disabled`   | [DisabledBuildConfig](#disabledbuildconfig)               |
 | `dockerfile` | [ImageDockerfileBuildConfig](#imagedockerfilebuildconfig) |
 | `nixpacks`   | [ImageNixpacksBuildConfig](#imagenixpacksbuildconfig)     |
+| `railpack`   | [ImageRailpackBuildConfig](#imagerailpackbuildconfig)     |
 
 ### StepInfrastructure
 
@@ -1687,6 +1688,7 @@ Discriminated union. The `type` field selects which schema applies.
 | ------------ | ----------------------------------------------------------- |
 | `dockerfile` | [StaticDockerfileBuildConfig](#staticdockerfilebuildconfig) |
 | `nixpacks`   | [StaticNixpacksBuildConfig](#staticnixpacksbuildconfig)     |
+| `railpack`   | [StaticRailpackBuildConfig](#staticrailpackbuildconfig)     |
 
 ### SetupAction
 
@@ -1888,6 +1890,50 @@ Nixpacks configuration for image builds
   _(templateable)_
 </ResponseField>
 
+### ImageRailpackBuildConfig
+
+Railpack configuration for image builds
+
+<ResponseField name="type" type="enum" required>
+  Build method — use Railpack auto-detection
+
+  Allowed values: `railpack`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="railpack_version" type="string | null">
+  Railpack version to use
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="install_cmd" type="string | null">
+  Custom install command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="build_cmd" type="string | null">
+  Custom build command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="start_cmd" type="string | null">
+  Application start command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="cache_from" type="CacheFromConfig">
+  Docker layer cache configuration
+
+  See: [CacheFromConfig](#cachefromconfig)
+
+  _(templateable)_
+</ResponseField>
+
 ### AwsPermissions
 
 IAM policies configuration for runner roles Used by EC2-backed steps to specify additional permissions
@@ -2019,6 +2065,42 @@ Nixpacks configuration for static builds
 
 <ResponseField name="nix_libs" type="string[] | null">
   Additional Nix libraries to install
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="install_cmd" type="string | null">
+  Custom install command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="build_cmd" type="string | null">
+  Custom build command
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="output_directory" type="string" required>
+  Directory inside the built image containing the static assets to upload This path is resolved relative to source.base_path
+
+  _(minLen:1; templateable)_
+</ResponseField>
+
+### StaticRailpackBuildConfig
+
+Railpack configuration for static builds
+
+<ResponseField name="type" type="enum" required>
+  Build method — use Railpack auto-detection
+
+  Allowed values: `railpack`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="railpack_version" type="string | null">
+  Railpack version to use
 
   _(templateable)_
 </ResponseField>

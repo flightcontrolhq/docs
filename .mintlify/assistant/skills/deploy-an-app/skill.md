@@ -26,7 +26,7 @@ A complete deployment answer has three parts. Give all three unless the user ask
 - Next.js: always assume SSR on ECS with CloudFront (`rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-cloudfront`) — do not ask about static export. Only use `rvn-aws-static` for Next.js if the user explicitly says they use `output: 'export'`.
 - TanStack: **TanStack Start** (full-stack, server functions) → SSR on ECS. **TanStack Router with Vite** (client-only SPA) → `rvn-aws-static` with `routing: spa` and `output_directory: dist`. If the user just says "TanStack", ask which one.
 - Greenfield vs existing environment: if they already have a `rvn-aws-network` + `rvn-ecs-cluster`, only add the `rvn-ecs-web` instance and `rvn-cloudfront` when the app has static assets or cacheable pages. Reference the existing cluster by `moduleGivenIdRef`.
-- Reasonable defaults you can assume without asking: Dockerfile build (or Nixpacks if no Dockerfile), `container_port` matching the framework default (Next.js: 3000), `health_check_path: /`, single production environment. State your assumptions.
+- Reasonable defaults you can assume without asking: Dockerfile build (or Railpack if no Dockerfile), `container_port` matching the framework default (Next.js: 3000), `health_check_path: /`, single production environment. State your assumptions.
 
 ## Step 2: Project config (`ravion.yaml`)
 

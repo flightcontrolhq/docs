@@ -24,7 +24,7 @@ You configure a module's build the same way you configure everything else about 
   version: 0.5.0
   input:
     # build config
-    build_type: dockerfile
+    build_source: dockerfile
     source_repo: my-org/my-repo
     dockerfile: Dockerfile
     # runtime config
@@ -87,12 +87,12 @@ This is the whole build-to-deploy contract: the build step produces a pinned art
 
 ## Building outside Ravion
 
-You don't have to build in Ravion at all. Module definitions typically include a prebuilt image or package option for teams that build in GitHub Actions, CircleCI, or another external system. For example, `rvn-ecs-web` supports these `build_type` values:
+You don't have to build in Ravion at all. Module definitions typically include a prebuilt image or package option for teams that build in GitHub Actions, CircleCI, or another external system. For example, `rvn-ecs-web` supports these `build_source` values:
 
-| Build type                | What you configure on the module                                                                    | What the deploy takes as `image_ref` |
+| Build source              | What you configure on the module                                                                    | What the deploy takes as `image_ref` |
 | ------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `nixpacks` / `dockerfile` | Git repo and build settings — Ravion builds and pushes to the module's ECR repo                     | Digest from the build step           |
-| `prebuilt_image`          | The image repository (Docker Hub, GHCR, ECR, …) without a tag, plus registry credentials if private | The tag or digest to deploy          |
+| `dockerfile` / `railpack` | Git repo and build settings — Ravion builds and pushes to the module's ECR repo                     | Digest from the build step           |
+| `image_registry`          | The image repository (Docker Hub, GHCR, ECR, …) without a tag, plus registry credentials if private | The tag or digest to deploy          |
 
 So with an external build, the flow is: your CI builds and pushes the image, then triggers the release with the artifact reference:
 
@@ -106,4 +106,4 @@ Ravion still handles the rollout, deploy history, events, and rollback — it ju
 
 ## For module authors
 
-How a definition declares its build config — builders (`dockerfile`, `nixpacks`), destinations, build inputs, and templating — is covered in the [module definition schema](/module-definitions/definition-schema).
+How a definition declares its build config — builders (`dockerfile`, `railpack`), destinations, build inputs, and templating — is covered in the [module definition schema](/module-definitions/definition-schema).
