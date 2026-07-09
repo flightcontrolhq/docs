@@ -12,20 +12,22 @@ description: "Production-ready AWS VPC with public and private subnets, NAT gate
 
 ```mermaid
 flowchart BT
-  rvn_ecs_cluster["rvn-ecs-cluster"] --> rvn_aws_network["<strong>VPC Network</strong>"]
+  rvn_aurora["rvn-aurora"] --> rvn_aws_network["<strong>VPC Network</strong>"]
+  rvn_ecs_cluster["rvn-ecs-cluster"] --> rvn_aws_network
   rvn_efs["rvn-efs"] --> rvn_aws_network
   rvn_elasticache["rvn-elasticache"] --> rvn_aws_network
   rvn_lambda["rvn-lambda"] -.-> rvn_aws_network
   rvn_rds["rvn-rds"] --> rvn_aws_network
 
   class rvn_aws_network current
-  class rvn_ecs_cluster,rvn_efs,rvn_elasticache,rvn_lambda,rvn_rds consumer
+  class rvn_aurora,rvn_ecs_cluster,rvn_efs,rvn_elasticache,rvn_lambda,rvn_rds consumer
 
   classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
   classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
   classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
   classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
 
+  click rvn_aurora "/module-definitions/catalog/rvn-aurora" "Open rvn-aurora docs"
   click rvn_ecs_cluster "/module-definitions/catalog/rvn-ecs-cluster" "Open rvn-ecs-cluster docs"
   click rvn_efs "/module-definitions/catalog/rvn-efs" "Open rvn-efs docs"
   click rvn_elasticache "/module-definitions/catalog/rvn-elasticache" "Open rvn-elasticache docs"

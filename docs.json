@@ -90,6 +90,7 @@
                 "root": "module-definitions/standard-library",
                 "pages": [
                   "module-definitions/catalog/rvn-acm-certificate",
+                  "module-definitions/catalog/rvn-aurora",
                   "module-definitions/catalog/rvn-aws-iam-role",
                   "module-definitions/catalog/rvn-aws-network",
                   "module-definitions/catalog/rvn-aws-static",
