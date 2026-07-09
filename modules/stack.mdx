@@ -105,12 +105,23 @@ When you create a stack-backed module instance you choose the initial stack run 
 
 With the CLI this is `ravion module create --initial-stack-run`.
 
+## Inspecting stack configuration
+
+A module version defines the source code and input mapping used by its stack. Get the module version ID from the module instance, then inspect the version:
+
+```bash
+ravion module get <module-id> --json
+ravion module version get <module-version-id> --json
+```
+
+The version's stack config includes `repo`, `ref`, and `base_path` for the Terraform or OpenTofu source. Its `terraform_variables` mapping shows how module inputs and references become Terraform input variables. Use this metadata to debug plans, trace unexpected values, or prepare an import.
+
 ## State storage
 
 Ravion can act as your managed Terraform state backend: set `ravion_state_backend_workspace` in the module definition's stack config and Ravion stores versioned state for you, with locking. By default, the workspace is named `{project}-{environment}-{module}-{stackId}` using given IDs plus the stack ID. Alternatively, use your own remote backend such as S3 and DynamoDB. Local state backends are not supported.
 
 <Note>
-  `ravion terraform state pull`, `list`, and `show` return a 404 for a managed workspace until the first state version is written. A workspace has no state until an apply runs, so a module created with `--initial-stack-run NONE` returns 404 until its first successful apply.
+  `ravion terraform state pull`, `list`, and `show` return a 404 for a managed workspace until the first state version is written. A module created with `--initial-stack-run NONE` has no state version until an operation such as `terraform apply` or `terraform import` writes one.
 </Note>
 
 ## Inspecting stacks
@@ -124,8 +135,10 @@ ravion stack get <stack-id>
 ravion stack resource-count
 
 # Trigger a change or destroy run manually
-ravion stack trigger-pipeline <stack-id> --pipeline-type change
-ravion stack trigger-pipeline <stack-id> --pipeline-type change --autoapprove
+ravion stack trigger-pipeline <stack-id> --pipeline-type change \
+  --description "Apply infrastructure changes"
+ravion stack trigger-pipeline <stack-id> --pipeline-type change --autoapprove \
+  --description "Apply infrastructure changes automatically"
 
 # Inspect Terraform runs and resources
 ravion terraform execution-summary list --stack-id <stack-id>
