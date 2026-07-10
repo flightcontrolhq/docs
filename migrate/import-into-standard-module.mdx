@@ -208,16 +208,6 @@ The example below imports an existing AWS RDS PostgreSQL instance into an `rvn-r
 
     Import IDs vary by resource type — the DB instance, parameter group, and subnet group import by name, while the security group and its egress rule import by AWS-assigned ID (`sg-...`, `sgr-...`). Each provider's docs list the format in the resource's **Import** section. Single-quote addresses containing `[` or `"` so the shell passes them through intact. Export whatever credentials and settings the provider needs (here, AWS credentials and the region).
 
-    <Warning>
-      Always verify the state after importing — we've seen rapid back-to-back imports occasionally drop a write:
-
-      ```bash
-      ravion terraform state list --workspace <workspace>
-      ```
-
-      Every imported address must appear in the list. Re-run any import that's missing.
-    </Warning>
-
   </Step>
 
   <Step title="Apply again and verify the plan">
