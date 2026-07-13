@@ -221,3 +221,12 @@ a[aria-label*="Mintlify"],
 a[title*="Mintlify"] {
   display: none !important;
 }
+
+/* Prevent the logged-out navbar state from painting before auth detection runs. */
+html:not([data-ravion-auth-state])
+  :is(.navbar-link, navbar-link):has(
+    a[href="https://app.ravion.com/signup"],
+    a[href="https://cal.com/team/ravion/demo"]
+  ) {
+  visibility: hidden;
+}

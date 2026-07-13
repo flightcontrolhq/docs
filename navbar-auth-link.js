@@ -9,6 +9,8 @@ function updateNavbarLinks() {
   const label = isLoggedIn ? "Dashboard" : "Start free trial";
   const href = isLoggedIn ? "https://app.ravion.com" : "https://app.ravion.com/signup";
 
+  document.documentElement.dataset.ravionAuthState = isLoggedIn ? "logged-in" : "logged-out";
+
   document.querySelectorAll(".navbar-link, navbar-link").forEach((navbarLink) => {
     const link = navbarLink.matches("a") ? navbarLink : navbarLink.querySelector("a");
 
