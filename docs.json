@@ -221,8 +221,8 @@
   "navbar": {
     "links": [
       {
-        "label": "Dashboard",
-        "href": "https://app.ravion.com"
+        "label": "Start free trial",
+        "href": "https://app.ravion.com/signup"
       }
     ]
   },
