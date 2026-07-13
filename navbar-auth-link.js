@@ -23,6 +23,10 @@ function updateNavbarLinks() {
     if (link.textContent.trim() !== label) link.textContent = label;
     if (link.getAttribute("href") !== href) link.href = href;
   });
+
+  const logoLink = document.querySelector(".nav-logo")?.closest("a");
+  const logoHref = isLoggedIn ? "https://www.ravion.com/home" : "https://www.ravion.com";
+  if (logoLink?.getAttribute("href") !== logoHref) logoLink.href = logoHref;
 }
 
 updateNavbarLinks();
