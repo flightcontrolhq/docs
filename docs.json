@@ -223,6 +223,10 @@
       {
         "label": "Start free trial",
         "href": "https://app.ravion.com/signup"
+      },
+      {
+        "label": "Book a demo",
+        "href": "https://cal.com/team/ravion/demo"
       }
     ]
   },
