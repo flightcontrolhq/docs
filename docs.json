@@ -10,13 +10,13 @@
   "fonts": {
     "body": {
       "family": "PP Neue Montreal",
-      "source": "/fonts/PPNeueMontreal-Variable.woff2",
+      "source": "/docs/fonts/PPNeueMontreal-Variable.woff2",
       "format": "woff2",
       "weight": 450
     },
     "heading": {
       "family": "PP Fragment",
-      "source": "/fonts/PPFragment-GlareRegular.woff2",
+      "source": "/docs/fonts/PPFragment-GlareRegular.woff2",
       "format": "woff2",
       "weight": 400
     }
