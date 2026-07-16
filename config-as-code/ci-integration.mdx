@@ -5,11 +5,12 @@ description: "Plan Ravion configuration changes on every pull request and apply 
 
 Keep your [project](/config-as-code/project-config-file) and [pipeline](/config-as-code/pipeline-config-file) config files in your repository and let GitHub Actions manage them. Open a pull request to preview the planned changes as a comment, then apply them automatically when the pull request merges.
 
-The workflow has three jobs that cover both projects and pipelines:
+The workflow uses path filters so unrelated changes do not allocate a runner. YAML anchors define each config file path once and reuse it in the pull request and push filters.
 
-- **`changed-resources`** — builds the list of projects and pipelines whose config file changed in the pull request or push.
-- **Plan on pull request** — runs `ravion ... config apply --dry-run` for each changed resource and posts every plan in a single, updating PR comment.
-- **Apply on merge** — runs `ravion ... config apply` for each changed resource when the branch merges into your default branch.
+Two jobs cover projects and pipelines. Only the job for the current event runs:
+
+- **Plan on pull request** — shallow-fetches the comparison commit, runs `ravion ... config apply --dry-run` for each changed resource, and posts every plan in a single, updating PR comment.
+- **Apply on merge** — shallow-fetches the comparison commit and runs `ravion ... config apply` for each changed resource when the branch merges into your default branch.
 
 ## Authenticate in CI
 
@@ -34,7 +35,7 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 <Prompt description="Discover your Ravion config files and add the CI workflow." icon="sparkles" actions={["copy", "cursor"]}>
   Add a GitHub Actions workflow to this repository that plans Ravion config changes on pull requests and applies them on merge to the default branch. Work through these steps:
 
-1. Fetch the workflow template from the Ravion docs at https://www.ravion.com/docs/config-as-code/ci-integration and use the `.github/workflows/ravion.yml` YAML block there as the starting point. Keep its jobs and logic unchanged — you only edit the `env` values (`PROJECTS`, `PIPELINES`, `RAVION_CLI_VERSION`, and optionally `RAVION_AUTOAPPROVE`) and the `runs-on` values, as described below.
+1. Fetch the workflow template from the Ravion docs at https://www.ravion.com/docs/config-as-code/ci-integration and use the `.github/workflows/ravion.yml` YAML block there as the starting point. Keep its jobs and logic unchanged. Only edit the indexed resource variables, their path aliases, `RAVION_CLI_VERSION`, optionally `RAVION_AUTOAPPROVE`, the default branch, and the `runs-on` values as described below.
 
 2. Find every Ravion config file in the repo:
    - Search files with these extensions: `.yaml`, `.yml`, `.json`, `.jsonc`, `.cue`. The names usually include `ravion` (project configs) or `pipeline` (pipeline configs), so prioritize those, but confirm each by its contents.
@@ -43,19 +44,24 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
      - Pipeline config: has top-level `steps` AND `variants` arrays (often also `triggers` and `inputs`).
    - Exclude legacy Flightcontrol config files. Skip a file if any of these are true: it is named `flightcontrol.json`, `flightcontrol.cue`, or `flightcontrol-*.json`; it has a `$schema` pointing at `app.flightcontrol.dev`; or it has a top-level `environments` array whose entries contain `services` (with fields like `buildType`, `ci`, `region`, or `source`) and there is NO top-level `project` object. These are a different product.
    - Read each file's unique ID from inside the file. Project: use `project.id` (a value starting with `proj_`); do not put `project.givenId` in the workflow, and if only `project.givenId` is present, look up the unique ID by running `ravion project list --json` (when the `ravion` CLI is installed and authenticated) and using the `id` of the entry whose `givenId` matches, otherwise treat the ID as undetermined. Pipeline: use the `pipe_` ID, which Ravion writes into a header comment at the top of pulled files; if the body has no ID, take it from that comment.
-   - For `.jsonc` and `.cue`, account for comments when parsing. Use each file's path relative to the repo root for the `file:` value.
+   - For `.jsonc` and `.cue`, account for comments when parsing. Use each file's path relative to the repo root for its `*_FILE` value.
 
-3. Populate `env.PROJECTS` with one `{ project_id, file }` entry per project config, and `env.PIPELINES` with one `{ pipeline_id, file }` entry per pipeline config. Either list may be empty.
+3. Add one contiguous indexed environment-variable pair for each config file:
+   - Projects use `RAVION_PROJECT_N_ID` and `RAVION_PROJECT_N_FILE`, starting at `N=1`. Set the ID to the `proj_` ID. Define a unique YAML anchor on the file value, for example `RAVION_PROJECT_1_FILE: &ravion_project_1_file packages/web/ravion.yaml`.
+   - Pipelines use `RAVION_PIPELINE_N_ID` and `RAVION_PIPELINE_N_FILE`, starting at `N=1`. Set the ID to the `pipe_` ID and define a unique YAML anchor on the file value.
+   - Keep indexes contiguous within each resource type. Omit that resource type when none exist.
 
-4. Set `env.RAVION_CLI_VERSION` to the latest Ravion CLI version number, without the leading `v`. Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest (the URL redirects to the newest tag, such as `v0.1.6` — use `0.1.6`), or run `ravion --version` if the CLI is installed.
+4. Add every file anchor once to `on.pull_request.paths`. Keep the `&ravion_paths` anchor on that list and `paths: *ravion_paths` under `on.push`, so both events use the same filters without repeating any path string.
 
-5. Match the runner to the repo: check the other workflows under `.github/workflows/`. If they run on a custom or self-hosted runner (a `runs-on` value other than the GitHub-hosted `ubuntu-latest`/`ubuntu-*` labels — for example a self-hosted label or a runner group), set `runs-on` to that same runner for every job in this workflow. Otherwise keep `ubuntu-latest`.
+5. Set `env.RAVION_CLI_VERSION` to the latest Ravion CLI version number, without the leading `v`. Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest (the URL redirects to the newest tag, such as `v0.1.6` — use `0.1.6`), or run `ravion --version` if the CLI is installed.
 
-6. Write the workflow to `.github/workflows/ravion.yml`. If you could not determine the ID for any file, add its entry with a TODO placeholder and list those files so I can fill them in.
+6. Set `on.push.branches` to the repository's default branch. Match the runner to the repo by checking the other workflows under `.github/workflows/`. If they run on a custom or self-hosted runner (a `runs-on` value other than the GitHub-hosted `ubuntu-latest`/`ubuntu-*` labels — for example a self-hosted label or a runner group), set `runs-on` to that same runner for both jobs. Otherwise keep `ubuntu-latest`.
+
+7. Write the workflow to `.github/workflows/ravion.yml`. If you could not determine the ID for any file, add its indexed pair with a TODO placeholder and list those files so I can fill them in.
 
 </Prompt>
 
-Create `.github/workflows/ravion.yml`. Define your projects and pipelines once in the top-level `env.PROJECTS` and `env.PIPELINES` lists, each entry pairing a resource's unique ID (`proj_` or `pipe_`) with the path to its config file.
+Create `.github/workflows/ravion.yml`. Define each project or pipeline as a contiguous indexed ID/file pair. Anchor every `*_FILE` value and reuse those aliases in `ravion_paths`, so each config file path appears once.
 
 Set `RAVION_CLI_VERSION` to the [CLI release](/cli/releases) you want CI to use. Leave `RAVION_AUTOAPPROVE` as `"false"` to require manual approval of [stack change pipeline runs](/modules/stack#stacks-change-through-pipelines) in the Ravion dashboard, or set it to `"true"` to auto-approve project applies.
 
@@ -66,70 +72,114 @@ env:
   RAVION_API_KEY: ${{ secrets.RAVION_API_KEY }}
   RAVION_AUTOAPPROVE: "false"
   RAVION_CLI_VERSION: "0.1.6"
-  PROJECTS: |
-    - project_id: proj_3AV4cGr0t841Bstn4swCCrHrgly
-      file: packages/web/ravion.yaml
-    - project_id: proj_1CV4cGr0t841Bstn4swCCrHrgh7
-      file: packages/api/ravion.yaml
-  PIPELINES: |
-    - pipeline_id: pipe_8Kd2mZq0t41Bstn4swCCrHrAa9
-      file: ravion-pipeline.yaml
+  # Keep indexes contiguous within each resource type.
+  RAVION_PROJECT_1_ID: proj_3AV4cGr0t841Bstn4swCCrHrgly
+  RAVION_PROJECT_1_FILE: &ravion_project_1_file packages/web/ravion.yaml
+  RAVION_PROJECT_2_ID: proj_1CV4cGr0t841Bstn4swCCrHrgh7
+  RAVION_PROJECT_2_FILE: &ravion_project_2_file packages/api/ravion.yaml
+  RAVION_PIPELINE_1_ID: pipe_8Kd2mZq0t41Bstn4swCCrHrAa9
+  RAVION_PIPELINE_1_FILE: &ravion_pipeline_1_file ravion-pipeline.yaml
 
 on:
   pull_request:
+    paths: &ravion_paths
+      - *ravion_project_1_file
+      - *ravion_project_2_file
+      - *ravion_pipeline_1_file
   push:
     branches:
       - main
+    paths: *ravion_paths
 
 jobs:
-  changed-resources:
-    runs-on: ubuntu-latest
-    outputs:
-      resources: ${{ steps.list.outputs.resources }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - id: list
-        env:
-          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
-          HEAD: ${{ github.sha }}
-        run: |
-          projects=$(yq -o=json -I=0 '. // []' <<< "${PROJECTS:-[]}")
-          pipelines=$(yq -o=json -I=0 '. // []' <<< "${PIPELINES:-[]}")
-          all=$(jq -cn --argjson p "$projects" --argjson l "$pipelines" '
-            ($p // [] | map({kind: "project",  id: .project_id,  file: .file})) +
-            ($l // [] | map({kind: "pipeline", id: .pipeline_id, file: .file}))
-          ')
-          if [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
-            git diff --name-only "$(git hash-object -t tree /dev/null)" "$HEAD" > changed.txt
-          else
-            git diff --name-only "$BASE" "$HEAD" > changed.txt
-          fi
-          resources=$(jq -cn --argjson all "$all" --rawfile changed changed.txt '
-            ($changed | split("\n") | map(select(length > 0))) as $files
-            | $all | map(select(.file as $f | $files | index($f)))
-          ')
-          echo "resources=$resources" >> "$GITHUB_OUTPUT"
-
   plan:
-    needs: changed-resources
-    if: github.event_name == 'pull_request' && needs.changed-resources.outputs.resources != '' && needs.changed-resources.outputs.resources != '[]'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - &list_changed_resources
+        id: list
+        name: List changed resources
+        env:
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.sha }}
+        run: |
+          all_changed=false
+          if [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            all_changed=true
+          else
+            if ! git cat-file -e "$BASE^{commit}" 2> /dev/null; then
+              git fetch --no-tags --depth=1 origin "$BASE"
+            fi
+            git diff --name-only "$BASE" "$HEAD" > changed.txt
+          fi
+
+          resources='[]'
+          configured=0
+          for resource in project:RAVION_PROJECT pipeline:RAVION_PIPELINE; do
+            kind=${resource%%:*}
+            prefix=${resource#*:}
+            i=1
+            while true; do
+              id_var="${prefix}_${i}_ID"
+              file_var="${prefix}_${i}_FILE"
+
+              if [[ ! -v $id_var && ! -v $file_var ]]; then
+                break
+              fi
+              if [[ ! -v $id_var || ! -v $file_var ]]; then
+                echo "$kind $i must define both $id_var and $file_var" >&2
+                exit 1
+              fi
+
+              configured=$((configured + 1))
+              id="${!id_var}"
+              file="${!file_var}"
+              changed=$all_changed
+              if [ "$changed" = false ]; then
+                while IFS= read -r changed_file; do
+                  if [ "$changed_file" = "$file" ]; then
+                    changed=true
+                    break
+                  fi
+                done < changed.txt
+              fi
+
+              if [ "$changed" = true ]; then
+                resources=$(jq -cn \
+                  --argjson current "$resources" \
+                  --arg kind "$kind" \
+                  --arg id "$id" \
+                  --arg file "$file" \
+                  '$current + [{kind: $kind, id: $id, file: $file}]')
+              fi
+
+              i=$((i + 1))
+            done
+          done
+
+          if [ "$configured" -eq 0 ]; then
+            echo "At least one Ravion project or pipeline must be configured" >&2
+            exit 1
+          fi
+
+          echo "resources=$resources" >> "$GITHUB_OUTPUT"
 
       - name: Install the Ravion CLI
+        if: steps.list.outputs.resources != '[]'
         run: curl -fsSL "https://github.com/flightcontrolhq/cli/releases/download/v${RAVION_CLI_VERSION}/install.sh" | sh
 
       - name: Build plan comment
+        if: steps.list.outputs.resources != '[]'
         id: plan
         env:
-          RESOURCES: ${{ needs.changed-resources.outputs.resources }}
+          RESOURCES: ${{ steps.list.outputs.resources }}
         run: |
           {
             echo 'body<<BODY_EOF'
@@ -170,6 +220,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Comment the plan on the PR
+        if: steps.list.outputs.resources != '[]'
         uses: actions/github-script@v7
         with:
           script: |
@@ -198,20 +249,25 @@ jobs:
             }
 
   apply:
-    needs: changed-resources
-    if: github.event_name == 'push' && needs.changed-resources.outputs.resources != '' && needs.changed-resources.outputs.resources != '[]'
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - *list_changed_resources
 
       - name: Install the Ravion CLI
+        if: steps.list.outputs.resources != '[]'
         run: curl -fsSL "https://github.com/flightcontrolhq/cli/releases/download/v${RAVION_CLI_VERSION}/install.sh" | sh
 
       - name: Apply changes
+        if: steps.list.outputs.resources != '[]'
         env:
-          RESOURCES: ${{ needs.changed-resources.outputs.resources }}
+          RESOURCES: ${{ steps.list.outputs.resources }}
         run: |
           while read -r resource; do
             kind=$(jq -r '.kind' <<< "$resource")
@@ -229,6 +285,12 @@ jobs:
             fi
           done < <(jq -c '.[]' <<< "$RESOURCES")
 ````
+
+<Note>
+  GitHub leaves a path-filtered workflow's check pending when the workflow is configured as a
+  required status check but none of its paths match. Keep this workflow optional, or use a separate
+  always-running check for branch protection.
+</Note>
 
 <Warning>
   `RAVION_AUTOAPPROVE: "true"` makes project applies approve supported stack change pipeline runs
