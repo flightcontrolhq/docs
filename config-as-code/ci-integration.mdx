@@ -34,7 +34,7 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 <Prompt description="Discover your Ravion config files and add the CI workflow." icon="sparkles" actions={["copy", "cursor"]}>
   Add a GitHub Actions workflow to this repository that plans Ravion config changes on pull requests and applies them on merge to the default branch. Work through these steps:
 
-1. Fetch the workflow template from the Ravion docs at https://docs.ravion.com/config-as-code/ci-integration and use the `.github/workflows/ravion.yml` YAML block there as the starting point. Keep its jobs and logic unchanged — you only edit the `env` values (`PROJECTS`, `PIPELINES`, `RAVION_CLI_VERSION`, and optionally `RAVION_AUTOAPPROVE`) and the `runs-on` values, as described below.
+1. Fetch the workflow template from the Ravion docs at https://www.ravion.com/docs/config-as-code/ci-integration and use the `.github/workflows/ravion.yml` YAML block there as the starting point. Keep its jobs and logic unchanged — you only edit the `env` values (`PROJECTS`, `PIPELINES`, `RAVION_CLI_VERSION`, and optionally `RAVION_AUTOAPPROVE`) and the `runs-on` values, as described below.
 
 2. Find every Ravion config file in the repo:
    - Search files with these extensions: `.yaml`, `.yml`, `.json`, `.jsonc`, `.cue`. The names usually include `ravion` (project configs) or `pipeline` (pipeline configs), so prioritize those, but confirm each by its contents.

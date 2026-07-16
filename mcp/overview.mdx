@@ -10,7 +10,7 @@ Ravion Docs includes a hosted Model Context Protocol (MCP) server for your AI to
 Use `add-mcp` to add Ravion Docs to supported MCP clients:
 
 ```bash
-npx add-mcp https://docs.ravion.com/mcp
+npx add-mcp https://www.ravion.com/docs/mcp
 ```
 
 The installer supports tools like Claude Code, Cursor, OpenCode, VS Code, and Codex. If your client supports remote HTTP MCP servers directly, you can also use the server URL in the client configuration.
@@ -31,7 +31,7 @@ It can:
 Run this command from your terminal:
 
 ```bash
-claude mcp add --transport http ravion-docs https://docs.ravion.com/mcp
+claude mcp add --transport http ravion-docs https://www.ravion.com/docs/mcp
 ```
 
 Then ask Claude Code questions about Ravion. Claude can use the MCP server when it needs documentation context.
@@ -44,7 +44,7 @@ Open your MCP settings in Cursor and add this server:
 {
   "mcpServers": {
     "ravion-docs": {
-      "url": "https://docs.ravion.com/mcp"
+      "url": "https://www.ravion.com/docs/mcp"
     }
   }
 }
@@ -57,13 +57,13 @@ Reload Cursor after saving the MCP configuration.
 Use the remote HTTP MCP transport and set the server URL to:
 
 ```text
-https://docs.ravion.com/mcp
+https://www.ravion.com/docs/mcp
 ```
 
 If your client supports MCP discovery, use:
 
 ```text
-https://docs.ravion.com/.well-known/mcp
+https://www.ravion.com/docs/.well-known/mcp
 ```
 
 ## Notes

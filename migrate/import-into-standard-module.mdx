@@ -28,7 +28,7 @@ Use this guide to bring infrastructure that already exists — a production S3 b
 The import flow is mechanical but detail-heavy: reading resource addresses from the plan, inspecting real resource settings, matching module inputs, mapping addresses to import IDs. A coding agent with access to your provider's CLI handles it well. The steps are the [manual walkthrough](#manual-walkthrough) below — this prompt points your agent at it and sets the guardrails:
 
 <Prompt description="Create the module, import existing infrastructure into it, and verify a clean plan." icon="sparkles" actions={["copy", "cursor"]}>
-  Fetch https://docs.ravion.com/migrate/import-into-standard-module.md and follow its manual walkthrough to import existing infrastructure into a Ravion module so Ravion manages it without recreating anything. I will tell you what to import and which module type (for example, an existing RDS database into `rvn-rds`). Guardrails:
+  Fetch https://www.ravion.com/docs/migrate/import-into-standard-module.md and follow its manual walkthrough to import existing infrastructure into a Ravion module so Ravion manages it without recreating anything. I will tell you what to import and which module type (for example, an existing RDS database into `rvn-rds`). Guardrails:
 
 - Verify the prerequisites before starting.
 - The flow imports into exactly one module instance. If I ask for infrastructure that belongs in separate modules, tell me and run the flow once per module instance.
