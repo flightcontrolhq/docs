@@ -12,12 +12,28 @@ List possible values for things like aws regions
 
 **Aliases:** `value`
 
-### `ravion values aws-ec2-instance-types`
+### `ravion values aws-ecr-image`
+
+Get AWS ECR image values
+
+```bash
+ravion values aws-ecr-image [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--image-ref <<account>.dkr.ecr.<region>.amazonaws.com/<repository>:<tag>>` | yes | Fully-qualified ECR image references (&lt;account&gt;.dkr.ecr.&lt;region&gt;.amazonaws.com/&lt;repository&gt;:&lt;tag&gt; or `…@sha256:&lt;digest&gt;`). Non-ECR references are rejected. |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
+### `ravion values aws/ec2/instances`
 
 Get AWS EC2 instance type values
 
 ```bash
-ravion values aws-ec2-instance-types [flags]
+ravion values aws/ec2/instances [flags]
 ```
 
 **Flags:**
@@ -29,12 +45,12 @@ ravion values aws-ec2-instance-types [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
-### `ravion values aws-fargate-sizes`
+### `ravion values aws/fargate/sizes`
 
 Get AWS Fargate size values
 
 ```bash
-ravion values aws-fargate-sizes [flags]
+ravion values aws/fargate/sizes [flags]
 ```
 
 **Flags:**
@@ -48,12 +64,12 @@ ravion values aws-fargate-sizes [flags]
 | `--region <string>` |  | AWS region code used for pricing |
 | `-v, --verbose` |  | show full output |
 
-### `ravion values aws-regions`
+### `ravion values aws/regions`
 
 Get AWS region values
 
 ```bash
-ravion values aws-regions [flags]
+ravion values aws/regions [flags]
 ```
 
 **Flags:**
@@ -63,12 +79,12 @@ ravion values aws-regions [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
-### `ravion values aws-security-groups`
+### `ravion values aws/security-groups`
 
 Get AWS security group values
 
 ```bash
-ravion values aws-security-groups [flags]
+ravion values aws/security-groups [flags]
 ```
 
 **Flags:**
@@ -81,12 +97,12 @@ ravion values aws-security-groups [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
-### `ravion values aws-subnets`
+### `ravion values aws/subnets`
 
 Get AWS subnet values
 
 ```bash
-ravion values aws-subnets [flags]
+ravion values aws/subnets [flags]
 ```
 
 **Flags:**
@@ -99,12 +115,12 @@ ravion values aws-subnets [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
-### `ravion values aws-vpcs`
+### `ravion values aws/vpcs`
 
 Get AWS VPC values
 
 ```bash
-ravion values aws-vpcs [flags]
+ravion values aws/vpcs [flags]
 ```
 
 **Flags:**
@@ -116,12 +132,12 @@ ravion values aws-vpcs [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
-### `ravion values opentofu-versions`
+### `ravion values opentofu/versions`
 
 Get OpenTofu version values
 
 ```bash
-ravion values opentofu-versions [flags]
+ravion values opentofu/versions [flags]
 ```
 
 **Flags:**
@@ -131,12 +147,12 @@ ravion values opentofu-versions [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
-### `ravion values terraform-versions`
+### `ravion values terraform/versions`
 
 Get Terraform version values
 
 ```bash
-ravion values terraform-versions [flags]
+ravion values terraform/versions [flags]
 ```
 
 **Flags:**

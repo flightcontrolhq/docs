@@ -235,6 +235,7 @@ ravion pipeline run list [flags]
 | `--limit-per-pipeline <pipelineId>` |  | When set together with pipelineId, return only the newest N runs per pipeline. |
 | `--pipeline-id <strings>` |  | pipelineId |
 | `--pipeline-version-id <string>` |  | pipelineVersionId |
+| `--stack-id <string>` |  | Stack ID to filter by (alias for --attached-entity-id) |
 | `--status <strings>` |  | Filter to runs in any of these statuses. |
 | `-v, --verbose` |  | show full output |
 
@@ -271,6 +272,23 @@ ravion pipeline run terraform-resources <id> [flags]
 | `--json` |  | emit response as JSON |
 | `--limit <int>` |  | limit |
 | `-v, --verbose` |  | show full output |
+
+#### `ravion pipeline run wait`
+
+Wait for a pipeline run status
+
+```bash
+ravion pipeline run wait <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `--timeout <duration>` |  | maximum time to wait; zero waits indefinitely |
+| `--until <string>` |  | return when this status is reached, for example PENDING_APPROVAL |
+| `--watch` |  | print run and step status changes while waiting |
 
 ### `ravion pipeline schema`
 

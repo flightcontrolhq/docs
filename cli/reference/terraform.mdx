@@ -1,7 +1,7 @@
 ---
 title: "ravion terraform"
 sidebarTitle: "terraform"
-description: "Manage Terraform Cloud credentials, providers, workspaces, and resources connected to Ravion from the `ravion terraform` CLI command group."
+description: "Manage Terraform Cloud credentials, providers, state workspaces, and resources connected to Ravion from the `ravion terraform` CLI command group."
 ---
 
 {/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
@@ -42,7 +42,7 @@ ravion terraform execution-summary get <id> [flags]
 
 #### `ravion terraform execution-summary list`
 
-List terraform execution summaries
+List persisted Terraform execution summaries. Runs that fail before Terraform report generation do not produce a summary; use `ravion pipeline run list --stack-id &lt;id&gt;` to list every execution attempt.
 
 ```bash
 ravion terraform execution-summary list [flags]
@@ -53,9 +53,9 @@ ravion terraform execution-summary list [flags]
 | Flag | Required | Description |
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
-| `--pipeline-id <string>` |  | Pipeline ID to filter by - returns summaries for all runs of this pipeline |
+| `--pipeline-id <string>` |  | Pipeline ID to filter by - returns available summaries for runs of this pipeline |
 | `--pipeline-run-id <string>` |  | Pipeline run ID to filter by |
-| `--stack-id <string>` |  | Stack ID to filter by - returns summaries for all runs of this stack |
+| `--stack-id <string>` |  | Stack ID to filter by. Runs without a Terraform report are excluded; use ravion pipeline run list --stack-id STACK_ID to list every attempt. |
 | `--step-execution-id <string>` |  | Step execution ID to filter by (optional) |
 | `-v, --verbose` |  | show full output |
 
@@ -124,7 +124,7 @@ command after `--` once, with TF_CLOUD_HOSTNAME, TF_CLOUD_ORGANIZATION,
 TF_WORKSPACE, and TF_TOKEN_&lt;host&gt; wired so terraform/tofu talks directly
 to the Ravion cloud using your CLI session access token.
 
-Pass --workspace &lt;name&gt; to select a workspace non-interactively (skips the picker);
+Pass --workspace &lt;name&gt; to select a Terraform state workspace non-interactively (skips the picker);
 the module-instance delete output prints the exact value to back up its state.
 
 **Aliases:** `sh`
@@ -137,12 +137,12 @@ ravion terraform shell [--workspace <name>] [-- cmd args...] [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--workspace <string>` |  | Select this Terraform workspace by name, skipping the interactive picker |
+| `--workspace <string>` |  | Select this Terraform state workspace by name, skipping the interactive picker |
 
 ### `ravion terraform state`
 
-state forwards any `terraform state` subcommand to a managed Ravion workspace, wiring up
-the cloud backend in a throwaway directory first — no local config or `terraform init`
+state forwards state subcommands to the Terraform or OpenTofu tool used by a managed Ravion state workspace,
+wiring up the cloud backend in a local cache first — no local config or manual initialization
 needed. Examples:
 
   ravion terraform state pull --workspace &lt;name&gt; &gt; backup.tfstate
@@ -150,9 +150,21 @@ needed. Examples:
   ravion terraform state show &lt;address&gt; --workspace &lt;name&gt;
 
 --workspace is consumed by ravion; every other flag and arg is passed straight through
-to `terraform state`.
+to the selected tool's `state` command.
 
 ```bash
 ravion terraform state --workspace <name> <subcommand> [args...]
+```
+
+### `ravion terraform workspace`
+
+workspace groups commands that operate on the Terraform state workspaces of the active organization. Run `ravion switch` first to choose an organization. State workspace selection happens when you run `ravion terraform shell` or pass `--workspace` to `ravion terraform state`.
+
+#### `ravion terraform workspace list`
+
+List Terraform state workspaces in the active organization
+
+```bash
+ravion terraform workspace list
 ```
 

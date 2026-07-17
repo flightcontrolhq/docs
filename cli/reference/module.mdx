@@ -27,12 +27,13 @@ ravion module create [flags]
 | `--environment-id <string>` | yes | Environment ID where this instance is deployed |
 | `--given-id <string>` | yes | User-provided unique identifier. Must be unique within environment. |
 | `--input <string>` | yes | Configuration input object for the module instance |
-| `--module-definition-id <string>` | yes | Module definition ID |
-| `--module-version-id <string>` | yes | Module version ID for the current configuration |
 | `--name <string>` | yes | User-provided instance name. |
 | `--description <string>` |  | Optional description of the module instance. |
 | `--initial-stack-run <string>` |  | Initial stack run behavior after creating a stack-backed module instance. Defaults to NONE. PLAN starts a stack run. APPLY starts a stack run with the autoapprove input enabled. Available values: NONE, PLAN, APPLY. |
 | `--json` |  | emit response as JSON |
+| `--module-definition-id <string>` |  | Module definition ID |
+| `--module-version-id <string>` |  | Module version ID for the current configuration |
+| `--type <string>` |  | Module type and optional version, for example rvn-s3 or rvn-s3@0.3.0. Defaults to the latest version. |
 
 ### `ravion module definition`
 

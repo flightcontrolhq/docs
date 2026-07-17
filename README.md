@@ -32,13 +32,13 @@ View your local preview at `http://localhost:3000`.
 
 ## Regenerating reference docs
 
-The schema and CLI reference pages are generated from the `flightcontrol2` repo and committed into this repo. The commands below assume `ravion-docs` and `flightcontrol2` are sibling directories.
+The schema and CLI reference pages are generated from the `flightcontrol` repo and committed into this repo. The commands below assume `ravion-docs` and `flightcontrol` are sibling directories.
 
 ### Schema docs (pipeline, module, project config)
 
 ```bash
 # 1. Generate human-friendly Markdown from the OpenAPI specs
-cd ../flightcontrol2/packages/schemas
+cd ../flightcontrol/packages/schemas
 make generate-schema-ref-docs
 
 # 2. Copy the generated files into this repo as snippets
@@ -51,7 +51,7 @@ pnpm sync:schema-reference
 ### CLI docs
 
 ```bash
-cd ../flightcontrol2/packages/cli
+cd ../flightcontrol/packages/cli
 make docs
 ```
 
