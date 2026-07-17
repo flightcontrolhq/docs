@@ -29,13 +29,7 @@
         "groups": [
           {
             "group": "Introduction",
-            "pages": [
-              "index",
-              "start-here",
-              "how-ravion-works",
-              "philosophy",
-              "contact-support"
-            ]
+            "pages": ["index", "start-here", "how-ravion-works", "philosophy", "contact-support"]
           },
           {
             "group": "Use cases",
@@ -123,16 +117,11 @@
           },
           {
             "group": "Guides",
-            "pages": [
-              "guides/custom-domains"
-            ]
+            "pages": ["guides/custom-domains"]
           },
           {
             "group": "Module definitions",
-            "pages": [
-              "module-definitions/catalog",
-              "module-definitions/definition-schema"
-            ]
+            "pages": ["module-definitions/catalog", "module-definitions/definition-schema"]
           }
         ]
       },
@@ -141,12 +130,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "cli/overview",
-              "cli/installation",
-              "cli/authentication",
-              "cli/releases"
-            ]
+            "pages": ["cli/overview", "cli/installation", "cli/authentication", "cli/releases"]
           },
           {
             "group": "Command reference",
@@ -190,9 +174,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "mcp/overview"
-            ]
+            "pages": ["mcp/overview"]
           }
         ]
       },
@@ -201,9 +183,7 @@
         "groups": [
           {
             "group": "Get started",
-            "pages": [
-              "api-reference/overview"
-            ]
+            "pages": ["api-reference/overview"]
           },
           {
             "group": "API reference",
@@ -227,6 +207,11 @@
       {
         "label": "Book a demo",
         "href": "https://cal.com/team/ravion/demo"
+      },
+      {
+        "type": "discord",
+        "label": "Discord",
+        "href": "https://discord.gg/pfP3ysX5m"
       }
     ]
   },
@@ -240,16 +225,7 @@
     }
   },
   "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "mcp", "cursor", "vscode"]
   },
   "footer": {
     "socials": {
