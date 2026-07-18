@@ -130,10 +130,12 @@
         "groups": [
           {
             "group": "Get started",
+            "boost": 0.5,
             "pages": ["cli/overview", "cli/installation", "cli/authentication", "cli/releases"]
           },
           {
             "group": "Command reference",
+            "boost": 0.5,
             "pages": [
               "cli/reference/api-key",
               "cli/reference/aws",
@@ -183,10 +185,12 @@
         "groups": [
           {
             "group": "Get started",
+            "boost": 0.25,
             "pages": ["api-reference/overview"]
           },
           {
             "group": "API reference",
+            "boost": 0.25,
             "openapi": "https://api.ravion.com/openapi.yaml"
           }
         ]
