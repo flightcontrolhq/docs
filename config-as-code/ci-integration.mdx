@@ -184,7 +184,9 @@ jobs:
           {
             echo 'body<<BODY_EOF'
             echo '<!-- ravion-plan -->'
-            echo '## Ravion planned changes'
+            echo '<a href="https://app.ravion.com">'
+            echo '  <img src="https://www.ravion.com/docs/logo/dark.svg" alt="Ravion" width="152">'
+            echo '</a>'
             echo
 
             while read -r resource; do
