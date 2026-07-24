@@ -4,7 +4,8 @@ import path from "node:path";
 const root = process.cwd();
 const sourceDir = path.resolve(
   root,
-  "../flightcontrol/packages/schemas/schema_reference/docs",
+  process.env.SCHEMA_REFERENCE_SRC ??
+    "../flightcontrol/packages/schemas/schema_reference/docs",
 );
 const targetDir = path.join(root, "snippets/schema-reference");
 

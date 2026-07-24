@@ -36,6 +36,8 @@ The schema and CLI reference pages are generated from the `flightcontrol` repo a
 
 ### Schema docs (pipeline, module, project config)
 
+The monorepo syncs the committed schema reference Markdown into this repo daily at 09:00 UTC. To regenerate and sync it manually:
+
 ```bash
 # 1. Generate human-friendly Markdown from the OpenAPI specs
 cd ../flightcontrol/packages/schemas
@@ -43,10 +45,13 @@ make generate-schema-ref-docs
 
 # 2. Copy the generated files into this repo as snippets
 cd -
-pnpm sync:schema-reference
+SCHEMA_REFERENCE_SRC=/absolute/path/to/flightcontrol/packages/schemas/schema_reference/docs \
+  pnpm sync:schema-reference
 ```
 
 `make generate-schema-ref-docs` regenerates the OpenAPI specs first and writes `schema_reference/docs/{pipeline,module,project-config}.md`. `pnpm sync:schema-reference` copies them into `snippets/schema-reference/` (consumed by the config file pages).
+
+If `SCHEMA_REFERENCE_SRC` is unset, the sync script reads from the sibling path `../flightcontrol/packages/schemas/schema_reference/docs`. Set it explicitly when that checkout is absent or stale.
 
 ### CLI docs
 
