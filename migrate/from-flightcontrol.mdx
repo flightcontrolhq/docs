@@ -111,15 +111,16 @@ Your organization has a module catalogue that has our standard libary of modules
 - **Full-featured logs viewer** — search, filtering, histogram, and time ranges across all tasks and log streams, plus environment-level logs across all your services in one stream
 - **Instant static site deploys and rollbacks** — deployed versions are switched via CloudFront Key Value Store instead of a slow CloudFront update
 - **IAM module** — create any IAM role or policy as part of your environment
+- **EC2 Service module** — something Flightcontrol never had: deploy straight to stable EC2 hosts with in-place container or manual (non-containerized) deploys, shared ALB routing, and per-instance deploy logs, for workloads with host-level requirements
 
 ## Mapping of Flightcontrol service types to Ravion modules
 
 | Flightcontrol concept                                     | Ravion module(s)                                     | Notes                                                                                                                              |
 | --------------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | **Environment VPC**<br />`vpc`                            | `rvn-aws-network`                                    | Was built into each environment. Now a standalone module referenced by other modules.                                              |
-| **Web server**<br />`web` or `fargate`                    | `rvn-ecs-web` + `rvn-ecs-cluster` + `rvn-cloudfront` | Cluster and public load balancer are now standalone and can be shared by multiple services. CloudFront becomes an optional module. |
+| **Web server**<br />`web` or `fargate`                    | `rvn-ecs-web` + `rvn-ecs-cluster` + `rvn-cloudfront` | Cluster and public load balancer are now standalone and can be shared by multiple services. CloudFront becomes an optional module. Or use `rvn-ec2-service` + `rvn-aws-alb` when the app needs stable hosts or host-level control. |
 | **Private web**<br />`web-private`                        | `rvn-ecs-web` + `rvn-ecs-cluster`                    | Cluster and private load balancer are now standalone and can be shared by multiple services.                                       |
-| **Worker**<br />`worker` or `fargate-worker`              | `rvn-ecs-worker` + `rvn-ecs-cluster`                 | Background workloads now reference the standalone cluster.                                                                         |
+| **Worker**<br />`worker` or `fargate-worker`              | `rvn-ecs-worker` + `rvn-ecs-cluster`                 | Background workloads now reference the standalone cluster. Or use `rvn-ec2-service` with Web service off for host-level or non-containerized workers. |
 | **Network server**<br />`network-server`                  | `rvn-ecs-nlb` + `rvn-ecs-cluster`                    | TCP, UDP, or TLS workloads behind a Network Load Balancer. References the standalone cluster.                                      |
 | **Private network server**<br />`network-server-private`  | `rvn-ecs-nlb` + `rvn-ecs-cluster`                    | Same network service module, with private load balancer routing.                                                                   |
 | **Static site**<br />`static`                             | `rvn-aws-static`                                     | S3-backed static sites and assets served through CloudFront.                                                                       |

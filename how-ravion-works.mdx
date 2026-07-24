@@ -42,6 +42,8 @@ For example, in an ECS deployment, we take a task definition template, fill in r
 
 You get a much more comprehensive and easy to understand view of the deployment data than you can possibly get in your CI or AWS console.
 
+EC2 deployments work the same way: we update the existing instances in place over SSM — replacing a container or running your own deploy commands — and surface per-instance status and logs for every host in the group.
+
 For Kubernetes deployments (coming soon), we can directly deploy Helm charts to clusters or integrate with ArgoCD.
 
 ## 7. See all your infrastructure, builds, deploys, metrics, and logs in a single place
