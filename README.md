@@ -36,7 +36,7 @@ The schema and CLI reference pages are generated from the `flightcontrol` repo a
 
 ### Schema docs (pipeline, module, project config)
 
-The monorepo syncs the committed schema reference Markdown into this repo daily at 09:00 UTC. To regenerate and sync it manually:
+The monorepo syncs the committed schema reference Markdown into this repo daily at 10:00 PM Eastern time. To regenerate and sync it manually:
 
 ```bash
 # 1. Generate human-friendly Markdown from the OpenAPI specs
