@@ -1,0 +1,58 @@
+---
+title: "ravion report"
+sidebarTitle: "report"
+description: "Report bugs and product feedback to Ravion's private triage from the command line without including secrets in the submitted message."
+---
+
+{/* This page is generated from the Ravion CLI source. Do not edit by hand. */}
+
+## `ravion report`
+
+Report bugs and feedback to Ravion's private triage. Reports include your organization, user name, email, and CLI metadata. Do not include secrets.
+
+### `ravion report bug`
+
+Report a bug to Ravion. The report includes your organization, user name, email, and CLI metadata. The message accepts multiline Markdown; quote it as one shell argument. Do not include secrets.
+
+```bash
+ravion report bug "<markdown message>" [flags]
+```
+
+**Examples:**
+
+```bash
+ravion report bug "## What happened
+
+Describe the issue or request with **Markdown**."
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--agent <string>` |  | agent submitting the report (auto-detected when possible) |
+| `--command <string>` |  | Ravion command name related to the report (do not include secrets) |
+
+### `ravion report feedback`
+
+Report feedback to Ravion. The report includes your organization, user name, email, and CLI metadata. The message accepts multiline Markdown; quote it as one shell argument. Do not include secrets.
+
+```bash
+ravion report feedback "<markdown message>" [flags]
+```
+
+**Examples:**
+
+```bash
+ravion report feedback "## What happened
+
+Describe the issue or request with **Markdown**."
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--agent <string>` |  | agent submitting the report (auto-detected when possible) |
+| `--command <string>` |  | Ravion command name related to the report (do not include secrets) |
+

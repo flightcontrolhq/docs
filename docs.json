@@ -157,14 +157,14 @@
             "pages": [
               "cli/reference/api-key",
               "cli/reference/aws",
+              "cli/reference/bug",
               "cli/reference/code-source",
               "cli/reference/default-value",
               "cli/reference/deploy",
               "cli/reference/describe",
               "cli/reference/environment",
+              "cli/reference/feedback",
               "cli/reference/git",
-              "cli/reference/github",
-              "cli/reference/gitlab",
               "cli/reference/infrastructure-event",
               "cli/reference/login",
               "cli/reference/logout",
@@ -175,6 +175,7 @@
               "cli/reference/organization",
               "cli/reference/pipeline",
               "cli/reference/project",
+              "cli/reference/report",
               "cli/reference/service-account",
               "cli/reference/shell-completion",
               "cli/reference/signup",
@@ -183,8 +184,7 @@
               "cli/reference/terraform",
               "cli/reference/user",
               "cli/reference/values",
-              "cli/reference/whoami",
-              "cli/reference/workspace"
+              "cli/reference/whoami"
             ]
           }
         ]

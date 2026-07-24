@@ -144,7 +144,7 @@ function renderInput(input, depth = 0) {
   return lines.join("\n");
 }
 
-function renderInputs(inputs) {
+function renderInputs(inputs, pageTitle) {
   const sections = [];
   let current = {label: null, inputs: []};
   for (const input of inputs) {
@@ -159,10 +159,21 @@ function renderInputs(inputs) {
 
   const parts = [];
   for (const section of sections) {
-    if (section.label) parts.push(`### ${escapeMdx(section.label)}`);
+    if (section.label) {
+      const label = headingSlug(section.label) === headingSlug(pageTitle) ? `${section.label} config` : section.label;
+      parts.push(`### ${escapeMdx(label)}`);
+    }
     for (const input of section.inputs) parts.push(renderInput(input));
   }
   return parts.join("\n\n");
+}
+
+function headingSlug(value) {
+  return String(value)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_\s-]/g, "")
+    .replace(/\s+/g, "-");
 }
 
 function yamlString(value) {
@@ -326,6 +337,7 @@ function renderPage(definition, version, graph) {
     `title: ${yamlString(definition.name)}`,
     `sidebarTitle: ${yamlString(definition.type)}`,
     `description: ${yamlString(definition.description ?? "")}`,
+    `keywords: [${yamlString(definition.type)}, ${yamlString(definition.name)}]`,
     "---",
   ].join("\n");
 
@@ -352,7 +364,7 @@ function renderPage(definition, version, graph) {
       "",
       `All inputs for \`${definition.type}\` version \`${definition.latestVersion}\`. Use the \`name\` shown for each field as the input key in module config.`,
       "",
-      renderInputs(inputs),
+      renderInputs(inputs, definition.name),
     );
   }
 
