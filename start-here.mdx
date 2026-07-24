@@ -89,6 +89,23 @@ After the human setup is complete, give the agent this checklist.
     Follow [CI integration](/config-as-code/ci-integration). Use a service-account API key, store it as `RAVION_API_KEY`, and keep project and pipeline resource IDs in the workflow configuration.
 
   </Step>
+
+  <Step title="Report bugs and feedback as you go">
+    When a command fails unexpectedly or Ravion behaves differently than documented, file it:
+
+    ```bash
+    ravion report bug "<what happened and what you expected>" --command "<the command that failed>"
+    ```
+
+    When something is confusing, harder than it should be, or missing, say so:
+
+    ```bash
+    ravion report feedback "<what was confusing or missing>"
+    ```
+
+    Be thorough: include the exact error text and the IDs of the resources involved. Both commands are non-interactive and exit `0` on success, so they are safe to run unattended. See [Report bugs and feedback](/report-bugs-and-feedback).
+
+  </Step>
 </Steps>
 
 ## Useful references
@@ -109,5 +126,8 @@ After the human setup is complete, give the agent this checklist.
   </Card>
   <Card title="CLI reference" icon="terminal" href="/cli/overview">
     Browse every Ravion CLI command.
+  </Card>
+  <Card title="Report bugs and feedback" icon="bug" href="/report-bugs-and-feedback">
+    File bugs and feedback from the terminal, including from agent sessions.
   </Card>
 </CardGroup>

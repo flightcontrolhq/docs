@@ -1,0 +1,77 @@
+---
+title: "Report bugs and feedback"
+description: "Send bug reports and product feedback to Ravion straight from the terminal with ravion bug and ravion feedback, including from AI agent sessions."
+---
+
+Report bugs and product feedback to Ravion from the terminal. Reports go straight to our private triage — no form, no portal.
+
+## Quick start
+
+```bash
+ravion bug "Deploy mdep_2bH4gM6lTxU2iF0NpSy7oQzJdCb failed with 'module not found' after I renamed the api module instance."
+```
+
+```bash
+ravion feedback "Dry-run output for proj_2eK7jP9oWaX5lI3QsVb0rUcMgFd is hard to read when many modules change at once."
+```
+
+Use `ravion bug` when something is broken and `ravion feedback` when something is confusing, harder than it should be, or missing. Both are also available as `ravion report bug` and `ravion report feedback`.
+
+## What to include
+
+- What happened, then what you expected.
+- The exact error text.
+- IDs of the resources involved, such as `proj_`, `env_`, `minst_`, `pipe_`, `prun_`, `sexec_`, `mdep_`, and `stk_`. Each one resolves at `https://app.ravion.com/go/<id>`, so a single ID is enough for us to find the resource. A dashboard URL works just as well.
+- The command you ran, passed as `--command`.
+
+The message is a single shell argument that accepts multiline Markdown, so quote the whole thing:
+
+```bash
+ravion bug "## What happened
+
+Pipeline run prun_2fL8kQ0pXbY6mJ4RtWc1sVdNhGe failed at the apply step with:
+
+    Error: creating ECS service: InvalidParameterException: unable to assume role
+
+## What I expected
+
+The apply to succeed. The same pipeline applied cleanly yesterday.
+
+## Resources
+
+- Project: proj_2eK7jP9oWaX5lI3QsVb0rUcMgFd
+- Module instance: my-app.production.api
+- Failed step execution: sexec_2dJ6iO8nVzW4kH2PrUa9qTbLfEc" \
+  --command "ravion pipeline run wait prun_2fL8kQ0pXbY6mJ4RtWc1sVdNhGe"
+```
+
+<Warning>
+  Never include secrets, API keys, credentials, or `.env` contents in the message or in `--command`. Reports are read by the Ravion team.
+</Warning>
+
+## Requirements
+
+- Sign in with `ravion login`, or set `RAVION_API_KEY`. See [Authentication](/cli/authentication).
+- Run `ravion switch` to change which organization a report is filed under.
+- Up to 20 reports per hour, and 64 KB per message.
+
+Each report includes your organization, user name, email, and CLI metadata such as version and platform. Nothing else is collected.
+
+On success the CLI prints `Report submitted.` and exits `0`. No ticket ID is returned, so email [support@ravion.com](mailto:support@ravion.com) if you need a reply.
+
+## For AI agents
+
+Nothing about these commands is interactive — no prompts, no editor, nothing read from stdin — so agents can call them directly. Exit `0` means the report was submitted and `1` means anything else. There is no `--json` output.
+
+Agents should paste the IDs they are already holding rather than describing resources in prose. Ravion auto-detects opencode, Claude Code, Codex, Gemini CLI, Cursor, and Aider; pass `--agent` for anything else.
+
+Every command's help output ends with these hints, and unexpected errors append them, so agents discover the commands on their own. Add them to your agent instructions to make reporting routine rather than a fallback.
+
+<CardGroup cols={2}>
+  <Card title="Command reference" icon="terminal" href="/cli/reference/report">
+    Every flag for `ravion report`, `ravion bug`, and `ravion feedback`.
+  </Card>
+  <Card title="Contact support" icon="envelope" href="/contact-support">
+    Reach the team about your account, billing, or an urgent issue.
+  </Card>
+</CardGroup>

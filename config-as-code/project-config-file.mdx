@@ -172,6 +172,7 @@ ravion project config apply <project-id> --file ravion.yaml
 - Pull the latest live config anytime with `ravion project config pull <project-id> --file ravion.yaml`.
 - Use `--autoapprove` only for supported stack changes that do not need a manual approval gate.
 - To iterate on one target, pass `--environment-id`, `--environment-given-id`, `--module-instance-id`, or `--module-given-id`.
+- If a schema check, dry run, or apply fails unexpectedly, file it with `ravion report bug "<what happened>" --command "<the command that failed>"`. Include the exact error text and the project, environment, and module instance IDs involved. See [Report bugs and feedback](/report-bugs-and-feedback).
 
 ### Module editing rules
 
