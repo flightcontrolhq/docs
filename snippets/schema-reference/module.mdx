@@ -482,8 +482,6 @@ Numeric input property.
 
 ### ObjectArrayInputProperty
 
-Structured array input property.
-
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
 
@@ -548,10 +546,10 @@ Structured array input property.
   _(templateable)_
 </ResponseField>
 
-<ResponseField name="item_inputs" type="RefFallbackInputProperty[]" required>
+<ResponseField name="item_inputs" type="InputProperty[]" required>
   Input definitions for each object value in the array.
 
-  See: [RefFallbackInputProperty](#reffallbackinputproperty)
+  See: [InputProperty](#inputproperty)
 
   _(minItems:1)_
 </ResponseField>
@@ -611,8 +609,6 @@ Object editor input property.
 </ResponseField>
 
 ### ObjectMapInputProperty
-
-Structured map input property.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -676,10 +672,10 @@ Structured map input property.
   Label for each map item, used in add buttons and editor headers
 </ResponseField>
 
-<ResponseField name="item_inputs" type="RefFallbackInputProperty[]" required>
+<ResponseField name="item_inputs" type="InputProperty[]" required>
   Input definitions for each object value in the map.
 
-  See: [RefFallbackInputProperty](#reffallbackinputproperty)
+  See: [InputProperty](#inputproperty)
 
   _(minItems:1)_
 </ResponseField>
@@ -972,28 +968,6 @@ Configuration for the title shown for each structured collection item in the for
   Fallback title template used when the primary template cannot be resolved.
 </ResponseField>
 
-### RefFallbackInputProperty
-
-Input properties allowed inside module reference fallback inputs.
-
-Discriminated union. The `type` field selects which schema applies.
-
-| `type` value   | Schema                                                |
-| -------------- | ----------------------------------------------------- |
-| `array`        | [ArrayInputProperty](#arrayinputproperty)             |
-| `boolean`      | [BooleanInputProperty](#booleaninputproperty)         |
-| `compound`     | [CompoundInputProperty](#compoundinputproperty)       |
-| `gitrepo`      | [GitRepoInputProperty](#gitrepoinputproperty)         |
-| `keyvalue`     | [KeyValueInputProperty](#keyvalueinputproperty)       |
-| `number`       | [NumberInputProperty](#numberinputproperty)           |
-| `object`       | [ObjectInputProperty](#objectinputproperty)           |
-| `object_array` | [ObjectArrayInputProperty](#objectarrayinputproperty) |
-| `object_map`   | [ObjectMapInputProperty](#objectmapinputproperty)     |
-| `section`      | [SectionInputProperty](#sectioninputproperty)         |
-| `string`       | [StringInputProperty](#stringinputproperty)           |
-| `string_array` | [ArrayStringInputProperty](#arraystringinputproperty) |
-| `text`         | [TextInputProperty](#textinputproperty)               |
-
 ### MapKeyConfig
 
 Configuration for the string key of an object_map entry.
@@ -1023,6 +997,28 @@ Configuration for the string key of an object_map entry.
 <ResponseField name="separator" type="string">
   String used to join computed key field values. Defaults to "-".
 </ResponseField>
+
+### RefFallbackInputProperty
+
+Input properties allowed inside module reference fallback inputs.
+
+Discriminated union. The `type` field selects which schema applies.
+
+| `type` value   | Schema                                                                      |
+| -------------- | --------------------------------------------------------------------------- |
+| `array`        | [ArrayInputProperty](#arrayinputproperty)                                   |
+| `boolean`      | [BooleanInputProperty](#booleaninputproperty)                               |
+| `compound`     | [CompoundInputProperty](#compoundinputproperty)                             |
+| `gitrepo`      | [GitRepoInputProperty](#gitrepoinputproperty)                               |
+| `keyvalue`     | [KeyValueInputProperty](#keyvalueinputproperty)                             |
+| `number`       | [NumberInputProperty](#numberinputproperty)                                 |
+| `object`       | [ObjectInputProperty](#objectinputproperty)                                 |
+| `object_array` | [RefFallbackObjectArrayInputProperty](#reffallbackobjectarrayinputproperty) |
+| `object_map`   | [RefFallbackObjectMapInputProperty](#reffallbackobjectmapinputproperty)     |
+| `section`      | [SectionInputProperty](#sectioninputproperty)                               |
+| `string`       | [StringInputProperty](#stringinputproperty)                                 |
+| `string_array` | [ArrayStringInputProperty](#arraystringinputproperty)                       |
+| `text`         | [TextInputProperty](#textinputproperty)                                     |
 
 ### RefTypeDiscriminator
 
@@ -1110,6 +1106,152 @@ A selectable option with a numeric value.
   Only show this option when another field has a specific value
 
   See: [ShowWhen](#showwhen)
+</ResponseField>
+
+### RefFallbackObjectArrayInputProperty
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for this input.
+
+  _(minLen:1)_
+</ResponseField>
+
+<ResponseField name="label" type="string" required>
+  Text shown above the form field
+
+  _(minLen:1)_
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Help text shown below the label
+</ResponseField>
+
+<ResponseField name="show_when" type="ShowWhen">
+  Only show this field when another field has a specific value
+
+  See: [ShowWhen](#showwhen)
+</ResponseField>
+
+<ResponseField name="immutable" type="boolean">
+  Lock this field after first deploy — prevents changes to destructive settings
+</ResponseField>
+
+<ResponseField name="collapsible" type="boolean">
+  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+</ResponseField>
+
+<ResponseField name="type" type="enum" required>
+  Input type for structured object arrays
+
+  Allowed values: `object_array`
+</ResponseField>
+
+<ResponseField name="default" type="ObjectArrayDefaultItem[] | null">
+  Default array value for the field
+
+  See: [ObjectArrayDefaultItem](#objectarraydefaultitem)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="required" type="boolean">
+  Whether the field must contain at least one item
+</ResponseField>
+
+<ResponseField name="item_label" type="string">
+  Label for each array item, used in add buttons and editor headers
+</ResponseField>
+
+<ResponseField name="item_title" type="ObjectCollectionItemTitleConfig">
+  User-facing title template for each array item.
+
+  See: [ObjectCollectionItemTitleConfig](#objectcollectionitemtitleconfig)
+</ResponseField>
+
+<ResponseField name="item_description" type="string | null">
+  User-facing description template shown as a secondary line for each array item.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="item_inputs" type="RefFallbackInputProperty[]" required>
+  Input definitions allowed inside a module reference's mapped inputs.
+
+  See: [RefFallbackInputProperty](#reffallbackinputproperty)
+
+  _(minItems:1)_
+</ResponseField>
+
+### RefFallbackObjectMapInputProperty
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for this input.
+
+  _(minLen:1)_
+</ResponseField>
+
+<ResponseField name="label" type="string" required>
+  Text shown above the form field
+
+  _(minLen:1)_
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Help text shown below the label
+</ResponseField>
+
+<ResponseField name="show_when" type="ShowWhen">
+  Only show this field when another field has a specific value
+
+  See: [ShowWhen](#showwhen)
+</ResponseField>
+
+<ResponseField name="immutable" type="boolean">
+  Lock this field after first deploy — prevents changes to destructive settings
+</ResponseField>
+
+<ResponseField name="collapsible" type="boolean">
+  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+</ResponseField>
+
+<ResponseField name="type" type="enum" required>
+  Input type for structured object maps
+
+  Allowed values: `object_map`
+</ResponseField>
+
+<ResponseField name="default" type="map<string,any | null>">
+  Default map value for the field
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="required" type="boolean">
+  Whether the field must contain at least one entry
+</ResponseField>
+
+<ResponseField name="key" type="MapKeyConfig">
+  Metadata for the map entry key field.
+
+  See: [MapKeyConfig](#mapkeyconfig)
+</ResponseField>
+
+<ResponseField name="item_title" type="ObjectCollectionItemTitleConfig">
+  User-facing title template for each map item.
+
+  See: [ObjectCollectionItemTitleConfig](#objectcollectionitemtitleconfig)
+</ResponseField>
+
+<ResponseField name="item_label" type="string">
+  Label for each map item, used in add buttons and editor headers
+</ResponseField>
+
+<ResponseField name="item_inputs" type="RefFallbackInputProperty[]" required>
+  Input definitions allowed inside a module reference's mapped inputs.
+
+  See: [RefFallbackInputProperty](#reffallbackinputproperty)
+
+  _(minItems:1)_
 </ResponseField>
 
 ### ShowWhenComparableValue
@@ -3429,6 +3571,12 @@ Manual-runtime EC2 deploy definition. The deploy manager sends these shell comma
   Shell commands run in order on each instance, as root. A non-zero exit fails the deploy on that instance.
 
   _(minItems:1; templateable)_
+</ResponseField>
+
+<ResponseField name="start_command" type="string | null">
+  Long-running foreground command started after the release commands succeed. The deploy manager forwards it to the module-provided deploy document so it is ca...
+
+  _(templateable)_
 </ResponseField>
 
 ### EcsCanaryConfig
