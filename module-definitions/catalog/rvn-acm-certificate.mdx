@@ -12,19 +12,21 @@ description: "Requests an AWS Certificate Manager public certificate with DNS va
 
 ```mermaid
 flowchart BT
-  rvn_aws_static["rvn-aws-static"] -.-> rvn_acm_certificate["<strong>ACM Certificate</strong>"]
+  rvn_aws_alb["rvn-aws-alb"] -.-> rvn_acm_certificate["<strong>ACM Certificate</strong>"]
+  rvn_aws_static["rvn-aws-static"] -.-> rvn_acm_certificate
   rvn_cloudfront["rvn-cloudfront"] -.-> rvn_acm_certificate
   rvn_ecs_cluster["rvn-ecs-cluster"] -.-> rvn_acm_certificate
   rvn_ecs_nlb["rvn-ecs-nlb"] -.-> rvn_acm_certificate
 
   class rvn_acm_certificate current
-  class rvn_aws_static,rvn_cloudfront,rvn_ecs_cluster,rvn_ecs_nlb consumer
+  class rvn_aws_alb,rvn_aws_static,rvn_cloudfront,rvn_ecs_cluster,rvn_ecs_nlb consumer
 
   classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
   classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
   classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
   classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
 
+  click rvn_aws_alb "/module-definitions/catalog/rvn-aws-alb" "Open rvn-aws-alb docs"
   click rvn_aws_static "/module-definitions/catalog/rvn-aws-static" "Open rvn-aws-static docs"
   click rvn_cloudfront "/module-definitions/catalog/rvn-cloudfront" "Open rvn-cloudfront docs"
   click rvn_ecs_cluster "/module-definitions/catalog/rvn-ecs-cluster" "Open rvn-ecs-cluster docs"

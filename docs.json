@@ -91,10 +91,12 @@
                 "pages": [
                   "module-definitions/catalog/rvn-acm-certificate",
                   "module-definitions/catalog/rvn-aurora",
+                  "module-definitions/catalog/rvn-aws-alb",
                   "module-definitions/catalog/rvn-aws-iam-role",
                   "module-definitions/catalog/rvn-aws-network",
                   "module-definitions/catalog/rvn-aws-static",
                   "module-definitions/catalog/rvn-cloudfront",
+                  "module-definitions/catalog/rvn-ec2-service",
                   "module-definitions/catalog/rvn-ecs-cluster",
                   "module-definitions/catalog/rvn-ecs-nlb",
                   "module-definitions/catalog/rvn-ecs-web",

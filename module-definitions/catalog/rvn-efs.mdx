@@ -12,20 +12,22 @@ description: "Creates and manages an Amazon EFS file system with mount targets, 
 
 ```mermaid
 flowchart BT
-  rvn_ecs_nlb["rvn-ecs-nlb"] -.-> rvn_efs["<strong>EFS File System</strong>"]
+  rvn_ec2_service["rvn-ec2-service"] -.-> rvn_efs["<strong>EFS File System</strong>"]
+  rvn_ecs_nlb["rvn-ecs-nlb"] -.-> rvn_efs
   rvn_ecs_web["rvn-ecs-web"] -.-> rvn_efs
   rvn_ecs_worker["rvn-ecs-worker"] -.-> rvn_efs
   rvn_efs --> rvn_aws_network["rvn-aws-network"]
 
   class rvn_efs current
   class rvn_aws_network dependency
-  class rvn_ecs_nlb,rvn_ecs_web,rvn_ecs_worker consumer
+  class rvn_ec2_service,rvn_ecs_nlb,rvn_ecs_web,rvn_ecs_worker consumer
 
   classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
   classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
   classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
   classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
 
+  click rvn_ec2_service "/module-definitions/catalog/rvn-ec2-service" "Open rvn-ec2-service docs"
   click rvn_ecs_nlb "/module-definitions/catalog/rvn-ecs-nlb" "Open rvn-ecs-nlb docs"
   click rvn_ecs_web "/module-definitions/catalog/rvn-ecs-web" "Open rvn-ecs-web docs"
   click rvn_ecs_worker "/module-definitions/catalog/rvn-ecs-worker" "Open rvn-ecs-worker docs"
