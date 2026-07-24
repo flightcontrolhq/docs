@@ -57,7 +57,11 @@ make docs
 
 This builds the live CLI command tree and writes the pages directly into `cli/reference/` plus `cli/overview.mdx` in this repo. If the repos are not siblings, pass the path explicitly: `make docs DOCS_CLI_OUT=/abs/path/to/ravion-docs/cli/reference`.
 
-If commands are added or removed, update the CLI page list in `docs.json` so new pages appear in the sidebar.
+Update the generated CLI page list in `docs.json` so added or removed commands appear correctly in the sidebar:
+
+```bash
+pnpm sync:cli-reference
+```
 
 ### Validate and publish
 
