@@ -4,19 +4,76 @@ description: "Stay up to date with the latest Ravion product features, fixes, an
 rss: true
 ---
 
-{/* Add new entries above older ones. One Update per release date. */}
-{/* Prefer tags from: New releases, Improvements, Bug fixes. */}
-{/* Use rss.title for a short summary of the entry. */}
-{/* Style: ## Section headings, then bullets as **Feature name:** description with links. */}
+{/* ravion-changelog-guidance:start */}
+{/* Entries are generated weekly and added above older entries. */}
+{/* Surface order: Platform, AWS account IAM policy, Modules, CLI. Omit empty surfaces. */}
+{/* Platform and CLI use category headings; AWS account IAM policy uses direct bullets. */}
+{/* Modules list new modules first, then one flat list under each module heading. */}
+{/* Category order: Breaking changes, Features, Improvements, Fixes. */}
+{/* Platform Improvements and Fixes use plain outcome statements: - Deployments now report queued runs. */}
+{/* Module bullets are plain and verb-led, prefixed BREAKING: when action is required. */}
+{/* All other bullets use: - **Named capability:** concise outcome. */}
+{/* ravion-changelog-guidance:end */}
 
+{/* ravion-changelog:july-27-2026 */}
 <Update
-  label="July 24, 2026"
-  tags={["New features", "Improvements", "Bug fixes"]}
+  label="July 27, 2026"
   rss={{
-    title: "Coming soon",
+    title: "New modules, safer deployments, faster lists, nested references, and improved CLI reporting",
   }}
 >
 
-## Coming soon
+## Platform
+### Features
+- **Public module catalog:** Browse globally published active modules without signing in. [Module catalog](https://www.ravion.com/docs/module-definitions/catalog)
+- **Nested module references:** Configure module references inside object maps and arrays. [Module definition schema](https://www.ravion.com/docs/module-definitions/definition-schema#refinputproperty)
+- **Task health graph:** View task health relationships in a dedicated graph.
+### Improvements
+- Lists now show each page of results as it loads and continue displaying results already received when a later page fails.
+- Pipeline and stack resource lists now load additional results as you scroll near the bottom.
+- Stack run details now show configuration changes, inputs, outputs, and run context in a tabbed view.
+- Module and pipeline graphs now use clearer layouts for dependencies, groups, and cross-links.
+- New EC2 instances now wait for the latest successful release before joining service traffic.
+### Fixes
+- The Catalog breadcrumb now appears on module definition pages and the project breadcrumb now links to the pipelines list in pipeline views.
+- Invitation links now show the invitation details and let matching users accept invitations through email or OAuth sign-in.
+- Retrying failed pipeline steps now preserves successful steps and correctly handles steps skipped by dependencies.
+- Module reference value selectors now work during creation and retain mapped values when changing module versions.
+- Module configuration diffs no longer show changes caused only by server-resolved reference values.
+- Failed EC2 deployments now automatically restore the previous successful release when eligible.
+- Pipeline and stack pages now show the correct latest non-cancelled run status without flicker.
+## AWS account IAM policy 1.0.38 → 1.0.39
+- **EC2 launch release gates:** Auto Scaling launch release gates can send lifecycle heartbeats and complete lifecycle actions.
+
+Update your AWS account connection in organization settings.
+
+## Modules
+### New modules
+- **[AWS Application Load Balancer](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-alb) 0.1.0:** Provision an AWS Application Load Balancer with HTTP and HTTPS listeners.
+- **[AWS IAM Policy](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-iam-policy) 0.1.0:** Provision a reusable customer-managed AWS IAM policy from structured statements or a complete policy document.
+- **[EC2 Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ec2-service) 0.1.1:** Run supervised workloads on an EC2 Auto Scaling Group with web and storage configuration.
+### [CloudFront CDN](https://www.ravion.com/docs/module-definitions/catalog/rvn-cloudfront) [0.3.2](https://github.com/flightcontrolhq/modules/releases/tag/rvn-cloudfront%400.3.2) → [0.4.0](https://github.com/flightcontrolhq/modules/releases/tag/rvn-cloudfront%400.4.0)
+- Add custom headers for primary and additional origins.
+### [ECS Cluster](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-cluster) [0.3.0](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-cluster%400.3.0) → [0.3.1](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-cluster%400.3.1)
+- Add additional load balancer certificate ARN fields for SNI.
+### [ECS Network Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-nlb) [0.2.2](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-nlb%400.2.2) → [0.3.1](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-nlb%400.3.1)
+- BREAKING: replace `container_port`, `listener_port`, and `listener_protocol` with one or more `listeners` items before upgrading, and move TLS settings into the relevant listener.
+- Improve build source, Railpack command, and builder instance guidance.
+### [ECS Web Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-web) [0.8.2](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-web%400.8.2) → [0.8.3](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-web%400.8.3)
+- Improve build source, Railpack command, and builder instance guidance.
+### [ECS Worker](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-worker) [0.3.2](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-worker%400.3.2) → [0.3.3](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-worker%400.3.3)
+- Improve build source, Railpack command, and builder instance guidance.
+### [Lambda Function](https://www.ravion.com/docs/module-definitions/catalog/rvn-lambda) [0.3.1](https://github.com/flightcontrolhq/modules/releases/tag/rvn-lambda%400.3.1) → [0.3.2](https://github.com/flightcontrolhq/modules/releases/tag/rvn-lambda%400.3.2)
+- Improve build source and builder instance guidance.
+### [Static Hosting](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-static) [0.3.3](https://github.com/flightcontrolhq/modules/releases/tag/rvn-aws-static%400.3.3) → [0.3.4](https://github.com/flightcontrolhq/modules/releases/tag/rvn-aws-static%400.3.4)
+- Improve build source, Railpack command, and builder instance guidance.
+## CLI [0.2.5](https://github.com/flightcontrolhq/cli/releases/tag/v0.2.5) → [0.2.15](https://github.com/flightcontrolhq/cli/releases/tag/v0.2.15)
+### Features
+- **Invitation signup:** Use the invitation token from an invite link with `ravion signup` to accept the invitation during signup. [Signup](https://www.ravion.com/docs/cli/reference/signup)
+- **Invitation lookup:** Run `ravion membership get-invitation invitationToken` to view a pending invitation's organization, invitee, and status. [Membership](https://www.ravion.com/docs/cli/reference/membership)
+- **Bug and feedback reports:** Run `ravion report bug`, `ravion report feedback`, `ravion bug`, or `ravion feedback` to submit Markdown reports. [Report](https://www.ravion.com/docs/cli/reference/report)
+### Fixes
+- **Session refresh:** Active CLI sessions now roll refresh tokens before they expire and remain usable when a temporary refresh fails. [Authentication](https://www.ravion.com/docs/cli/authentication)
+- **Expired sessions:** `ravion whoami` now reports expired or revoked sessions as logged out and directs you to `ravion login`. [Whoami](https://www.ravion.com/docs/cli/reference/whoami)
 
 </Update>

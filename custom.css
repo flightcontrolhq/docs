@@ -100,6 +100,10 @@ b,
   font-weight: 600 !important;
 }
 
+a {
+  font-weight: inherit !important;
+}
+
 /* Headings: PP Fragment (Glare Regular), matching the marketing display style
    - weight 400 (Glare Regular)
    - letter-spacing 0
@@ -123,6 +127,10 @@ h6 {
 h2,
 h3 {
   line-height: 1.5 !important;
+}
+
+h3 + h4 {
+  margin-top: 1.25rem !important;
 }
 
 /* Headings stay at weight 400 even when they carry the font-semibold utility */
