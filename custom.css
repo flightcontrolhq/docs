@@ -143,6 +143,32 @@ h6.font-semibold {
   font-weight: 400 !important;
 }
 
+/* Keep the descriptive changelog title for metadata while shortening its visible heading. */
+html[data-current-path="/changelog"] #page-title {
+  font-size: 0 !important;
+}
+
+html[data-current-path="/changelog"] #page-title::before {
+  content: "Product updates";
+  font-size: 1.875rem;
+}
+
+html[data-current-path="/changelog"] #content-area > * {
+  max-width: 41.4rem;
+}
+
+@media (min-width: 640px) {
+  html[data-current-path="/changelog"] #page-title::before {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  html[data-current-path="/changelog"] #content-area > * {
+    max-width: 48.3rem;
+  }
+}
+
 /* Sidebar group titles are <h3> elements but should stay semibold,
    exempt them from the heading weight reset above */
 .sidebar-group-header h3,
