@@ -4,19 +4,76 @@ description: "Stay up to date with the latest Ravion product features, fixes, an
 rss: true
 ---
 
-{/* Add new entries above older ones. One Update per release date. */}
-{/* Prefer tags from: New releases, Improvements, Bug fixes. */}
-{/* Use rss.title for a short summary of the entry. */}
-{/* Style: ## Section headings, then bullets as **Feature name:** description with links. */}
+{/* ravion-changelog-guidance:start */}
+{/* Entries are generated weekly and added above older entries. */}
+{/* Surface order: Platform, CLI, Modules. Omit empty surfaces. */}
+{/* Category order: Breaking changes, Features, Improvements, Fixes. */}
+{/* Bullets use: - **Feature name:** concise customer-facing description. */}
+{/* ravion-changelog-guidance:end */}
 
+{/* ravion-changelog:week-of-july-20-2026 */}
 <Update
-  label="July 24, 2026"
-  tags={["New features", "Improvements", "Bug fixes"]}
+  label="Week of July 20, 2026"
+  tags={["Breaking changes", "Features", "Improvements", "Fixes"]}
   rss={{
-    title: "Coming soon",
+    title: "New module capabilities, faster pipeline workflows, EC2 recovery, and CLI reporting",
   }}
 >
 
-## Coming soon
+## Platform
+
+### Breaking changes
+- **ECS Network Service rvn-ecs-nlb@0.3.0:** Replace `container_port`, `listener_port`, and `listener_protocol` with one or more `listeners` items before upgrading; deployments are now rolling.
+
+### Features
+- **[Public module catalog](https://www.ravion.com/docs/module-definitions/catalog):** Browse globally published active modules and versions without signing in, while authenticated users retain organization-scoped listings.
+- **Invitation acceptance:** Accept organization invitations through the redesigned invite flow with email/password or OAuth sign-in.
+- **Stack run details:** Review infrastructure, workspace information, output values, run status, and configuration changes in a redesigned run view.
+- **Pipeline retry checkpoints:** Retry failed pipeline steps while preserving successful steps and showing why steps were skipped or cancelled.
+- **[Nested module references](https://www.ravion.com/docs/module-definitions/definition-schema#refinputproperty):** Use module references inside object map and array inputs, with reference paths tracked in module graphs.
+- **[EC2 deployment recovery](https://www.ravion.com/docs/modules/deploy):** Roll back EC2 deployments, automatically restore the previous successful release after eligible failures, and gate new instances before applying a release.
+
+### Improvements
+- **Faster collection loading:** Lists begin displaying results as pages arrive and load additional pipeline runs and stack resources as you scroll.
+- **Latest run status:** Projects and stacks show the newest non-cancelled run and its status with less loading flicker.
+
+### Fixes
+- **Module reference values:** Dynamic values now work with selected module references, and mapped values remain intact when changing module versions.
+- **Configuration change review:** Server-resolved mapped values no longer appear as changes when the selected module reference is unchanged.
+
+## CLI
+
+### Breaking changes
+- **CLI 0.2.6 trigger metadata:** Stop reading the removed `webhook_payload` field and use `trigger_source` and `webhook_event` instead.
+
+### Features
+- **CLI 0.2.7 invitations:** Use the invitation token with signup and run `ravion membership get-invitation invitationToken` to inspect a pending invite.
+- **CLI 0.2.8 public catalog:** List globally published module definitions and versions without authentication.
+- **CLI 0.2.13 EC2 rollback:** List EC2 rollback candidates and inspect automatic rollback progress in deployment data.
+- **CLI 0.2.15 bug and feedback reports:** Run [`ravion report bug`](https://www.ravion.com/docs/cli/reference/bug) or [`ravion report feedback`](https://www.ravion.com/docs/cli/reference/feedback) to submit Markdown reports with useful context.
+
+### Improvements
+- **CLI 0.2.9 run details:** Pipeline-run responses include the attached entity state captured at run creation, including prior stack module state when available.
+- **CLI 0.2.11 retry details:** Pipeline step executions identify the retry attempt and explain skipped or cancelled steps.
+- **CLI 0.2.14 run summaries:** Pipeline and stack responses include the newest non-cancelled run ID and status.
+
+### Fixes
+- **CLI 0.2.12 authentication:** Active sessions refresh before expiry, concurrent commands coordinate token rotation, and expired sessions are reported as logged out.
+
+## Modules
+
+### Features
+- **[CloudFront CDN rvn-cloudfront@0.4.0](https://www.ravion.com/docs/module-definitions/catalog/rvn-cloudfront):** Add custom headers for primary and additional origins.
+- **[AWS Application Load Balancer rvn-aws-alb@0.1.0](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-alb):** Add an Application Load Balancer module with HTTP and HTTPS listener support.
+- **[AWS IAM Policy rvn-aws-iam-policy@0.1.0](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-iam-policy):** Add a reusable customer-managed IAM policy module with structured statement support.
+- **[ECS Cluster rvn-ecs-cluster@0.3.1](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-cluster):** Add additional load balancer certificate fields for SNI.
+
+### Improvements
+- **[EC2 Service rvn-ec2-service@0.1.1](https://www.ravion.com/docs/module-definitions/catalog/rvn-ec2-service):** Reorganize service inputs and clarify web and storage configuration.
+- **[Static Hosting rvn-aws-static@0.3.4](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-static):** Improve build source, Railpack command, and builder instance guidance.
+- **[ECS Web Service rvn-ecs-web@0.8.3](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-web):** Improve build source, Railpack command, and builder instance guidance.
+- **[ECS Network Service rvn-ecs-nlb@0.3.1](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-nlb):** Improve build source, Railpack command, and builder instance guidance.
+- **[ECS Worker rvn-ecs-worker@0.3.3](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-worker):** Improve build source, Railpack command, and builder instance guidance.
+- **[Lambda Function rvn-lambda@0.3.2](https://www.ravion.com/docs/module-definitions/catalog/rvn-lambda):** Improve build source and builder instance guidance.
 
 </Update>
