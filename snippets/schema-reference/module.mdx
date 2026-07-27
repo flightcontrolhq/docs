@@ -1362,11 +1362,12 @@ Pipeline trigger definition.
 
 Discriminated union. The `type` field selects which schema applies.
 
-| `type` value       | Schema                                                              |
-| ------------------ | ------------------------------------------------------------------- |
-| `webhook`          | [Pipeline.GenericPipelineTrigger](#pipeline-genericpipelinetrigger) |
-| `"webhook:github"` | [Pipeline.GithubPipelineTrigger](#pipeline-githubpipelinetrigger)   |
-| `"webhook:gitlab"` | [Pipeline.GitlabPipelineTrigger](#pipeline-gitlabpipelinetrigger)   |
+| `type` value       | Schema                                                                |
+| ------------------ | --------------------------------------------------------------------- |
+| `schedule`         | [Pipeline.SchedulePipelineTrigger](#pipeline-schedulepipelinetrigger) |
+| `webhook`          | [Pipeline.GenericPipelineTrigger](#pipeline-genericpipelinetrigger)   |
+| `"webhook:github"` | [Pipeline.GithubPipelineTrigger](#pipeline-githubpipelinetrigger)     |
+| `"webhook:gitlab"` | [Pipeline.GitlabPipelineTrigger](#pipeline-gitlabpipelinetrigger)     |
 
 ### Pipeline.GenericPipelineTrigger
 
@@ -1374,6 +1375,10 @@ Pipeline trigger for generic webhooks.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this trigger
+</ResponseField>
+
+<ResponseField name="enabled" type="boolean" default="true">
+  Whether this trigger is active. Disabled triggers are not registered.
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
@@ -1386,6 +1391,12 @@ Pipeline trigger for generic webhooks.
   Filters to narrow which events trigger the pipeline
 
   See: [Pipeline.TriggerFilter](#pipeline-triggerfilter)
+</ResponseField>
+
+<ResponseField name="concurrency" type="Pipeline.ConcurrencyConfig">
+  Concurrency configuration for runs started by this trigger.
+
+  See: [Pipeline.ConcurrencyConfig](#pipeline-concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,Pipeline.TriggerRunVariantConfig>" required>
@@ -1408,6 +1419,10 @@ Pipeline trigger for GitHub webhooks.
   Unique identifier for this trigger
 </ResponseField>
 
+<ResponseField name="enabled" type="boolean" default="true">
+  Whether this trigger is active. Disabled triggers are not registered.
+</ResponseField>
+
 <ResponseField name="repo" type="string" required>
   Git repository in owner/repo or host/owner/repo format
 
@@ -1418,6 +1433,12 @@ Pipeline trigger for GitHub webhooks.
   Filters to narrow which events trigger the pipeline
 
   See: [Pipeline.TriggerFilter](#pipeline-triggerfilter)
+</ResponseField>
+
+<ResponseField name="concurrency" type="Pipeline.ConcurrencyConfig">
+  Concurrency configuration for runs started by this trigger.
+
+  See: [Pipeline.ConcurrencyConfig](#pipeline-concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,Pipeline.TriggerRunVariantConfig>" required>
@@ -1446,6 +1467,10 @@ Pipeline trigger for GitLab webhooks.
   Unique identifier for this trigger
 </ResponseField>
 
+<ResponseField name="enabled" type="boolean" default="true">
+  Whether this trigger is active. Disabled triggers are not registered.
+</ResponseField>
+
 <ResponseField name="repo" type="string" required>
   Git repository in owner/repo or host/owner/repo format
 
@@ -1456,6 +1481,12 @@ Pipeline trigger for GitLab webhooks.
   Filters to narrow which events trigger the pipeline
 
   See: [Pipeline.TriggerFilter](#pipeline-triggerfilter)
+</ResponseField>
+
+<ResponseField name="concurrency" type="Pipeline.ConcurrencyConfig">
+  Concurrency configuration for runs started by this trigger.
+
+  See: [Pipeline.ConcurrencyConfig](#pipeline-concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,Pipeline.TriggerRunVariantConfig>" required>
@@ -1474,6 +1505,76 @@ Pipeline trigger for GitLab webhooks.
   Webhook event type to listen for.
 
   Allowed values: `push` | `merge_request` | `tag_push`
+</ResponseField>
+
+### Pipeline.SchedulePipelineTrigger
+
+Pipeline trigger that starts runs on a cron schedule.
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for this trigger
+</ResponseField>
+
+<ResponseField name="enabled" type="boolean" default="true">
+  Whether this trigger is active. Disabled triggers are not registered.
+</ResponseField>
+
+<ResponseField name="type" type="enum" required>
+  Trigger type for cron schedule triggers.
+
+  Allowed values: `schedule`
+</ResponseField>
+
+<ResponseField name="cron" type="string" required>
+  Cron expression defining when the pipeline runs (UTC unless timezone is set).
+</ResponseField>
+
+<ResponseField name="timezone" type="string">
+  IANA timezone for evaluating the cron expression. Defaults to UTC.
+</ResponseField>
+
+<ResponseField name="concurrency" type="Pipeline.ConcurrencyConfig">
+  Concurrency configuration for runs started by this trigger.
+
+  See: [Pipeline.ConcurrencyConfig](#pipeline-concurrencyconfig)
+</ResponseField>
+
+<ResponseField name="run" type="map<string,Pipeline.TriggerRunVariantConfig>" required>
+  Maps variant IDs to run configuration — keys must match declared variant IDs.
+
+  See: [Pipeline.TriggerRunVariantConfig](#pipeline-triggerrunvariantconfig)
+</ResponseField>
+
+### Pipeline.ConcurrencyConfig
+
+Concurrency configuration for controlling parallel execution
+
+<ResponseField name="key" type="string">
+  Unique identifier for the concurrency scope within this pipeline Triggers, steps, and blocks with the same key share a concurrency limit Keys are scoped to o...
+</ResponseField>
+
+<ResponseField name="value" type="integer" default="0">
+  Maximum concurrent executions allowed (0 means unlimited, 1 means sequential)
+
+  _(format:int32,min:0)_
+</ResponseField>
+
+<ResponseField name="behavior" type="enum" default="queue">
+  Behavior when the concurrency limit is reached
+
+  Allowed values: `queue` | `cancel-in-progress` | `skip`
+</ResponseField>
+
+<ResponseField name="queue_size" type="integer">
+  Maximum queue size when behavior is "queue" Only applies when behavior is "queue" Unset means unlimited queue depth 0 disables queueing when behavior is "queue"
+
+  _(format:int32,min:0)_
+</ResponseField>
+
+<ResponseField name="queue_overflow_discard" type="enum" default="oldest">
+  Which items to discard when queue overflows Only applies when behavior is "queue" and queue_size &gt; 0
+
+  Allowed values: `oldest` | `newest`
 </ResponseField>
 
 ### Pipeline.TriggerFilter
@@ -1555,6 +1656,25 @@ Allowed values:
 - `push`
 - `merge_request`
 - `tag_push`
+
+### Pipeline.ConcurrencyBehavior
+
+Behavior when the concurrency limit is reached
+
+Allowed values:
+
+- `queue`
+- `cancel-in-progress`
+- `skip`
+
+### Pipeline.QueueOverflowDiscard
+
+Queue overflow discard strategy
+
+Allowed values:
+
+- `oldest`
+- `newest`
 
 ### Pipeline.PayloadCondition
 

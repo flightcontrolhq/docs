@@ -56,11 +56,12 @@ Pipeline trigger definition.
 
 Discriminated union. The `type` field selects which schema applies.
 
-| `type` value       | Schema                                            |
-| ------------------ | ------------------------------------------------- |
-| `webhook`          | [GenericPipelineTrigger](#genericpipelinetrigger) |
-| `"webhook:github"` | [GithubPipelineTrigger](#githubpipelinetrigger)   |
-| `"webhook:gitlab"` | [GitlabPipelineTrigger](#gitlabpipelinetrigger)   |
+| `type` value       | Schema                                              |
+| ------------------ | --------------------------------------------------- |
+| `schedule`         | [SchedulePipelineTrigger](#schedulepipelinetrigger) |
+| `webhook`          | [GenericPipelineTrigger](#genericpipelinetrigger)   |
+| `"webhook:github"` | [GithubPipelineTrigger](#githubpipelinetrigger)     |
+| `"webhook:gitlab"` | [GitlabPipelineTrigger](#gitlabpipelinetrigger)     |
 
 ### GenericPipelineTrigger
 
@@ -68,6 +69,10 @@ Pipeline trigger for generic webhooks.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this trigger
+</ResponseField>
+
+<ResponseField name="enabled" type="boolean" default="true">
+  Whether this trigger is active. Disabled triggers are not registered.
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
@@ -80,6 +85,12 @@ Pipeline trigger for generic webhooks.
   Filters to narrow which events trigger the pipeline
 
   See: [TriggerFilter](#triggerfilter)
+</ResponseField>
+
+<ResponseField name="concurrency" type="ConcurrencyConfig">
+  Concurrency configuration for runs started by this trigger.
+
+  See: [ConcurrencyConfig](#concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,TriggerRunVariantConfig>" required>
@@ -102,6 +113,10 @@ Pipeline trigger for GitHub webhooks.
   Unique identifier for this trigger
 </ResponseField>
 
+<ResponseField name="enabled" type="boolean" default="true">
+  Whether this trigger is active. Disabled triggers are not registered.
+</ResponseField>
+
 <ResponseField name="repo" type="string" required>
   Git repository in owner/repo or host/owner/repo format
 
@@ -112,6 +127,12 @@ Pipeline trigger for GitHub webhooks.
   Filters to narrow which events trigger the pipeline
 
   See: [TriggerFilter](#triggerfilter)
+</ResponseField>
+
+<ResponseField name="concurrency" type="ConcurrencyConfig">
+  Concurrency configuration for runs started by this trigger.
+
+  See: [ConcurrencyConfig](#concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,TriggerRunVariantConfig>" required>
@@ -140,6 +161,10 @@ Pipeline trigger for GitLab webhooks.
   Unique identifier for this trigger
 </ResponseField>
 
+<ResponseField name="enabled" type="boolean" default="true">
+  Whether this trigger is active. Disabled triggers are not registered.
+</ResponseField>
+
 <ResponseField name="repo" type="string" required>
   Git repository in owner/repo or host/owner/repo format
 
@@ -150,6 +175,12 @@ Pipeline trigger for GitLab webhooks.
   Filters to narrow which events trigger the pipeline
 
   See: [TriggerFilter](#triggerfilter)
+</ResponseField>
+
+<ResponseField name="concurrency" type="ConcurrencyConfig">
+  Concurrency configuration for runs started by this trigger.
+
+  See: [ConcurrencyConfig](#concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,TriggerRunVariantConfig>" required>
@@ -168,6 +199,76 @@ Pipeline trigger for GitLab webhooks.
   Webhook event type to listen for.
 
   Allowed values: `push` | `merge_request` | `tag_push`
+</ResponseField>
+
+### SchedulePipelineTrigger
+
+Pipeline trigger that starts runs on a cron schedule.
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for this trigger
+</ResponseField>
+
+<ResponseField name="enabled" type="boolean" default="true">
+  Whether this trigger is active. Disabled triggers are not registered.
+</ResponseField>
+
+<ResponseField name="type" type="enum" required>
+  Trigger type for cron schedule triggers.
+
+  Allowed values: `schedule`
+</ResponseField>
+
+<ResponseField name="cron" type="string" required>
+  Cron expression defining when the pipeline runs (UTC unless timezone is set).
+</ResponseField>
+
+<ResponseField name="timezone" type="string">
+  IANA timezone for evaluating the cron expression. Defaults to UTC.
+</ResponseField>
+
+<ResponseField name="concurrency" type="ConcurrencyConfig">
+  Concurrency configuration for runs started by this trigger.
+
+  See: [ConcurrencyConfig](#concurrencyconfig)
+</ResponseField>
+
+<ResponseField name="run" type="map<string,TriggerRunVariantConfig>" required>
+  Maps variant IDs to run configuration — keys must match declared variant IDs.
+
+  See: [TriggerRunVariantConfig](#triggerrunvariantconfig)
+</ResponseField>
+
+### ConcurrencyConfig
+
+Concurrency configuration for controlling parallel execution
+
+<ResponseField name="key" type="string">
+  Unique identifier for the concurrency scope within this pipeline Triggers, steps, and blocks with the same key share a concurrency limit Keys are scoped to o...
+</ResponseField>
+
+<ResponseField name="value" type="integer" default="0">
+  Maximum concurrent executions allowed (0 means unlimited, 1 means sequential)
+
+  _(format:int32,min:0)_
+</ResponseField>
+
+<ResponseField name="behavior" type="enum" default="queue">
+  Behavior when the concurrency limit is reached
+
+  Allowed values: `queue` | `cancel-in-progress` | `skip`
+</ResponseField>
+
+<ResponseField name="queue_size" type="integer">
+  Maximum queue size when behavior is "queue" Only applies when behavior is "queue" Unset means unlimited queue depth 0 disables queueing when behavior is "queue"
+
+  _(format:int32,min:0)_
+</ResponseField>
+
+<ResponseField name="queue_overflow_discard" type="enum" default="oldest">
+  Which items to discard when queue overflows Only applies when behavior is "queue" and queue_size &gt; 0
+
+  Allowed values: `oldest` | `newest`
 </ResponseField>
 
 ### TriggerFilter
@@ -249,6 +350,25 @@ Allowed values:
 - `push`
 - `merge_request`
 - `tag_push`
+
+### ConcurrencyBehavior
+
+Behavior when the concurrency limit is reached
+
+Allowed values:
+
+- `queue`
+- `cancel-in-progress`
+- `skip`
+
+### QueueOverflowDiscard
+
+Queue overflow discard strategy
+
+Allowed values:
+
+- `oldest`
+- `newest`
 
 ### PayloadCondition
 
@@ -967,6 +1087,12 @@ General-purpose build action step — triggers a build based on the module's bui
   _(templateable)_
 </ResponseField>
 
+<ResponseField name="concurrency" type="ConcurrencyConfig">
+  Concurrency configuration for controlling step execution across variants
+
+  See: [ConcurrencyConfig](#concurrencyconfig)
+</ResponseField>
+
 <ResponseField name="module_instance" type="string" required>
   Module instance reference — accepts the module instance row ID (e.g. `mi_…`), `environmentGivenId.moduleGivenId`, or `projectGivenId.environmentGivenId.modul...
 
@@ -1089,6 +1215,12 @@ General-purpose deploy action step — triggers a deployment based on the module
   _(templateable)_
 </ResponseField>
 
+<ResponseField name="concurrency" type="ConcurrencyConfig">
+  Concurrency configuration for controlling step execution across variants
+
+  See: [ConcurrencyConfig](#concurrencyconfig)
+</ResponseField>
+
 <ResponseField name="module_instance" type="string" required>
   Module instance reference — accepts the module instance row ID (e.g. `mi_…`), `environmentGivenId.moduleGivenId`, or `projectGivenId.environmentGivenId.modul...
 
@@ -1135,6 +1267,12 @@ Rollback action step — reverts a module to a specific previous deployment.
   Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
+</ResponseField>
+
+<ResponseField name="concurrency" type="ConcurrencyConfig">
+  Concurrency configuration for controlling step execution across variants
+
+  See: [ConcurrencyConfig](#concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -1451,38 +1589,6 @@ Trigger pipeline action step
   _(templateable)_
 </ResponseField>
 
-### ConcurrencyConfig
-
-Concurrency configuration for controlling parallel execution
-
-<ResponseField name="key" type="string">
-  Unique identifier for the concurrency scope within this pipeline Steps/blocks with the same key share a concurrency limit Keys are scoped to org + pipeline —...
-</ResponseField>
-
-<ResponseField name="value" type="integer" default="0">
-  Maximum concurrent executions allowed (0 means unlimited, 1 means sequential)
-
-  _(format:int32,min:0)_
-</ResponseField>
-
-<ResponseField name="behavior" type="enum" default="queue">
-  Behavior when the concurrency limit is reached
-
-  Allowed values: `queue` | `cancel-in-progress`
-</ResponseField>
-
-<ResponseField name="queue_size" type="integer">
-  Maximum queue size when behavior is "queue" Only applies when behavior is "queue" Unset means unlimited queue depth 0 disables queueing when behavior is "queue"
-
-  _(format:int32,min:0)_
-</ResponseField>
-
-<ResponseField name="queue_overflow_discard" type="enum" default="oldest">
-  Which items to discard when queue overflows Only applies when behavior is "queue" and queue_size &gt; 0
-
-  Allowed values: `oldest` | `newest`
-</ResponseField>
-
 ### ParallelChild
 
 Parallel child - can be action or group (no nested parallel allowed)
@@ -1735,24 +1841,6 @@ Type: string
 Terraform variable map value.
 
 One of: map&lt;string,[TerraformVariable](#terraformvariable)&gt;, string.
-
-### ConcurrencyBehavior
-
-Behavior when the concurrency limit is reached
-
-Allowed values:
-
-- `queue`
-- `cancel-in-progress`
-
-### QueueOverflowDiscard
-
-Queue overflow discard strategy
-
-Allowed values:
-
-- `oldest`
-- `newest`
 
 ### EnvironmentVariable
 
