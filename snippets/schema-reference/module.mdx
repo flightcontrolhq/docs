@@ -1550,7 +1550,15 @@ Pipeline trigger that starts runs on a cron schedule.
 Concurrency configuration for controlling parallel execution
 
 <ResponseField name="key" type="string">
-  Unique identifier for the concurrency scope within this pipeline Triggers, steps, and blocks with the same key share a concurrency limit Keys are scoped to o...
+  Unique identifier for the concurrency scope Triggers, steps, and blocks with the same key share a concurrency limit By default, the same key in different pip...
+
+  _(minLen:1)_
+</ResponseField>
+
+<ResponseField name="scope" type="enum" default="pipeline">
+  Where the concurrency key is shared Organization-scoped concurrency requires an explicit key
+
+  Allowed values: `pipeline` | `organization`
 </ResponseField>
 
 <ResponseField name="value" type="integer" default="0">
@@ -1666,6 +1674,15 @@ Allowed values:
 - `queue`
 - `cancel-in-progress`
 - `skip`
+
+### Pipeline.ConcurrencyScope
+
+Scope used to share a concurrency limit
+
+Allowed values:
+
+- `pipeline`
+- `organization`
 
 ### Pipeline.QueueOverflowDiscard
 
