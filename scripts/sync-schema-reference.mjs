@@ -26,6 +26,31 @@ const splitDocs = [
     compactSchemaUrl: "https://api.ravion.com/module-definitions/schema.md",
     describe: (titles) =>
       `Reference for the ${joinTitles(titles)} section${titles.length > 1 ? "s" : ""} of the Ravion module definition schema.`,
+    // Sections too large for one page are grouped by what their types
+    // describe rather than sliced into anonymous parts. Groups are listed in
+    // page order; the one without a `match` collects everything else.
+    sectionGroups: {
+      Inputs: [
+        {
+          title: "Basic input types",
+          match: /^(InputProperty|(String|Text|Number|Boolean|ArrayString|GitRepo|KeyValue)InputProperty)$/,
+        },
+        {
+          title: "Structured input types",
+          match: /^(Array|Object|ObjectMap|ObjectArray|Compound|Section|Ref)InputProperty$/,
+        },
+        {title: "Input values and references"},
+      ],
+      Deploy: [
+        {title: "Deploy"},
+        {
+          title: "ECS deployments",
+          match: /^Ecs(ModuleDeployment|Deploy|RunTaskOverrides|Canary|Linear|Pause|CapacityProvider|ContainerOverride|EphemeralStorage|NetworkConfiguration|Placement|Tag$|TaskVolumeConfiguration|AwsVpc)/,
+        },
+        {title: "ECS task definitions", match: /^Ecs/},
+      ],
+    },
+    titleOverrides: {ui: "UI and template expressions"},
   },
 ];
 
@@ -97,46 +122,53 @@ function groupSections(blocks) {
   }));
 }
 
-/** Splits one oversized section into several pages at `###` boundaries. */
-function splitSection(section) {
-  const parts = [];
-  let blocks = [];
-  let fields = 0;
+/** Splits one oversized section into a page per configured group of types. */
+function splitSection(section, groups) {
+  if (!groups) {
+    throw new Error(
+      `Section "${section.title}" has ${section.fields} fields but no grouping rules; add an entry to sectionGroups.`,
+    );
+  }
 
-  const flush = () => {
-    if (blocks.length > 0) {
-      parts.push(blocks);
-      blocks = [];
-      fields = 0;
-    }
-  };
+  const pages = groups.map((group) => ({
+    titles: [section.title],
+    title: group.title,
+    slug: slugify(group.title),
+    blocks: [],
+    fields: 0,
+  }));
+  const catchAllIndex = groups.findIndex((group) => !group.match);
+  if (catchAllIndex === -1) {
+    throw new Error(`Section "${section.title}" needs one group without a \`match\` rule.`);
+  }
 
   for (const block of [section.intro, ...section.children]) {
-    if (blocks.length > 0 && fields + block.fields > maxFieldsPerPage) {
-      flush();
-    }
-    blocks.push(block);
-    fields += block.fields;
+    const index = groups.findIndex((group) => group.match?.test(block.title));
+    const page = pages[index === -1 ? catchAllIndex : index];
+    page.blocks.push(block);
+    page.fields += block.fields;
   }
-  flush();
 
-  return parts.map((partBlocks, index) => ({
-    titles: [section.title],
-    title: parts.length > 1 ? `${section.title} (part ${index + 1})` : section.title,
-    slug: parts.length > 1 ? `${slugify(section.title)}-${index + 1}` : slugify(section.title),
-    blocks: partBlocks,
-  }));
+  const overflowing = pages.filter((page) => page.fields > maxFieldsPerPage);
+  if (overflowing.length > 0) {
+    const detail = overflowing.map((page) => `${page.title} (${page.fields})`).join(", ");
+    throw new Error(
+      `Grouped pages for "${section.title}" exceed ${maxFieldsPerPage} fields: ${detail}. Refine sectionGroups.`,
+    );
+  }
+
+  return pages.filter((page) => page.blocks.length > 0);
 }
 
 /** Packs sections into pages that stay under the field budget. */
-function buildPages(sections) {
+function buildPages(sections, config) {
   const pages = [];
   let current = null;
 
   for (const section of sections) {
     if (section.fields > maxFieldsPerPage) {
       current = null;
-      pages.push(...splitSection(section));
+      pages.push(...splitSection(section, config.sectionGroups?.[section.title]));
       continue;
     }
     if (current && current.fields + section.fields <= maxFieldsPerPage) {
@@ -153,11 +185,14 @@ function buildPages(sections) {
     pages.push(current);
   }
 
-  return pages.map((page) => ({
-    ...page,
-    title: page.title ?? joinTitles(page.titles),
-    slug: page.slug ?? slugify(page.titles[0]),
-  }));
+  return pages.map((page) => {
+    const slug = page.slug ?? slugify(page.titles[0]);
+    return {
+      ...page,
+      slug,
+      title: config.titleOverrides?.[slug] ?? page.title ?? joinTitles(page.titles),
+    };
+  });
 }
 
 /** Points same-document anchor links at the page that now holds the anchor. */
@@ -176,7 +211,7 @@ function syncSplitDoc(config) {
   const blocks = parseBlocks(source);
   const preamble = blocks.filter((block) => block.level === 2 && block.title === "Legend");
   const sections = groupSections(blocks).filter((section) => section.title !== "Legend");
-  const pages = buildPages(sections);
+  const pages = buildPages(sections, config);
 
   const anchorPages = new Map();
   for (const page of pages) {

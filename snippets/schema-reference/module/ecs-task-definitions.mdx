@@ -10,6 +10,126 @@
 | `A \| B`        | One of several types                           |
 | ~template       | Field accepts `<< ... >>` template expressions |
 
+### EcsTaskDefinition
+
+AWS ECS task definition — models the RegisterTaskDefinition API input.
+
+<ResponseField name="family" type="string" required>
+  Task definition family name
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="container_definitions" type="EcsContainerDefinition[]" required>
+  Container definitions — at least one required
+
+  See: [EcsContainerDefinition](#ecscontainerdefinition)
+
+  _(minItems:1; templateable)_
+</ResponseField>
+
+<ResponseField name="cpu" type="string | null">
+  Task-level CPU units (required for Fargate) Valid values: "256", "512", "1024", "2048", "4096" etc.
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="memory" type="string | null">
+  Task-level memory in MiB (required for Fargate)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="network_mode" type="enum | null">
+  Network mode — "awsvpc" required for Fargate
+
+  Allowed values: `awsvpc` | `bridge` | `host` | `none`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="requires_compatibilities" type="enum[FARGATE,EC2][] | null">
+  Launch type compatibility
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="task_role_arn" type="string | null">
+  IAM role ARN for task permissions (containers assume this role)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="execution_role_arn" type="string | null">
+  IAM role ARN for ECS agent to pull images and write logs
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="runtime_platform" type="EcsRuntimePlatform">
+  Runtime platform (Fargate only)
+
+  See: [EcsRuntimePlatform](#ecsruntimeplatform)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="ephemeral_storage" type="EcsEphemeralStorage">
+  Ephemeral storage (Fargate only, &gt;20 GiB)
+
+  See: [EcsEphemeralStorage](/module-definitions/definition-schema/ecs-deployments#ecsephemeralstorage)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="volumes" type="EcsVolume[] | null">
+  Volumes available to containers
+
+  See: [EcsVolume](#ecsvolume)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="tags" type="EcsTag[] | null">
+  AWS resource tags
+
+  See: [EcsTag](/module-definitions/definition-schema/ecs-deployments#ecstag)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="ipc_mode" type="enum | null">
+  IPC mode for containers (EC2 only)
+
+  Allowed values: `host` | `task` | `none`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="pid_mode" type="enum | null">
+  PID mode for containers (EC2 only)
+
+  Allowed values: `host` | `task`
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="proxy_configuration" type="EcsProxyConfiguration">
+  App Mesh proxy configuration
+
+  See: [EcsProxyConfiguration](#ecsproxyconfiguration)
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="inference_accelerators" type="EcsInferenceAccelerator[] | null">
+  Inference accelerators (EC2 only)
+
+  See: [EcsInferenceAccelerator](#ecsinferenceaccelerator)
+
+  _(templateable)_
+</ResponseField>
+
 ### EcsContainerDefinition
 
 ECS container definition — models a single container within a task.
@@ -314,190 +434,6 @@ ECS volume — host path or Docker volume
   _(templateable)_
 </ResponseField>
 
-### LambdaImageDefinition
-
-Image-packaged Lambda deploy definition. The image must already exist in ECR (typically pushed by the upstream build step's `ecr` destination).
-
-<ResponseField name="package_type" type="enum" required>
-  Definition type discriminator.
-
-  Allowed values: `image`
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="image_uri" type="string" required>
-  Full ECR image URI. Prefer `&lt;repo&gt;@sha256:&lt;digest&gt;` form for reproducibility — Lambda resolves a mutable tag at deploy time and silently pins it, but the dep...
-
-  _(minLen:1; templateable)_
-</ResponseField>
-
-### LambdaZipDefinition
-
-Zip-packaged Lambda deploy definition. The code object must already exist in S3 (typically uploaded by the upstream build step's `s3-zip` destination).
-
-<ResponseField name="package_type" type="enum" required>
-  Definition type discriminator.
-
-  Allowed values: `zip`
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="s3_key" type="string" required>
-  S3 key the build step uploaded into.
-
-  _(minLen:1; templateable)_
-</ResponseField>
-
-### LambdaDeadLetterConfig
-
-Dead-letter destination for async invocations.
-
-<ResponseField name="target_arn" type="string | null">
-  SQS queue ARN or SNS topic ARN.
-
-  _(templateable)_
-</ResponseField>
-
-### LambdaEnvironment
-
-Lambda function environment block. Mirrors AWS Lambda's `Environment` shape — a single `variables` map of string → string.
-
-<ResponseField name="variables" type="map<string,string> | null">
-  Environment variables applied to the function. Replaces the existing variable set on AWS — the API doesn't merge.
-
-  _(templateable)_
-</ResponseField>
-
-### LambdaEphemeralStorage
-
-Function-level ephemeral storage (`/tmp`) size in MiB.
-
-<ResponseField name="size" type="integer" required>
-  Size in MiB. 512–10240.
-
-  _(format:int32,min:512,max:10240; templateable)_
-</ResponseField>
-
-### LambdaFileSystemConfig
-
-EFS file system attached to the function.
-
-<ResponseField name="arn" type="string" required>
-  EFS access point ARN.
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="local_mount_path" type="string" required>
-  Mount path inside the container — must start with `/mnt/`.
-
-  _(templateable)_
-</ResponseField>
-
-### LambdaImageConfig
-
-Container image configuration overrides — image-packaged functions only.
-
-<ResponseField name="command" type="string[] | null">
-  Override the image's CMD.
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="entry_point" type="string[] | null">
-  Override the image's ENTRYPOINT.
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="working_directory" type="string | null">
-  Override the image's WORKDIR.
-
-  _(templateable)_
-</ResponseField>
-
-### LambdaLoggingConfig
-
-Function logging configuration (CloudWatch destination + log levels).
-
-<ResponseField name="log_format" type="enum | null">
-  Format the logs are emitted in.
-
-  Allowed values: `JSON` | `Text`
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="application_log_level" type="enum | null">
-  Application log level — only valid when `log_format` is JSON.
-
-  Allowed values: `TRACE` | `DEBUG` | `INFO` | `WARN` | `ERROR` | `FATAL`
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="system_log_level" type="enum | null">
-  System log level — only valid when `log_format` is JSON.
-
-  Allowed values: `DEBUG` | `INFO` | `WARN`
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="log_group" type="string | null">
-  Destination CloudWatch log group.
-
-  _(templateable)_
-</ResponseField>
-
-### LambdaSnapStart
-
-SnapStart configuration.
-
-<ResponseField name="apply_on" type="enum" required>
-  When to take the snapshot. `None` disables SnapStart; `PublishedVersions` snapshots each `PublishVersion` call.
-
-  Allowed values: `None` | `PublishedVersions`
-
-  _(templateable)_
-</ResponseField>
-
-### LambdaTracingConfig
-
-AWS X-Ray tracing configuration.
-
-<ResponseField name="mode" type="enum" required>
-  Active samples + traces requests; PassThrough only propagates an upstream sampling decision.
-
-  Allowed values: `Active` | `PassThrough`
-
-  _(templateable)_
-</ResponseField>
-
-### LambdaVpcConfig
-
-VPC configuration for a Lambda function.
-
-<ResponseField name="subnet_ids" type="string[] | null">
-  Subnet IDs the function's ENIs are placed into.
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="security_group_ids" type="string[] | null">
-  Security group IDs attached to the function's ENIs.
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="ipv6_allowed_for_dual_stack" type="boolean | null">
-  Whether the function gets dual-stack IPv6 networking.
-
-  _(templateable)_
-</ResponseField>
-
 ### EcsEnvironmentFile
 
 Environment file from S3
@@ -546,30 +482,6 @@ GPU or other resource requirement
 
 <ResponseField name="value" type="string" required>
   Number of resources
-
-  _(templateable)_
-</ResponseField>
-
-### EcsAwsVpcConfiguration
-
-AWS VPC configuration for `awsvpc`-mode tasks.
-
-<ResponseField name="subnets" type="string[]" required>
-  Subnet IDs the task ENI is placed into.
-
-  _(minItems:1; templateable)_
-</ResponseField>
-
-<ResponseField name="security_groups" type="string[] | null">
-  Security groups attached to the task ENI.
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="assign_public_ip" type="enum | null">
-  Whether the task ENI gets a public IP. Required for Fargate tasks pulling images from non-VPC-routable registries (e.g.
-
-  Allowed values: `ENABLED` | `DISABLED`
 
   _(templateable)_
 </ResponseField>
@@ -971,7 +883,7 @@ Tag specification for an ECS-managed EBS volume.
 <ResponseField name="tags" type="EcsTag[] | null">
   Explicit tags.
 
-  See: [EcsTag](/module-definitions/definition-schema/deploy-1#ecstag)
+  See: [EcsTag](/module-definitions/definition-schema/ecs-deployments#ecstag)
 
   _(templateable)_
 </ResponseField>

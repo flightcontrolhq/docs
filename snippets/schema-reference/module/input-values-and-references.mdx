@@ -10,65 +10,9 @@
 | `A \| B`        | One of several types                           |
 | ~template       | Field accepts `<< ... >>` template expressions |
 
-### TextInputProperty
+## Inputs
 
-Multi-line text area input property.
-
-<ResponseField name="id" type="string" required>
-  Unique identifier for this input.
-
-  _(minLen:1)_
-</ResponseField>
-
-<ResponseField name="label" type="string" required>
-  Text shown above the form field
-
-  _(minLen:1)_
-</ResponseField>
-
-<ResponseField name="description" type="string">
-  Help text shown below the label
-</ResponseField>
-
-<ResponseField name="show_when" type="ShowWhen">
-  Only show this field when another field has a specific value
-
-  See: [ShowWhen](#showwhen)
-</ResponseField>
-
-<ResponseField name="immutable" type="boolean">
-  Lock this field after first deploy — prevents changes to destructive settings
-</ResponseField>
-
-<ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
-</ResponseField>
-
-<ResponseField name="type" type="enum" required>
-  Input type for multi-line text areas
-
-  Allowed values: `text`
-</ResponseField>
-
-<ResponseField name="default" type="string | null">
-  Default value for the field
-
-  _(templateable)_
-</ResponseField>
-
-<ResponseField name="placeholder" type="string">
-  Placeholder text when the field is empty
-</ResponseField>
-
-<ResponseField name="required" type="boolean">
-  Whether the field must be filled in
-</ResponseField>
-
-<ResponseField name="patterns" type="ValidationPattern[]">
-  Regex patterns to validate against
-
-  See: [ValidationPattern](#validationpattern)
-</ResponseField>
+Input configuration defining the module's form fields
 
 ### ShowWhen
 
@@ -182,19 +126,19 @@ Discriminated union. The `type` field selects which schema applies.
 
 | `type` value   | Schema                                                                      |
 | -------------- | --------------------------------------------------------------------------- |
-| `array`        | [ArrayInputProperty](/module-definitions/definition-schema/inputs-1#arrayinputproperty)                                   |
-| `boolean`      | [BooleanInputProperty](/module-definitions/definition-schema/inputs-1#booleaninputproperty)                               |
-| `compound`     | [CompoundInputProperty](/module-definitions/definition-schema/inputs-1#compoundinputproperty)                             |
-| `gitrepo`      | [GitRepoInputProperty](/module-definitions/definition-schema/inputs-1#gitrepoinputproperty)                               |
-| `keyvalue`     | [KeyValueInputProperty](/module-definitions/definition-schema/inputs-1#keyvalueinputproperty)                             |
-| `number`       | [NumberInputProperty](/module-definitions/definition-schema/inputs-1#numberinputproperty)                                 |
-| `object`       | [ObjectInputProperty](/module-definitions/definition-schema/inputs-1#objectinputproperty)                                 |
+| `array`        | [ArrayInputProperty](/module-definitions/definition-schema/structured-input-types#arrayinputproperty)                                   |
+| `boolean`      | [BooleanInputProperty](/module-definitions/definition-schema/basic-input-types#booleaninputproperty)                               |
+| `compound`     | [CompoundInputProperty](/module-definitions/definition-schema/structured-input-types#compoundinputproperty)                             |
+| `gitrepo`      | [GitRepoInputProperty](/module-definitions/definition-schema/basic-input-types#gitrepoinputproperty)                               |
+| `keyvalue`     | [KeyValueInputProperty](/module-definitions/definition-schema/basic-input-types#keyvalueinputproperty)                             |
+| `number`       | [NumberInputProperty](/module-definitions/definition-schema/basic-input-types#numberinputproperty)                                 |
+| `object`       | [ObjectInputProperty](/module-definitions/definition-schema/structured-input-types#objectinputproperty)                                 |
 | `object_array` | [RefFallbackObjectArrayInputProperty](#reffallbackobjectarrayinputproperty) |
 | `object_map`   | [RefFallbackObjectMapInputProperty](#reffallbackobjectmapinputproperty)     |
-| `section`      | [SectionInputProperty](/module-definitions/definition-schema/inputs-1#sectioninputproperty)                               |
-| `string`       | [StringInputProperty](/module-definitions/definition-schema/inputs-1#stringinputproperty)                                 |
-| `string_array` | [ArrayStringInputProperty](/module-definitions/definition-schema/inputs-1#arraystringinputproperty)                       |
-| `text`         | [TextInputProperty](#textinputproperty)                                     |
+| `section`      | [SectionInputProperty](/module-definitions/definition-schema/structured-input-types#sectioninputproperty)                               |
+| `string`       | [StringInputProperty](/module-definitions/definition-schema/basic-input-types#stringinputproperty)                                 |
+| `string_array` | [ArrayStringInputProperty](/module-definitions/definition-schema/basic-input-types#arraystringinputproperty)                       |
+| `text`         | [TextInputProperty](/module-definitions/definition-schema/basic-input-types#textinputproperty)                                     |
 
 ### RefTypeDiscriminator
 

@@ -140,12 +140,14 @@
                 "root": "module-definitions/definition-schema",
                 "pages": [
                   "module-definitions/definition-schema/module",
-                  "module-definitions/definition-schema/inputs-1",
-                  "module-definitions/definition-schema/inputs-2",
+                  "module-definitions/definition-schema/basic-input-types",
+                  "module-definitions/definition-schema/structured-input-types",
+                  "module-definitions/definition-schema/input-values-and-references",
                   "module-definitions/definition-schema/stack",
                   "module-definitions/definition-schema/build",
-                  "module-definitions/definition-schema/deploy-1",
-                  "module-definitions/definition-schema/deploy-2",
+                  "module-definitions/definition-schema/deploy",
+                  "module-definitions/definition-schema/ecs-deployments",
+                  "module-definitions/definition-schema/ecs-task-definitions",
                   "module-definitions/definition-schema/ui"
                 ]
               }
