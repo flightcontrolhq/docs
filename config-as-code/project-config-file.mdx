@@ -109,6 +109,8 @@ Store the config file in your repository and manage it with the CLI.
 
     Add `--autoapprove` to approve supported stack change pipeline runs without a manual gate.
 
+    Add `--description` to set the description on every stack run the apply creates, for example `--description "https://github.com/acme/app/pull/12"` to link the runs to the pull request that changed the config. Without it, runs keep Ravion's generated description.
+
   </Step>
   <Step title="Review and approve the stack run">
     Applying a config change starts a [stack change pipeline run](/modules/stack#stacks-change-through-pipelines) when the affected module has a Terraform stack. The stack run creates a Terraform plan and waits for manual approval before applying, unless you pass `--autoapprove` to an apply command that supports it.
