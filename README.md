@@ -51,7 +51,7 @@ SCHEMA_REFERENCE_SRC=/absolute/path/to/flightcontrol/packages/schemas/schema_ref
 
 `make generate-schema-ref-docs` regenerates the OpenAPI specs first and writes `schema_reference/docs/{pipeline,module,project-config}.md`. `pnpm sync:schema-reference` copies them into `snippets/schema-reference/` (consumed by the config file pages).
 
-The module schema is too large to render on one page, so the sync splits it into pages of at most 150 fields, grouped by the types they describe (see `sectionGroups` in the script). It writes the parts to `snippets/schema-reference/module/`, the pages that import them to `module-definitions/definition-schema/`, a page index to `snippets/schema-reference/module-index.mdx`, and refreshes the "Definition schema" group in `docs.json`. All of those are generated — edit `scripts/sync-schema-reference.mjs` instead.
+The module schema is too large to render on one page, so the sync splits it into pages of at most 210 fields, grouped by the types they describe (see `sectionGroups` in the script). It writes the parts to `snippets/schema-reference/module/`, the pages that import them to `module-definitions/definition-schema/`, a page index to `snippets/schema-reference/module-index.mdx`, and refreshes the "Definition schema" group in `docs.json`. All of those are generated — edit `scripts/sync-schema-reference.mjs` instead.
 
 If `SCHEMA_REFERENCE_SRC` is unset, the sync script reads from the sibling path `../flightcontrol/packages/schemas/schema_reference/docs`. Set it explicitly when that checkout is absent or stale.
 

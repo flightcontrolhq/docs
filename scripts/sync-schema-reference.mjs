@@ -13,7 +13,7 @@ const docsJsonPath = path.join(root, "docs.json");
 // Rendering hundreds of <ResponseField> components on a single page makes the
 // page multiple megabytes of HTML, which locks up mobile browsers. Reference
 // docs above this many fields are split across several pages.
-const maxFieldsPerPage = 150;
+const maxFieldsPerPage = 210;
 
 const singlePageDocs = ["pipeline", "project-config"];
 
@@ -30,17 +30,6 @@ const splitDocs = [
     // describe rather than sliced into anonymous parts. Groups are listed in
     // page order; the one without a `match` collects everything else.
     sectionGroups: {
-      Inputs: [
-        {
-          title: "Basic input types",
-          match: /^(InputProperty|(String|Text|Number|Boolean|ArrayString|GitRepo|KeyValue)InputProperty)$/,
-        },
-        {
-          title: "Structured input types",
-          match: /^(Array|Object|ObjectMap|ObjectArray|Compound|Section|Ref)InputProperty$/,
-        },
-        {title: "Input values and references"},
-      ],
       Deploy: [
         {title: "Deploy"},
         {
@@ -171,7 +160,9 @@ function buildPages(sections, config) {
       pages.push(...splitSection(section, config.sectionGroups?.[section.title]));
       continue;
     }
-    if (current && current.fields + section.fields <= maxFieldsPerPage) {
+    // Prose-only sections (no types of their own) ride along with the
+    // previous page instead of becoming a near-empty sidebar entry.
+    if (current && section.children.length === 0 && current.fields + section.fields <= maxFieldsPerPage) {
       current.titles.push(section.title);
       current.blocks.push(section.intro, ...section.children);
       current.fields += section.fields;
