@@ -53,7 +53,7 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 
 4. Add every file anchor once to `on.pull_request.paths`. Keep the `&ravion_paths` anchor on that list and `paths: *ravion_paths` under `on.push`, so both events use the same filters without repeating any path string.
 
-5. Set `env.RAVION_CLI_VERSION` to the latest Ravion CLI version number, without the leading `v`. Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest (the URL redirects to the newest tag, such as `v0.2.20` — use `0.2.20`). It must be `0.2.20` or newer, because the apply job passes `--description`. Or run `ravion --version` if the CLI is installed.
+5. Set `env.RAVION_CLI_VERSION` to the latest Ravion CLI version number, without the leading `v`. Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest (the URL redirects to the newest tag, such as `v0.2.21` — use `0.2.21`). It must be `0.2.21` or newer, because the apply job passes `--description`. Or run `ravion --version` if the CLI is installed.
 
 6. Set `on.push.branches` to the repository's default branch. Match the runner to the repo by checking the other workflows under `.github/workflows/`. If they run on a custom or self-hosted runner (a `runs-on` value other than the GitHub-hosted `ubuntu-latest`/`ubuntu-*` labels — for example a self-hosted label or a runner group), set `runs-on` to that same runner for both jobs. Otherwise keep `ubuntu-latest`.
 
@@ -71,7 +71,7 @@ name: Ravion config
 env:
   RAVION_API_KEY: ${{ secrets.RAVION_API_KEY }}
   RAVION_AUTOAPPROVE: "false"
-  RAVION_CLI_VERSION: "0.2.20"
+  RAVION_CLI_VERSION: "0.2.21"
   # Keep indexes contiguous within each resource type.
   RAVION_PROJECT_1_ID: proj_3AV4cGr0t841Bstn4swCCrHrgly
   RAVION_PROJECT_1_FILE: &ravion_project_1_file packages/web/ravion.yaml
