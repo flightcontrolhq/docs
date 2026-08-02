@@ -7,10 +7,11 @@ Keep your [project](/config-as-code/project-config-file) and [pipeline](/config-
 
 The workflow uses path filters so unrelated changes do not allocate a runner. YAML anchors define each config file path once and reuse it in the pull request and push filters.
 
-Two jobs cover projects and pipelines. Only the job for the current event runs:
+Three jobs cover projects and pipelines. Only the job for the current event runs:
 
 - **Plan on pull request** — shallow-fetches the comparison commit, runs `ravion ... config apply --dry-run` for each changed resource, and posts every plan in a single, updating PR comment.
 - **Apply on merge** — shallow-fetches the comparison commit and runs `ravion ... config apply` for each changed resource when the branch merges into your default branch. Project applies pass `--description` so every stack run they create links back to the merged pull request, or to the commit when the commit subject references no pull request.
+- **Update the CLI monthly** — on the first of each month, opens a pull request bumping `.github/ravion-cli-version` when a newer [CLI release](/cli/releases) exists. Run it on demand from the **Actions** tab.
 
 ## Authenticate in CI
 
@@ -35,7 +36,7 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 <Prompt description="Discover your Ravion config files and add the CI workflow." icon="sparkles" actions={["copy", "cursor"]}>
   Add a GitHub Actions workflow to this repository that plans Ravion config changes on pull requests and applies them on merge to the default branch. Work through these steps:
 
-1. Fetch the workflow template from the Ravion docs at https://www.ravion.com/docs/config-as-code/ci-integration and use the `.github/workflows/ravion.yml` YAML block there as the starting point. Keep its jobs and logic unchanged. Only edit the indexed resource variables, their path aliases, `RAVION_CLI_VERSION`, optionally `RAVION_AUTOAPPROVE`, the default branch, and the `runs-on` values as described below.
+1. Fetch the workflow template from the Ravion docs at https://www.ravion.com/docs/config-as-code/ci-integration and use the `.github/workflows/ravion.yml` YAML block there as the starting point. Keep its jobs and logic unchanged. Only edit the indexed resource variables, their path aliases, the `.github/ravion-cli-version` file, optionally `RAVION_AUTOAPPROVE`, the default branch, and the `runs-on` values as described below.
 
 2. Find every Ravion config file in the repo:
    - Search files with these extensions: `.yaml`, `.yml`, `.json`, `.jsonc`, `.cue`. The names usually include `ravion` (project configs) or `pipeline` (pipeline configs), so prioritize those, but confirm each by its contents.
@@ -53,17 +54,17 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 
 4. Add every file anchor once to `on.pull_request.paths`. Keep the `&ravion_paths` anchor on that list and `paths: *ravion_paths` under `on.push`, so both events use the same filters without repeating any path string.
 
-5. Set `env.RAVION_CLI_VERSION` to the latest Ravion CLI version number, without the leading `v`. Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest (the URL redirects to the newest tag, such as `v0.2.22` — use `0.2.22`). It must be `0.2.22` or newer, because the apply job passes `--description`. Or run `ravion --version` if the CLI is installed.
+5. Write the latest Ravion CLI tag, with its leading `v`, to `.github/ravion-cli-version` (a single line, such as `v0.2.22`). Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest, which redirects to the newest tag. It must be `v0.2.22` or newer, because the apply job passes `--description`. The workflow's monthly `update-cli` job keeps this file current afterwards, so do not inline the version in the workflow.
 
 6. Set `on.push.branches` to the repository's default branch. Match the runner to the repo by checking the other workflows under `.github/workflows/`. If they run on a custom or self-hosted runner (a `runs-on` value other than the GitHub-hosted `ubuntu-latest`/`ubuntu-*` labels — for example a self-hosted label or a runner group), set `runs-on` to that same runner for both jobs. Otherwise keep `ubuntu-latest`.
 
-7. Write the workflow to `.github/workflows/ravion.yml`. If you could not determine the ID for any file, add its indexed pair with a TODO placeholder and list those files so I can fill them in.
+7. Write the workflow to `.github/workflows/ravion.yml` and the CLI tag to `.github/ravion-cli-version`. If you could not determine the ID for any file, add its indexed pair with a TODO placeholder and list those files so I can fill them in.
 
 </Prompt>
 
 Create `.github/workflows/ravion.yml`. Define each project or pipeline as a contiguous indexed ID/file pair. Anchor every `*_FILE` value and reuse those aliases in `ravion_paths`, so each config file path appears once.
 
-Set `RAVION_CLI_VERSION` to the [CLI release](/cli/releases) you want CI to use. Leave `RAVION_AUTOAPPROVE` as `"false"` to require manual approval of [stack change pipeline runs](/modules/stack#stacks-change-through-pipelines) in the Ravion dashboard, or set it to `"true"` to auto-approve project applies.
+Put the [CLI release](/cli/releases) tag you want CI to use in `.github/ravion-cli-version`, for example `v0.2.22`. The `update-cli` job opens a pull request against that file each month when a newer release exists, so the version stays outside the workflow file — GitHub blocks the Actions token from pushing changes to files under `.github/workflows/`. Leave `RAVION_AUTOAPPROVE` as `"false"` to require manual approval of [stack change pipeline runs](/modules/stack#stacks-change-through-pipelines) in the Ravion dashboard, or set it to `"true"` to auto-approve project applies.
 
 ````yaml .github/workflows/ravion.yml
 name: Ravion config
@@ -71,7 +72,9 @@ name: Ravion config
 env:
   RAVION_API_KEY: ${{ secrets.RAVION_API_KEY }}
   RAVION_AUTOAPPROVE: "false"
-  RAVION_CLI_VERSION: "0.2.22"
+  # The CLI version lives in .github/ravion-cli-version so the monthly job can
+  # bump it: GitHub blocks the Actions token from pushing workflow file changes.
+  RAVION_CLI_VERSION_FILE: .github/ravion-cli-version
   # Keep indexes contiguous within each resource type.
   RAVION_PROJECT_1_ID: proj_3AV4cGr0t841Bstn4swCCrHrgly
   RAVION_PROJECT_1_FILE: &ravion_project_1_file packages/web/ravion.yaml
@@ -90,6 +93,9 @@ on:
     branches:
       - main
     paths: *ravion_paths
+  schedule:
+    - cron: "0 14 1 * *"
+  workflow_dispatch:
 
 jobs:
   plan:
@@ -171,9 +177,12 @@ jobs:
 
           echo "resources=$resources" >> "$GITHUB_OUTPUT"
 
-      - name: Install the Ravion CLI
+      - &install_ravion_cli
+        name: Install the Ravion CLI
         if: steps.list.outputs.resources != '[]'
-        run: curl -fsSL "https://github.com/flightcontrolhq/cli/releases/download/v${RAVION_CLI_VERSION}/install.sh" | sh
+        run: |
+          version=$(cat "$RAVION_CLI_VERSION_FILE")
+          curl -fsSL "https://github.com/flightcontrolhq/cli/releases/download/${version}/install.sh" | sh
 
       - name: Build plan comment
         if: steps.list.outputs.resources != '[]'
@@ -250,6 +259,45 @@ jobs:
               });
             }
 
+  update-cli:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Open a pull request when a newer CLI is released
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          current=$(cat "$RAVION_CLI_VERSION_FILE")
+          latest=$(gh release view --repo flightcontrolhq/cli --json tagName --jq .tagName)
+          if [ "$current" = "$latest" ]; then
+            echo "Already on the latest Ravion CLI ($current)"
+            exit 0
+          fi
+
+          branch="ravion/cli-$latest"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null 2>&1; then
+            echo "$branch already exists"
+            exit 0
+          fi
+
+          echo "$latest" > "$RAVION_CLI_VERSION_FILE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git commit -am "chore(ravion): update the Ravion CLI to $latest"
+          git push origin "$branch"
+
+          gh pr create \
+            --base "${{ github.ref_name }}" \
+            --head "$branch" \
+            --title "chore(ravion): update the Ravion CLI to $latest" \
+            --body "Updates the Ravion CLI used by the Ravion config workflow from \`$current\` to [\`$latest\`](https://github.com/flightcontrolhq/cli/releases/tag/$latest)."
+
   apply:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -262,9 +310,7 @@ jobs:
 
       - *list_changed_resources
 
-      - name: Install the Ravion CLI
-        if: steps.list.outputs.resources != '[]'
-        run: curl -fsSL "https://github.com/flightcontrolhq/cli/releases/download/v${RAVION_CLI_VERSION}/install.sh" | sh
+      - *install_ravion_cli
 
       - name: Apply changes
         if: steps.list.outputs.resources != '[]'
