@@ -135,7 +135,21 @@
             "group": "Module definitions",
             "pages": [
               "module-definitions/catalog",
-              "module-definitions/definition-schema"
+              {
+                "group": "Definition schema",
+                "root": "module-definitions/definition-schema",
+                "pages": [
+                  "module-definitions/definition-schema/module",
+                  "module-definitions/definition-schema/inputs",
+                  "module-definitions/definition-schema/stack",
+                  "module-definitions/definition-schema/build",
+                  "module-definitions/definition-schema/deploy",
+                  "module-definitions/definition-schema/ecs-deployments",
+                  "module-definitions/definition-schema/ecs-task-definitions",
+                  "module-definitions/definition-schema/ui",
+                  "module-definitions/definition-schema/template-expressions"
+                ]
+              }
             ]
           }
         ]

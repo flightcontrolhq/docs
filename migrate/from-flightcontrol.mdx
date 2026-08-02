@@ -78,7 +78,7 @@ But in Ravion the infrastructure is a standalone Terraform stack under the hood.
 
 Flightcontrol gave you very little control over the build and deploy pipeline. You basically only had watch paths, pre & post deploy commands, and a limited dependency config.
 
-Ravion now has a full featured CI/CD system like GitHub actions, but that runs entirely in your account just like Flightcontrol builders.
+Ravion now has a full-featured CI/CD system like GitHub Actions, but that runs entirely in your account just like Flightcontrol builders.
 
 You can easily define the sequence and parallelization of builds and deploys exactly as you want.
 
@@ -92,13 +92,13 @@ And you can have modules that are deployed as a standalone service without any p
 
 Use the Terraform Stack module to manage and visualize your Terraform state in Ravion. You can continue using your existing Terraform state backend or import your state into our managed state backend.
 
-### 6. Ravion's standard library of modules now support almost every AWS config option
+### 6. Ravion's standard library of modules now supports almost every AWS config option
 
-No more hacks to set or override AWS settings that Flightcontrol didn't expose. Essentially every option is now exposed — see the [standard library](/module-definitions/standard-library) reference. And if it's not, it's just a simple config change for us to add it. Or you can even fork our standard modules and customize it as you please.
+No more hacks to set or override AWS settings that Flightcontrol didn't expose. Essentially every option is now exposed — see the [standard library](/module-definitions/standard-library) reference. And if it's not, it's just a simple config change for us to add it. Or you can even fork our standard modules and customize them as you please.
 
 ### 7. You can add your own "service types" (modules)
 
-Your organization has a module catalogue that has our standard library of modules by default. But you can fork, replace, or add your own modules.
+Your organization has a module catalog that has our standard library of modules by default. But you can fork, replace, or add your own modules.
 
 ## Other Ravion features and improvements
 
@@ -139,7 +139,7 @@ Log into [Ravion](https://app.ravion.com) with your Flightcontrol credentials.
 <Note>
   To keep existing infrastructure like RDS, Redis, S3, and CloudFront running exactly as is, import it into a Ravion module instead of recreating it. See [Import into a standard module](/migrate/import-into-standard-module) and [Import into a Terraform Stack](/migrate/import-into-terraform-stack) — both include agent prompts that automate the flow.
 
-Beyond imports, giving your agent the [Start here (human + agent)](../start-here) page and this migrate from Flightcontrol page should take you a long ways.
+Beyond imports, giving your agent the [Start here (human + agent)](../start-here) page and this migrate from Flightcontrol page should take you a long way.
 
 </Note>
 
