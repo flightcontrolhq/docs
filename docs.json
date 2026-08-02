@@ -146,7 +146,8 @@
                   "module-definitions/definition-schema/deploy",
                   "module-definitions/definition-schema/ecs-deployments",
                   "module-definitions/definition-schema/ecs-task-definitions",
-                  "module-definitions/definition-schema/ui"
+                  "module-definitions/definition-schema/ui",
+                  "module-definitions/definition-schema/template-expressions"
                 ]
               }
             ]

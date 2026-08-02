@@ -39,7 +39,8 @@ const splitDocs = [
         {title: "ECS task definitions", match: /^Ecs/},
       ],
     },
-    titleOverrides: {ui: "UI and template expressions"},
+    standaloneSections: ["Template expressions"],
+    titleOverrides: {ui: "UI"},
   },
 ];
 
@@ -162,7 +163,9 @@ function buildPages(sections, config) {
     }
     // Prose-only sections (no types of their own) ride along with the
     // previous page instead of becoming a near-empty sidebar entry.
-    if (current && section.children.length === 0 && current.fields + section.fields <= maxFieldsPerPage) {
+    const packable =
+      section.children.length === 0 && !config.standaloneSections?.includes(section.title);
+    if (current && packable && current.fields + section.fields <= maxFieldsPerPage) {
       current.titles.push(section.title);
       current.blocks.push(section.intro, ...section.children);
       current.fields += section.fields;
