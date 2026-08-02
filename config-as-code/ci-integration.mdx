@@ -54,7 +54,7 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 
 4. Add every file anchor once to `on.pull_request.paths`. Keep the `&ravion_paths` anchor on that list and `paths: *ravion_paths` under `on.push`, so both events use the same filters without repeating any path string.
 
-5. Write the latest Ravion CLI tag, with its leading `v`, to `.github/ravion-cli-version` (a single line, such as `v0.2.22`). Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest, which redirects to the newest tag. It must be `v0.2.22` or newer, because the apply job passes `--description`. The workflow's monthly `update-cli` job keeps this file current afterwards, so do not inline the version in the workflow.
+5. Write the latest Ravion CLI tag, with its leading `v`, to `.github/ravion-cli-version` (a single line, such as `v0.2.23`). Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest, which redirects to the newest tag. It must be `v0.2.23` or newer, because the apply job passes `--description`. The workflow's monthly `update-cli` job keeps this file current afterwards, so do not inline the version in the workflow.
 
 6. Set `on.push.branches` to the repository's default branch. Match the runner to the repo by checking the other workflows under `.github/workflows/`. If they run on a custom or self-hosted runner (a `runs-on` value other than the GitHub-hosted `ubuntu-latest`/`ubuntu-*` labels — for example a self-hosted label or a runner group), set `runs-on` to that same runner for both jobs. Otherwise keep `ubuntu-latest`.
 
@@ -64,7 +64,7 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 
 Create `.github/workflows/ravion.yml`. Define each project or pipeline as a contiguous indexed ID/file pair. Anchor every `*_FILE` value and reuse those aliases in `ravion_paths`, so each config file path appears once.
 
-Put the [CLI release](/cli/releases) tag you want CI to use in `.github/ravion-cli-version`, for example `v0.2.22`. The `update-cli` job opens a pull request against that file each month when a newer release exists, so the version stays outside the workflow file — GitHub blocks the Actions token from pushing changes to files under `.github/workflows/`. Leave `RAVION_AUTOAPPROVE` as `"false"` to require manual approval of [stack change pipeline runs](/modules/stack#stacks-change-through-pipelines) in the Ravion dashboard, or set it to `"true"` to auto-approve project applies.
+Put the [CLI release](/cli/releases) tag you want CI to use in `.github/ravion-cli-version`, for example `v0.2.23`. The `update-cli` job opens a pull request against that file each month when a newer release exists, so the version stays outside the workflow file — GitHub blocks the Actions token from pushing changes to files under `.github/workflows/`. Leave `RAVION_AUTOAPPROVE` as `"false"` to require manual approval of [stack change pipeline runs](/modules/stack#stacks-change-through-pipelines) in the Ravion dashboard, or set it to `"true"` to auto-approve project applies.
 
 ````yaml .github/workflows/ravion.yml
 name: Ravion config
@@ -319,10 +319,17 @@ jobs:
           COMMIT_SUBJECT: ${{ github.event.head_commit.message }}
         run: |
           # Link every stack run this apply creates back to the change that caused
-          # it: the merged pull request when the commit subject references one,
-          # otherwise the commit itself.
+          # it: the merged pull request when the subject is a merge or squash
+          # commit GitHub authored, otherwise the commit itself. Any other "#123"
+          # in a subject is an issue reference, not the pull request that merged.
           description="Config apply from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
-          pull_request=$(head -n 1 <<< "$COMMIT_SUBJECT" | grep -oE '#[0-9]+' | tail -n 1 | tr -d '#') || true
+          subject=$(head -n 1 <<< "$COMMIT_SUBJECT")
+          pull_request=""
+          if [[ $subject =~ ^Merge\ pull\ request\ \#([0-9]+)\ from\  ]]; then
+            pull_request="${BASH_REMATCH[1]}"
+          elif [[ $subject =~ \(\#([0-9]+)\)$ ]]; then
+            pull_request="${BASH_REMATCH[1]}"
+          fi
           if [ -n "$pull_request" ]; then
             description="Config apply from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$pull_request"
           fi
