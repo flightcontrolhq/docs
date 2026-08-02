@@ -289,13 +289,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
-          git commit -am "chore(ravion): update the Ravion CLI to $latest"
+          git commit -am "ci(ravion): update the Ravion CLI used by the GitHub Action to $latest"
           git push origin "$branch"
 
           gh pr create \
             --base "${{ github.ref_name }}" \
             --head "$branch" \
-            --title "chore(ravion): update the Ravion CLI to $latest" \
+            --title "ci(ravion): update the Ravion CLI used by the GitHub Action to $latest" \
             --body "Updates the Ravion CLI used by the Ravion config workflow from \`$current\` to [\`$latest\`](https://github.com/flightcontrolhq/cli/releases/tag/$latest)."
 
   apply:
