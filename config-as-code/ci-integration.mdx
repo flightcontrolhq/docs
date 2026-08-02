@@ -10,7 +10,7 @@ The workflow uses path filters so unrelated changes do not allocate a runner. YA
 Three jobs cover projects and pipelines. Only the job for the current event runs:
 
 - **Plan on pull request** — shallow-fetches the comparison commit, runs `ravion ... config apply --dry-run` for each changed resource, and posts every plan in a single, updating PR comment.
-- **Apply on merge** — shallow-fetches the comparison commit and runs `ravion ... config apply` for each changed resource when the branch merges into your default branch. Project applies pass `--description` so every stack run they create links back to the merged pull request, or to the commit when the commit subject references no pull request.
+- **Apply on merge** — shallow-fetches the comparison commit and runs `ravion ... config apply` for each changed resource when the branch merges into your default branch. Project applies pass `--description` so every stack run they create links back to the merged pull request, or to the commit for a direct push. The description uses the same markdown as the run descriptions Ravion writes for pipeline runs it triggers from webhooks, such as `[PR #42 - Add dark mode support](https://github.com/acme/app/pull/42) ([abcdef1](https://github.com/acme/app/commit/abcdef123456))`.
 - **Update the CLI monthly** — on the first of each month, opens a pull request bumping `.github/ravion-cli-version` when a newer [CLI release](/cli/releases) exists. Run it on demand from the **Actions** tab.
 
 ## Authenticate in CI
@@ -319,19 +319,32 @@ jobs:
           COMMIT_SUBJECT: ${{ github.event.head_commit.message }}
         run: |
           # Link every stack run this apply creates back to the change that caused
-          # it: the merged pull request when the subject is a merge or squash
-          # commit GitHub authored, otherwise the commit itself. Any other "#123"
-          # in a subject is an issue reference, not the pull request that merged.
-          description="Config apply from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
+          # it, in the same markdown Ravion uses for pipeline runs it triggers
+          # from webhooks. The subject only names a pull request when GitHub
+          # authored it as a merge or squash commit; any other "#123" is an issue
+          # reference, so those runs link to the commit instead.
           subject=$(head -n 1 <<< "$COMMIT_SUBJECT")
+          short_sha=${GITHUB_SHA:0:7}
+          commit_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
+
           pull_request=""
+          title="$subject"
           if [[ $subject =~ ^Merge\ pull\ request\ \#([0-9]+)\ from\  ]]; then
             pull_request="${BASH_REMATCH[1]}"
-          elif [[ $subject =~ \(\#([0-9]+)\)$ ]]; then
-            pull_request="${BASH_REMATCH[1]}"
+            # GitHub puts the pull request title on the last line of a merge commit.
+            title=$(grep -v '^[[:space:]]*$' <<< "$COMMIT_SUBJECT" | tail -n 1)
+          elif [[ $subject =~ ^(.*)\ \(\#([0-9]+)\)$ ]]; then
+            title="${BASH_REMATCH[1]}"
+            pull_request="${BASH_REMATCH[2]}"
           fi
+
+          # Square brackets would otherwise break the markdown link label.
+          title=$(sed 's/[][]/\\&/g' <<< "${title:0:200}")
+
           if [ -n "$pull_request" ]; then
-            description="Config apply from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$pull_request"
+            description="[PR #$pull_request - $title]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$pull_request) ([$short_sha]($commit_url))"
+          else
+            description="[$title ($short_sha)]($commit_url)"
           fi
 
           while read -r resource; do
