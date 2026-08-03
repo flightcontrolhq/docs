@@ -1,6 +1,8 @@
 ---
 title: "Step types"
 description: "Catalog of Ravion pipeline step types, including module actions, CI steps, approvals, parallel groups, and other control-flow primitives."
+"og:image": "https://www.ravion.com/og/docs/pipelines/step-types.png"
+"twitter:image": "https://www.ravion.com/og/docs/pipelines/step-types.png"
 ---
 
 A step is the smallest unit of work in a pipeline. Every action step shares a common shape — `id`, optional `name`, `timeout`, and `if` condition — and adds fields specific to its `type`. Wrap steps in `parallel` or `group` blocks to control how they run. See [Pipelines overview](/pipelines/overview).
