@@ -18,6 +18,72 @@ rss: true
 
 {/* ravion-changelog:july-27-2026 */}
 
+{/* ravion-changelog:august-3-2026 */}
+<Update
+  label="August 3, 2026"
+  rss={{
+    title: "Schedule pipeline runs, safer stack approvals, clearer deployment errors, and faster CLI and module workflows",
+  }}
+>
+
+## Platform
+### Features
+- **Scheduled pipeline triggers:** Schedule pipeline and module-stack runs with cron-based triggers. [Learn more](https://www.ravion.com/docs/pipelines/config-reference).
+- **OAuth account access:** Existing users signing up with another OAuth provider can reuse their existing account and login flow.
+- **Deployment attribution:** External ECS deployments show who initiated them and whether they came from the AWS Console, CLI, Terraform, SDK, or API.
+- **Destructive-change confirmation:** Stack approvals now identify planned destroys and replacements before allowing approval.
+- **Terraform resource errors:** Failed plan and apply resources now show structured provider errors and the configuration location that caused them.
+### Improvements
+- Deployment details now show normalized ECS task-definition changes consistently in cards and detail views.
+- Changed JSON and YAML diffs now start collapsed, while expanded content uses the enclosing panel's scrolling.
+- Dialogs now stay within the viewport and scroll their bodies while keeping headers and actions visible.
+- Pipeline runs can use organization-level concurrency controls.
+- Module version lists can filter from a specified semantic version, with clearer upgrade indicators.
+- Config-apply stack runs now receive generated descriptions instead of action-only placeholders.
+- Metrics charts now load faster from persistent caching and show applied-run and deployment markers.
+- Module and deployment input values now ignore surrounding whitespace during validation.
+- Marketing pages now use consistent grid lines, spacing, and responsive layouts across desktop, tablet, and mobile.
+### Fixes
+- Retrying a failed Terraform apply now preserves its errored state snapshot in the customer AWS account.
+- Deauthorized or deleted EventBridge connections now recover automatically so ECS events continue to arrive.
+- Lambda and Static deployment failures now use the same structured error display as other deployment types.
+- Failed binary downloads now retry transient connection and HTTP failures.
+- Deployment canvases now route wire crossovers and card layouts more clearly.
+- Marketing pages now recover from missing deploy-time JavaScript chunks with a one-time reload.
+## AWS account IAM policy 1.0.39 → 1.0.42
+- **External ECS deployment attribution:** Grant CloudTrail event lookup access for identifying external ECS deployments.
+- **Cross-account Lambda images:** Allow Lambda container-image updates from ECR while keeping direct API calls restricted to Ravion's IP range.
+- **EventBridge connection recovery:** Allow EventBridge API destinations to be rebound after a connection is recreated.
+
+Update your AWS account connection in organization settings.
+
+## Modules
+### [ACM Certificate](https://www.ravion.com/docs/module-definitions/catalog/rvn-acm-certificate) [0.4.0](https://github.com/flightcontrolhq/modules/releases/tag/rvn-acm-certificate%400.4.0) → [0.4.1](https://github.com/flightcontrolhq/modules/releases/tag/rvn-acm-certificate%400.4.1)
+- Allow existing certificates to upgrade to the `domains` input without being recreated.
+### [CloudFront CDN](https://www.ravion.com/docs/module-definitions/catalog/rvn-cloudfront) [0.4.0](https://github.com/flightcontrolhq/modules/releases/tag/rvn-cloudfront%400.4.0) → [0.4.2](https://github.com/flightcontrolhq/modules/releases/tag/rvn-cloudfront%400.4.2)
+- Add a configurable VPC origin.
+- Default allowed methods to read-only.
+### [ECS Cluster](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-cluster) [0.3.1](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-cluster%400.3.1) → [0.5.0](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-cluster%400.5.0)
+- Default private load balancers to no IPv6 ingress and allow IPv6 ingress CIDR inputs.
+- BREAKING: rename `ec2_managed_termination_protection` to `ec2_managed_termination_protection_enabled` and `ec2_managed_scaling_status` to `ec2_managed_scaling_enabled`, and change both inputs to booleans.
+### [ECS Network Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-nlb) [0.3.1](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-nlb%400.3.1) → [0.3.2](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-nlb%400.3.2)
+- Allow existing services to upgrade to the `listeners` input without being recreated.
+### [ECS Web Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-web) [0.8.3](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-web%400.8.3) → [0.8.4](https://github.com/flightcontrolhq/modules/releases/tag/rvn-ecs-web%400.8.4)
+- Clarify build source, Railpack command, and builder instance guidance.
+### [Lambda Function](https://www.ravion.com/docs/module-definitions/catalog/rvn-lambda) [0.3.2](https://github.com/flightcontrolhq/modules/releases/tag/rvn-lambda%400.3.2) → [0.4.0](https://github.com/flightcontrolhq/modules/releases/tag/rvn-lambda%400.4.0)
+- Stop creating a module-owned ECR repository when pulling from an image registry and require an initial image tag or digest before the first deployment.
+## CLI [0.2.15](https://github.com/flightcontrolhq/cli/releases/tag/v0.2.15) → [0.2.23](https://github.com/flightcontrolhq/cli/releases/tag/v0.2.23)
+### Features
+- **Trigger-concurrency run status:** The CLI now treats skipped trigger-concurrency runs as terminal and reports a failure while waiting for completion.
+- **Module version validation:** Use `--dry-run` with `ravion module version create` to validate configuration and return defaults without creating a version. [Learn more](https://www.ravion.com/docs/cli/reference/module).
+- **Version filtering:** Use `--since-version` with `ravion module version list` to show versions at or newer than a semantic version. [Learn more](https://www.ravion.com/docs/cli/reference/module).
+- **Terraform execution pagination:** Terraform execution summaries are now returned newest first with cursor pagination. [Learn more](https://www.ravion.com/docs/cli/reference/terraform).
+- **Terraform resource errors:** Terraform resources now expose structured errors for failed plan or apply changes, including provider details and configuration location.
+- **Moved module inputs:** Module inputs can declare `moved_from` values so upgrades that rename or merge immutable inputs do not fail the immutable-input check. [Learn more](https://www.ravion.com/docs/module-definitions/definition-schema/inputs).
+- **Stack-run descriptions:** Use `--description` with `ravion project config apply` to set the description on every stack run it creates. [Learn more](https://www.ravion.com/docs/cli/reference/project).
+
+</Update>
+
 <Update
   label="July 27, 2026"
   rss={{
