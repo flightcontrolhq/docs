@@ -54,6 +54,30 @@ Builds run on temporary EC2 instances in your cloud account, so your source code
   steps](/pipelines/step-types#ci-steps), which take the full build config inline.
 </Note>
 
+## Docker layer cache
+
+Every image build automatically pulls layer cache from the destination ECR repo — the same repo the build pushes to. No configuration is required to benefit from this: as long as previous builds have pushed images to that repo, later builds reuse their layers.
+
+To get the most out of the cache:
+
+- **Order your `Dockerfile` from least- to most-frequently-changed.** Copy manifest files (`package.json`, `go.mod`, `requirements.txt`) and install dependencies *before* copying the rest of the source. That way a source change doesn't invalidate the dependency layer.
+- **Pin base images by digest** (or a specific tag) so the base layer is stable across builds.
+- **Keep one ECR repo per build target.** Because cache is pulled from the destination repo, splitting a single service across multiple repos defeats reuse.
+
+### Pinning a specific cache source
+
+By default, the cache source is the destination repo's most recent image. To pin a specific image instead — for example, a known-good tag from `main`, or a digest that matches a base branch — set `cache_from` on the build config for `dockerfile`, `nixpacks`, or `railpack` builders:
+
+```yaml
+input:
+  build_source: dockerfile
+  dockerfile: Dockerfile
+  cache_from:
+    tag: main    # or: digest: sha256:...
+```
+
+`tag` and `digest` are both optional and templateable. Use `digest` when you need a deterministic cache source across parallel branches; use `tag` (e.g. `main`) when you want feature branches to warm-start from the base branch's latest build. See [`CacheFromConfig`](/pipelines/config-reference) in the pipeline schema for the exact fields.
+
 ## Inspecting builds
 
 A build is a pipeline step execution — there's no separate build entity or command. Find it in the pipeline run:
