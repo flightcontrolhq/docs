@@ -29,7 +29,6 @@ rss: true
 ## Platform
 ### Features
 - **Scheduled pipeline triggers:** Schedule pipeline and module-stack runs with cron-based triggers. [Learn more](https://www.ravion.com/docs/pipelines/config-reference).
-- **OAuth account access:** Existing users signing up with another OAuth provider can reuse their existing account and login flow.
 - **Deployment attribution:** External ECS deployments show who initiated them and whether they came from the AWS Console, CLI, Terraform, SDK, or API.
 - **Destructive-change confirmation:** Stack approvals now identify planned destroys and replacements before allowing approval.
 - **Terraform resource errors:** Failed plan and apply resources now show structured provider errors and the configuration location that caused them.
@@ -42,7 +41,6 @@ rss: true
 - Config-apply stack runs now receive generated descriptions instead of action-only placeholders.
 - Metrics charts now load faster from persistent caching and show applied-run and deployment markers.
 - Module and deployment input values now ignore surrounding whitespace during validation.
-- Marketing pages now use consistent grid lines, spacing, and responsive layouts across desktop, tablet, and mobile.
 ### Fixes
 - Retrying a failed Terraform apply now preserves its errored state snapshot in the customer AWS account.
 - Deauthorized or deleted EventBridge connections now recover automatically so ECS events continue to arrive.
