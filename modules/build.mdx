@@ -47,7 +47,7 @@ Add a `build` step to your pipeline and point it at the module instance:
 - `module_instance` accepts a unique ID (`mi_…`), `environment.module`, or `project.environment.module`.
 - `input` passes build-time values the module accepts, such as a tag, branch, or commit. Check the module's docs or schema (`ravion module schema <module-type>`) for what it takes.
 
-Builds run on temporary EC2 instances in your cloud account, so your source code never enters the Ravion control plane. Image builds reuse Docker layer caching from the destination registry, so repeat builds are fast.
+Builds run on temporary EC2 instances in your cloud account, so your source code never enters the Ravion control plane. Image builds reuse [Docker layer cache](#docker-layer-cache) from the destination registry, so repeat builds are fast.
 
 <Note>
   Building something that isn't a module? Use the standalone `build:image` or `build:static` [CI
@@ -56,27 +56,42 @@ Builds run on temporary EC2 instances in your cloud account, so your source code
 
 ## Docker layer cache
 
-Every image build automatically pulls layer cache from the destination ECR repo — the same repo the build pushes to. No configuration is required to benefit from this: as long as previous builds have pushed images to that repo, later builds reuse their layers.
+Container image builds reuse Docker layer cache from the module's ECR repo, so repeat builds only rebuild the layers that changed. There is nothing to configure: the module definition points the build at a stable cache image in that repo, and every build also writes a dedicated `buildcache` image holding the layers of each build stage.
+
+Static asset builds and Lambda builds — zip package or container image — don't use registry layer cache.
 
 To get the most out of the cache:
 
 - **Order your `Dockerfile` from least- to most-frequently-changed.** Copy manifest files (`package.json`, `go.mod`, `requirements.txt`) and install dependencies *before* copying the rest of the source. That way a source change doesn't invalidate the dependency layer.
 - **Pin base images by digest** (or a specific tag) so the base layer is stable across builds.
-- **Keep one ECR repo per build target.** Because cache is pulled from the destination repo, splitting a single service across multiple repos defeats reuse.
+- **Keep the build in one ECR repo.** Cache comes from the repo the build pushes to, so a module that pushes elsewhere between builds loses reuse.
 
-### Pinning a specific cache source
+### Choosing the cache source yourself
 
-By default, the cache source is the destination repo's most recent image. To pin a specific image instead — for example, a known-good tag from `main`, or a digest that matches a base branch — set `cache_from` on the build config for `dockerfile`, `nixpacks`, or `railpack` builders:
+Module builds pin the cache source for you and expose no input for changing it. If you need control over it, use a standalone [`build:image` step](/pipelines/step-types#build%3Aimage) and set `cache_from` on its `builder` block:
 
 ```yaml
-input:
-  build_source: dockerfile
-  dockerfile: Dockerfile
-  cache_from:
-    tag: main    # or: digest: sha256:...
+- id: build_image
+  type: build:image
+  source:
+    type: git
+    repo: https://github.com/my-org/my-repo
+    branch: << pipeline.input.branch >>
+  builder:
+    type: dockerfile
+    dockerfile: Dockerfile
+    cache_from:
+      tag: release    # or: digest: sha256:...
+  destinations:
+    - id: ecr
+      type: ecr
+      repository_arn: arn:aws:ecr:us-east-1:123456789012:repository/my-app
+  infrastructure:
+    type: ec2
+    instance_size: medium
 ```
 
-`tag` and `digest` are both optional and templateable. Use `digest` when you need a deterministic cache source across parallel branches; use `tag` (e.g. `main`) when you want feature branches to warm-start from the base branch's latest build. See [`CacheFromConfig`](/pipelines/config-reference) in the pipeline schema for the exact fields.
+Both `tag` and `digest` are optional, accept template tokens, and resolve against the step's first ECR destination — so the tag or digest you name has to exist in that repo. `digest` wins if you set both. Omit `cache_from` entirely and the step falls back to the most recent image in that repo. See [`CacheFromConfig`](/pipelines/config-reference#cachefromconfig) for the full field list.
 
 ## Inspecting builds
 
