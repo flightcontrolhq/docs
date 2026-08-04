@@ -1,6 +1,8 @@
 ---
 title: "Project config file"
 description: "Manage a full Ravion project's configuration—environments, modules, and pipelines—from a single declarative YAML file in source control."
+"og:image": "https://www.ravion.com/og/docs/config-as-code/project-config-file.png"
+"twitter:image": "https://www.ravion.com/og/docs/config-as-code/project-config-file.png"
 ---
 
 import ProjectConfigSchemaReference from "/snippets/schema-reference/project-config.mdx";
@@ -108,6 +110,8 @@ Store the config file in your repository and manage it with the CLI.
     ```
 
     Add `--autoapprove` to approve supported stack change pipeline runs without a manual gate.
+
+    Add `--description` to set the description on every stack run the apply creates, for example `--description "https://github.com/acme/app/pull/12"` to link the runs to the pull request that changed the config. Without it, runs keep Ravion's generated description.
 
   </Step>
   <Step title="Review and approve the stack run">

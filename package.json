@@ -7,6 +7,8 @@
     "sync:schema-reference": "node scripts/sync-schema-reference.mjs",
     "sync:module-catalog": "node scripts/sync-module-catalog.mjs",
     "sync:cli-reference": "node scripts/sync-cli-reference.mjs",
+    "sync:og-images": "node scripts/sync-og-images.mjs",
+    "check:og-images": "node scripts/sync-og-images.mjs --check",
     "validate": "mint validate",
     "update": "mint update"
   },

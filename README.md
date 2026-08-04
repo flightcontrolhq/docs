@@ -70,6 +70,20 @@ Update the generated CLI page list in `docs.json` so added or removed commands a
 pnpm sync:cli-reference
 ```
 
+### Social-share images
+
+Every page's `og:image`/`twitter:image` frontmatter points at the Ravion OG renderer
+(`https://www.ravion.com/og/docs/<page-path>.png`), which draws the same banner used
+for the marketing site and the blog and reads the page title from the page's Mintlify
+Markdown export. Generated pages do not carry those tags, so after regenerating any
+reference docs run:
+
+```bash
+pnpm sync:og-images
+```
+
+`pnpm check:og-images` verifies every page instead of writing, and runs on pull requests.
+
 ### Validate and publish
 
 ```bash

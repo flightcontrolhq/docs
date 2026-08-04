@@ -37,6 +37,9 @@ jobs:
         env:
           RAVION_API_KEY: ${{ secrets.RAVION_API_KEY }}
 
+      - name: Sync social-share images
+        run: pnpm sync:og-images
+
       - name: Validate docs
         run: pnpm validate
 
