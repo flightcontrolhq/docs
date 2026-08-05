@@ -24,9 +24,9 @@ This is a stuck lock. Releasing it allows the stack to run again.
 
 ## Confirm the lock is stuck
 
-An active run holds its lock for a reason, and unlocking during a run discards work in progress.
+A run holds the lock only while a Terraform operation is executing. Each `plan` and each `apply` takes the lock and releases it as that operation finishes, so a queued run holds nothing, and neither does a run paused for approval between its plan and its apply.
 
-Open the stack and review its runs. Runs that are queued, in progress, or awaiting approval still hold their lock. Wait for them to complete, or cancel them. Ravion enforces this: an unlock during an active run is rejected and reports which run holds the lock.
+Open the stack and review its runs. Wait for a running operation to finish, or cancel it. Ravion enforces this for you, and takes the cautious line: an unlock is rejected while any run on the stack is active, naming the run that blocks it.
 
 <Note>
   Ravion can release locks only for stacks that store their Terraform state in Ravion — those that
@@ -50,7 +50,7 @@ Open the stack and review its runs. Runs that are queued, in progress, or awaiti
     Review the lock:
 
     ```bash
-    ravion stack lock <stack-id>
+    ravion stack get-lock <stack-id>
     ```
 
     Release it:
@@ -78,9 +78,9 @@ Open the stack and review its runs. Runs that are queued, in progress, or awaiti
 
 ## Runs that never complete
 
-Every run reaches a final state, including runs that fail. A run that stays queued or in progress and does not respond to cancellation indicates a problem beyond the stack itself. This is not expected behaviour — [contact support](/contact-support) when you encounter it.
+Every run reaches a final state, including runs that fail. A run that stays in progress and does not respond to cancellation indicates a problem beyond the stack itself. This is not expected behaviour — [contact support](/contact-support) when you encounter it.
 
-Such a run continues to hold the lock, and a standard unlock stays rejected. `--force` releases the lock regardless of run status:
+Such a run keeps hold of the lock, and a standard unlock stays rejected. `--force` releases the lock regardless of run status:
 
 ```bash
 ravion stack unlock <stack-id> --force
@@ -104,4 +104,4 @@ A lock that returns immediately after release is held by an active process. Revi
 
 ## Get help
 
-[Contact support](/contact-support) for anything this page does not resolve, including a lock that survives an unlock, a run that stays active without producing output, or a plan that reports missing resources after a release. Include the stack ID and the output of `ravion stack lock`.
+[Contact support](/contact-support) for anything this page does not resolve, including a lock that survives an unlock, a run that stays active without producing output, or a plan that reports missing resources after a release. Include the stack ID and the output of `ravion stack get-lock`.

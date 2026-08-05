@@ -28,6 +28,20 @@ ravion stack get <id> [flags]
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
 
+### `ravion stack get-lock`
+
+Read a stack's Terraform state lock
+
+```bash
+ravion stack get-lock <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
 ### `ravion stack list`
 
 List Stacks
@@ -46,20 +60,6 @@ ravion stack list [flags]
 | `--limit <int>` |  | limit |
 | `--project-id <string>` |  | projectId |
 | `-v, --verbose` |  | show full output |
-
-### `ravion stack lock`
-
-Read a stack's Terraform state lock
-
-```bash
-ravion stack lock <id> [flags]
-```
-
-**Flags:**
-
-| Flag | Required | Description |
-| --- | --- | --- |
-| `--json` |  | emit response as JSON |
 
 ### `ravion stack resource-count`
 
