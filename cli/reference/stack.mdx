@@ -105,6 +105,6 @@ ravion stack unlock <id> [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--force` |  | Release the lock even while a run is still active on the stack. Use when the run itself is stuck: the running Terraform keeps operating on state Ravion has stopped tracking for it, and its state write is discarded. |
+| `--force` |  | Release the lock while a run is still active on the stack. This covers a run that never completes and does not respond to cancellation, which is not expected behaviour. The run continues: Terraform still executing operates on state Ravion has stopped tracking for that run, and the state it writes is discarded. Cancel the run first whenever cancellation succeeds. |
 | `--json` |  | emit response as JSON |
 
