@@ -86,6 +86,8 @@ Such a run continues to hold the lock, and a standard unlock stays rejected. `--
 ravion stack unlock <stack-id> --force
 ```
 
+The command states what releasing costs and asks you to confirm. Pass `--yes` alongside it to skip the prompt in a script.
+
 Use `--force` only in this situation. The run itself continues: Terraform still executing operates on state that Ravion has stopped tracking for that run, and the state it writes is discarded. Cancel the run first whenever cancellation succeeds.
 
 `--force` is unavailable in the dashboard. The **Unlock stack** button requires every run to be inactive, which keeps forcing a deliberate action taken through the CLI or the API.
