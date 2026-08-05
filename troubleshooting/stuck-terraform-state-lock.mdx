@@ -24,7 +24,7 @@ This is a stuck lock. Releasing it allows the stack to run again.
 
 ## Confirm the lock is stuck
 
-A run holds the lock only while a Terraform operation is executing. Each `plan` and each `apply` takes the lock and releases it as that operation finishes, so a queued run holds nothing, and neither does a run paused for approval between its plan and its apply.
+A run holds the lock only while a Terraform operation is executing. Each `plan` and each `apply` takes the lock and releases it as that operation finishes.
 
 Open the stack and review its runs. Wait for a running operation to finish, or cancel it. Ravion enforces this for you, and takes the cautious line: an unlock is rejected while any run on the stack is active, naming the run that blocks it.
 
