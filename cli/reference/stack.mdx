@@ -105,7 +105,7 @@ ravion stack unlock <id> [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--force` |  | Release the lock while a run is still active on the stack. This covers a run that never completes and does not respond to cancellation, which is not expected behaviour. The run continues: Terraform still executing operates on state Ravion has stopped tracking for that run, and the state it writes is discarded. Cancel the run first whenever cancellation succeeds. |
+| `--force` |  | Release the lock while a run is still active on the stack. This covers a run that never completes and does not respond to cancellation, which is not expected behaviour. That run keeps going, and its state write is refused once the lock is gone, so the run fails and any cloud resources it already changed go unrecorded. State from completed operations is untouched. Cancel the run first whenever cancellation succeeds. |
 | `--json` |  | emit response as JSON |
 | `-y, --yes` |  | skip confirmation prompt |
 
