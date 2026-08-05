@@ -47,6 +47,20 @@ ravion stack list [flags]
 | `--project-id <string>` |  | projectId |
 | `-v, --verbose` |  | show full output |
 
+### `ravion stack lock`
+
+Read a stack's Terraform state lock
+
+```bash
+ravion stack lock <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
 ### `ravion stack resource-count`
 
 Count current-state terraform resources for stacks
@@ -77,5 +91,20 @@ ravion stack trigger-pipeline <id> [flags]
 | `--description <string>` | yes | User-provided description of this pipeline run |
 | `--pipeline-type <string>` | yes | Which stack pipeline to trigger. Available values: change, destroy. |
 | `--autoapprove` |  | Pass autoapprove=true to stack change pipeline runs when supported. |
+| `--json` |  | emit response as JSON |
+
+### `ravion stack unlock`
+
+Force-release a stack's Terraform state lock
+
+```bash
+ravion stack unlock <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--force` |  | Release the lock even while a run is still active on the stack. Use when the run itself is stuck: the running Terraform keeps operating on state Ravion has stopped tracking for it, and its state write is discarded. |
 | `--json` |  | emit response as JSON |
 
