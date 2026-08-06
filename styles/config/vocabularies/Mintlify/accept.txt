@@ -96,6 +96,7 @@ rollout
 rollouts
 routing_policy
 runbooks
+scaffolded
 semver
 serverless
 set_identifier
