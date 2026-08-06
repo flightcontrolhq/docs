@@ -9,6 +9,7 @@ keywords: ["Hasura AWS deployment", "deploy Hasura to AWS", "Hasura hosting", "E
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreSQL in RDS. Ravion provisions the network, compute, and database resources in your AWS account.
 
@@ -88,6 +89,10 @@ ravion project config apply hasura-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to configure the ALB hostname.
+
+<AskAssistant question="How do I configure Hasura metadata, admin secrets, and the RDS connection on Ravion?">
+  "How do I configure Hasura metadata, admin secrets, and the RDS connection on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

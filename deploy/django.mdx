@@ -9,6 +9,7 @@ keywords: ["Django AWS deployment", "deploy Django to AWS", "Django Gunicorn", "
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer. Django's production documentation recommends a WSGI server instead of `runserver`.
 
@@ -100,6 +101,10 @@ ravion project config apply django-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+<AskAssistant question="How do I run Django migrations and provide the RDS DATABASE_URL secret during a Ravion deployment?">
+  "How do I run Django migrations and provide the RDS DATABASE_URL secret during a Ravion deployment?"
+</AskAssistant>
 
 ## Next steps
 

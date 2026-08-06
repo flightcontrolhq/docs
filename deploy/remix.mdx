@@ -9,6 +9,7 @@ keywords: ["Remix AWS deployment", "deploy Remix to AWS", "Remix hosting", "ECS 
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Run Remix on ECS Fargate behind an Application Load Balancer. Ravion provisions the VPC, cluster, service, and ALB in your AWS account.
 
@@ -77,6 +78,10 @@ ravion project config apply remix-app --file ravion.yaml
 ```
 
 Use [custom domains](/guides/custom-domains) to attach your hostname.
+
+<AskAssistant question="How do I configure Remix Vite's server and client build output for ECS Fargate on Ravion?">
+  "How do I configure Remix Vite's server and client build output for ECS Fargate on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

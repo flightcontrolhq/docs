@@ -9,6 +9,7 @@ keywords: ["Astro AWS deployment", "deploy Astro to AWS", "Astro static hosting"
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy your Astro static build to an S3 bucket behind CloudFront. The bucket and distribution stay in your AWS account, and Ravion versions each deployment.
 
@@ -119,6 +120,10 @@ environments:
 ```
 
 Set `HOST=0.0.0.0` and `PORT=4321` in the runtime environment. Use the ECS service's Application Load Balancer hostname for your custom domain.
+
+<AskAssistant question="How do I add a custom domain and preview environments to my Astro static or SSR deployment on Ravion?">
+  "How do I add a custom domain and preview environments to my Astro static or SSR deployment on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

@@ -9,6 +9,7 @@ keywords: ["Gatsby AWS deployment", "deploy Gatsby to AWS", "Gatsby hosting", "S
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy Gatsby's generated `public` directory to S3 and serve it through CloudFront in your AWS account.
 
@@ -53,6 +54,10 @@ ravion project config apply gatsby-site --file ravion.yaml
 ```
 
 Complete [custom domains](/guides/custom-domains) to configure DNS and TLS.
+
+<AskAssistant question="How do I handle Gatsby client-side routes and the public output directory on Ravion?">
+  "How do I handle Gatsby client-side routes and the public output directory on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

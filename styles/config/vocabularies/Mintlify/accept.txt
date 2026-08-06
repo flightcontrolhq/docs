@@ -75,6 +75,9 @@ subnet
 subnets
 target_type
 teardown
+autodetection
+prerender
+prerendered
 Strapi
 SvelteKit
 TanStack
@@ -85,6 +88,7 @@ Valkey
 Vercel
 Vike
 Vite
+Vue
 WSGI
 vpc
 walkthrough

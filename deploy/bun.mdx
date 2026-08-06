@@ -9,6 +9,7 @@ keywords: ["Bun AWS deployment", "deploy Bun to AWS", "Bun.serve", "ECS Fargate"
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer. Bun's official server API uses `Bun.serve` and honors `PORT` when you do not set a port explicitly.
 
@@ -85,6 +86,10 @@ ravion project config apply bun-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+<AskAssistant question="How should I bind Bun.serve to the ECS PORT and build a Bun image for Ravion?">
+  "How should I bind Bun.serve to the ECS PORT and build a Bun image for Ravion?"
+</AskAssistant>
 
 ## Next steps
 

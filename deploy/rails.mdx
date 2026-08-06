@@ -9,6 +9,7 @@ keywords: ["Rails AWS deployment", "deploy Rails to AWS", "Rails Puma", "ECS Far
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy Rails with its bundled Puma server on ECS Fargate behind an Application Load Balancer. Rails binds to localhost by default, so the production command must bind to `0.0.0.0`.
 
@@ -98,6 +99,10 @@ ravion project config apply rails-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+<AskAssistant question="How do I run Rails migrations and provide the RDS DATABASE_URL and RAILS_MASTER_KEY secrets on Ravion?">
+  "How do I run Rails migrations and provide the RDS DATABASE_URL and RAILS_MASTER_KEY secrets on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

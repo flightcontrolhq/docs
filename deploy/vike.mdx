@@ -9,6 +9,7 @@ keywords: ["Vike AWS deployment", "deploy Vike to AWS", "Vike static hosting", "
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Vike-generated static site to S3 and CloudFront. Ravion creates and manages the AWS resources in your account.
 
@@ -55,6 +56,10 @@ ravion project config apply vike-site --file ravion.yaml
 ```
 
 Use [custom domains](/guides/custom-domains) to configure the CloudFront alias.
+
+<AskAssistant question="How do I confirm my Vike adapter's output directory before deploying it to CloudFront on Ravion?">
+  "How do I confirm my Vike adapter's output directory before deploying it to CloudFront on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

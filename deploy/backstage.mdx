@@ -9,6 +9,7 @@ keywords: ["Backstage AWS deployment", "deploy Backstage to AWS", "Backstage hos
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Backstage production image to ECS Fargate behind an Application Load Balancer. Ravion creates the VPC, ECS cluster, service, and optional RDS database in your AWS account.
 
@@ -88,6 +89,10 @@ ravion project config apply backstage-app --file ravion.yaml
 ```
 
 Use [custom domains](/guides/custom-domains) to configure the ALB hostname and certificate.
+
+<AskAssistant question="How do I wire Backstage's PostgreSQL connection secret to the RDS-backed ECS service on Ravion?">
+  "How do I wire Backstage's PostgreSQL connection secret to the RDS-backed ECS service on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

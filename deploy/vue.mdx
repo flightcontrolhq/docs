@@ -9,6 +9,7 @@ keywords: ["Vue AWS deployment", "deploy Vue to AWS", "Vue static hosting", "Vit
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Vue application built with Vite to S3 and deliver it through CloudFront. The default production output directory is `dist`.
 
@@ -53,6 +54,10 @@ ravion project config apply vue-site --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to CloudFront.
+
+<AskAssistant question="How do I configure Vue Router history fallback and VITE_* variables for CloudFront on Ravion?">
+  "How do I configure Vue Router history fallback and VITE_* variables for CloudFront on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

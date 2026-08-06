@@ -9,6 +9,7 @@ keywords: ["Flask AWS deployment", "deploy Flask to AWS", "Flask Gunicorn", "ECS
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy Flask with Gunicorn on ECS Fargate behind an Application Load Balancer. Flask's production documentation recommends a dedicated WSGI server instead of the built-in development server.
 
@@ -85,6 +86,10 @@ ravion project config apply flask-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+<AskAssistant question="How do I point Gunicorn at my Flask app factory and configure its Ravion health check?">
+  "How do I point Gunicorn at my Flask app factory and configure its Ravion health check?"
+</AskAssistant>
 
 ## Next steps
 

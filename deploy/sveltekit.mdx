@@ -9,6 +9,7 @@ keywords: ["SvelteKit AWS deployment", "deploy SvelteKit to AWS", "SvelteKit ada
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 SvelteKit uses an adapter for its deployment target. Choose `adapter-static` for a prerendered site on S3 and CloudFront, or `adapter-node` for a Node server on ECS Fargate behind an Application Load Balancer.
 
@@ -101,6 +102,10 @@ The Node adapter reads `PORT` and `HOST` environment variables. Bind to `0.0.0.0
 ## Apply and connect your domain
 
 Apply the matching config, then follow [custom domains](/guides/custom-domains) for CloudFront or the Application Load Balancer.
+
+<AskAssistant question="How do I choose adapter-static versus adapter-node and configure SvelteKit's build directory on Ravion?">
+  "How do I choose adapter-static versus adapter-node and configure SvelteKit's build directory on Ravion?"
+</AskAssistant>
 
 ## Next steps
 

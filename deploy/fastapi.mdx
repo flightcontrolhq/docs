@@ -9,6 +9,7 @@ keywords: ["FastAPI AWS deployment", "deploy FastAPI to AWS", "FastAPI Uvicorn",
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer. FastAPI's deployment documentation uses an ASGI server rather than a development server.
 
@@ -85,6 +86,10 @@ ravion project config apply fastapi-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+<AskAssistant question="How do I configure FastAPI health checks and Uvicorn workers for ECS Fargate on Ravion?">
+  "How do I configure FastAPI health checks and Uvicorn workers for ECS Fargate on Ravion?"
+</AskAssistant>
 
 ## Next steps
 
