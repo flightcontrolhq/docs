@@ -51,39 +51,6 @@
             ]
           },
           {
-            "group": "Deploy to AWS",
-            "root": "deploy",
-            "pages": [
-              "deploy/angular",
-              "deploy/astro",
-              "deploy/docusaurus",
-              "deploy/gatsby",
-              "deploy/react",
-              "deploy/solid",
-              "deploy/sveltekit",
-              "deploy/vike",
-              "deploy/vite",
-              "deploy/vue",
-              "deploy/backstage",
-              "deploy/bun",
-              "deploy/django",
-              "deploy/fastapi",
-              "deploy/flask",
-              "deploy/hasura",
-              "deploy/hono",
-              "deploy/laravel",
-              "deploy/nestjs",
-              "deploy/nextjs",
-              "deploy/node-express",
-              "deploy/nuxt",
-              "deploy/rails",
-              "deploy/redwood",
-              "deploy/remix",
-              "deploy/strapi",
-              "deploy/tanstack-start"
-            ]
-          },
-          {
             "group": "Concepts",
             "pages": [
               "concepts/core-concepts",
@@ -189,6 +156,44 @@
                   "module-definitions/definition-schema/template-expressions"
                 ]
               }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Deploy",
+        "groups": [
+          {
+            "group": "Deploy to AWS",
+            "root": "deploy",
+            "pages": [
+              "deploy/angular",
+              "deploy/astro",
+              "deploy/docusaurus",
+              "deploy/gatsby",
+              "deploy/react",
+              "deploy/solid",
+              "deploy/sveltekit",
+              "deploy/vike",
+              "deploy/vite",
+              "deploy/vue",
+              "deploy/backstage",
+              "deploy/bun",
+              "deploy/django",
+              "deploy/fastapi",
+              "deploy/flask",
+              "deploy/hasura",
+              "deploy/hono",
+              "deploy/laravel",
+              "deploy/nestjs",
+              "deploy/nextjs",
+              "deploy/node-express",
+              "deploy/nuxt",
+              "deploy/rails",
+              "deploy/redwood",
+              "deploy/remix",
+              "deploy/strapi",
+              "deploy/tanstack-start"
             ]
           }
         ]
