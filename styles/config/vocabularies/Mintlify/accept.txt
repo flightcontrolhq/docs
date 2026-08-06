@@ -3,6 +3,7 @@ alias_zone_id
 ARN
 ARNs
 Angular
+Backstage
 Astro
 Bun
 Dockerfile
@@ -97,6 +98,10 @@ prerender
 prerendered
 Prisma
 Dockerfiles
+BuildKit
+multi-stage
+host-build
+dockerignore
 TODOs
 bundler
 Strapi
