@@ -49,8 +49,6 @@ environments:
           source_repo: my-org/my-sveltekit-site
           output_directory: build
           railpack_build_cmd: npm run build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
 ```
 
 ## Node adapter
@@ -93,9 +91,6 @@ environments:
           source_repo: my-org/my-sveltekit-app
           railpack_build_cmd: npm run build
           railpack_start_cmd: node build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
-          deployment_strategy: rolling
           container_port: 3000
           health_check_path: /
           health_check_matcher: 200-399

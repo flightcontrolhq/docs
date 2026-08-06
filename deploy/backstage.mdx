@@ -76,7 +76,6 @@ environments:
           name: backstage-production-web
           build_source: image_registry
           image_repository: 123456789012.dkr.ecr.us-east-1.amazonaws.com/backstage
-          deployment_strategy: rolling
           container_port: 7007
           health_check_path: /
           health_check_matcher: 200-399

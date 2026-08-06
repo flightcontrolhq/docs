@@ -49,8 +49,6 @@ environments:
           source_repo: my-org/my-vike-site
           output_directory: dist
           railpack_build_cmd: npm run build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
 ```
 
 The Vike build command and output directory depend on the adapter and project configuration. Verify the generated directory is `dist` before applying. If your app uses a server adapter, use the ECS pattern instead of this static page.

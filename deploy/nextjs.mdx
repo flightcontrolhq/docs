@@ -63,9 +63,6 @@ environments:
           source_repo: my-org/my-nextjs-app
           railpack_build_cmd: npm run build
           railpack_start_cmd: node .next/standalone/server.js
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
-          deployment_strategy: rolling
           container_port: 3000
           health_check_path: /
           health_check_matcher: 200-399
@@ -103,8 +100,6 @@ environments:
           source_repo: my-org/my-nextjs-site
           output_directory: out
           railpack_build_cmd: npm run build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
 ```
 
 Static export does not run Next.js server features such as API routes, middleware, or server actions. Use public `NEXT_PUBLIC_*` values for browser configuration.

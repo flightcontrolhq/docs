@@ -76,7 +76,6 @@ environments:
           name: hasura-production-web
           build_source: image_registry
           image_repository: hasura/graphql-engine
-          deployment_strategy: rolling
           container_port: 8080
           health_check_path: /healthz
           health_check_matcher: 200-399

@@ -71,6 +71,7 @@
               "deploy/flask",
               "deploy/hasura",
               "deploy/hono",
+              "deploy/laravel",
               "deploy/nestjs",
               "deploy/nextjs",
               "deploy/node-express",

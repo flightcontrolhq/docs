@@ -71,9 +71,6 @@ environments:
           build_source: dockerfile
           source_repo: my-org/my-fastapi-app
           dockerfile: Dockerfile
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
-          deployment_strategy: rolling
           container_port: 8000
           health_check_path: /
           health_check_matcher: 200-399

@@ -63,9 +63,6 @@ environments:
           source_repo: my-org/my-node-app
           railpack_build_cmd: npm run build
           railpack_start_cmd: npm start
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
-          deployment_strategy: rolling
           container_port: 3000
           health_check_path: /health
           health_check_matcher: 200-399

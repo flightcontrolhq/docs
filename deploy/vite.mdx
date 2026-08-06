@@ -47,8 +47,6 @@ environments:
           source_repo: my-org/my-vite-app
           output_directory: dist
           railpack_build_cmd: npm run build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
 ```
 
 Vite runs `npm run build` and writes to `dist`. Add variables needed by the browser as `VITE_*` build variables.

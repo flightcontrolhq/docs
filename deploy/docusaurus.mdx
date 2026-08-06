@@ -47,8 +47,6 @@ environments:
           source_repo: my-org/my-docusaurus-site
           output_directory: build
           railpack_build_cmd: npm run build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
 ```
 
 Docusaurus uses `npm run build` and writes the production site to `build`. Put public build-time settings in `build_environment_variables`.

@@ -47,8 +47,6 @@ environments:
           source_repo: my-org/my-gatsby-site
           output_directory: public
           railpack_build_cmd: npm run build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
 ```
 
 Gatsby runs `npm run build` and writes the production files to `public`. Add public build-time values to `build_environment_variables`.

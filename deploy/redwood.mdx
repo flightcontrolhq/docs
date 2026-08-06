@@ -78,9 +78,6 @@ environments:
           source_repo: my-org/my-redwood-app
           railpack_build_cmd: yarn rw build
           railpack_start_cmd: yarn rw serve
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
-          deployment_strategy: rolling
           container_port: 8910
           health_check_path: /
           health_check_matcher: 200-399

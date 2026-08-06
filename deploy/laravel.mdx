@@ -1,0 +1,141 @@
+---
+title: "How to Deploy Laravel to AWS"
+sidebarTitle: "Laravel"
+description: "Deploy a Laravel application with FrankenPHP on ECS Fargate behind an Application Load Balancer and PostgreSQL on Amazon RDS through Ravion."
+keywords: ["Laravel AWS deployment", "deploy Laravel to AWS", "Laravel FrankenPHP", "Laravel RDS", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/laravel.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/laravel.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy Laravel with Railpack's FrankenPHP runtime on ECS Fargate behind an Application Load Balancer. Ravion creates the network, ECS cluster, web service, and PostgreSQL database in your AWS account.
+
+<Prompt description="Set up this Laravel app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/laravel as the source of truth and:
+  1. Confirm this repository contains Laravel and locate the application root, including the correct workspace in a monorepo.
+  2. Inspect `composer.json`, `artisan`, `bootstrap/app.php`, `config/`, Dockerfiles, and scripts. Detect the required PHP version, `public/` document root, frontend build, and whether the app uses Railpack's FrankenPHP runtime, Laravel Octane, or a custom PHP-FPM setup.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, substituting the repository, branch, AWS account, region, and project values you actually find. Keep the web root at `public/`, and use `/up` for the health check when the stock Laravel health route is enabled.
+  4. Wire `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and the `DB_*` values through Secrets Manager. Never generate an `APP_KEY` into the repository. Keep user uploads on S3 because the container filesystem is ephemeral.
+  5. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation. Leave clear TODOs instead of guessing the PHP version, app root, AWS account ID, repository slug, project ID, or database credentials.
+</Prompt>
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+Railpack detects Laravel when the source contains an `artisan` file. It reads the PHP version from `composer.json`, uses FrankenPHP, sets the document root to `public/`, and runs the Laravel startup tasks. This is the preferred quickstart because it follows the current Laravel and Railpack container path without adding a separate Nginx process.
+
+Laravel's production documentation requires PHP 8.3 or newer for Laravel 13. Check the `php` constraint in your own `composer.json` and use a compatible version. Railpack supports PHP 8.2 and newer; a project requirement takes precedence over its default PHP version.
+
+```yaml ravion.yaml
+project:
+  givenId: laravel-app
+  name: Laravel app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: laravel-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: laravel-production
+      - givenId: database
+        name: PostgreSQL database
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: laravel-production-db
+          restore_mode: none
+          db_name: laravel
+          username: laravel
+          engine: postgres
+          engine_major_version: "15"
+          instance_class: db.t4g.micro
+          allocated_storage: 20
+      - givenId: web
+        name: Laravel web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: laravel-production-web
+          build_source: railpack
+          source_repo: my-org/my-laravel-app
+          container_port: 80
+          health_check_path: /up
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set these runtime values through Secrets Manager before the first web deployment:
+
+- `APP_KEY`: Generate it once with `php artisan key:generate --show` outside the repository, then store the result as a secret.
+- `APP_ENV=production`
+- `APP_DEBUG=false`
+- `DB_CONNECTION=pgsql`
+- `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD`: Populate these from the RDS outputs.
+- `FILESYSTEM_DISK=s3`: Configure Laravel's S3 credentials and bucket for user uploads.
+
+The module catalog does not provide typed output references from `rvn-rds` to ECS runtime secrets. Create the Secrets Manager values from the RDS outputs, then apply the web service with those values.
+
+## Build and startup behavior
+
+Railpack installs Composer dependencies and detects frontend dependencies when `package.json` is present. If the application has frontend assets, verify its actual package-manager build script and configure that script in the repository rather than assuming a command or output directory.
+
+Railpack's Laravel startup process runs database migrations and seeding, creates the storage symlink, optimizes the application, and starts FrankenPHP. Migrations are enabled by default; set `RAILPACK_SKIP_MIGRATIONS=true` only when you run migrations in a separate release step.
+
+Laravel's `optimize` command caches configuration, events, routes, and views. Run it as a release/startup operation after the runtime environment is available, not while building an image that cannot access production secrets. If you use a custom startup process, run:
+
+```bash
+php artisan migrate --force
+php artisan storage:link
+php artisan optimize
+```
+
+Never use `php artisan serve` in production. If you do not use Railpack's FrankenPHP runtime, follow Laravel's documented PHP-FPM and Nginx setup: Nginx must use `public/` as its root and route requests to `public/index.php`.
+
+## Health checks and storage
+
+New Laravel applications include the `/up` health route. It returns `200` after the application boots successfully and `500` when boot fails. If your application has disabled or changed this route, add a lightweight unauthenticated route that returns `200` and update `health_check_path`.
+
+Laravel must be able to write to `bootstrap/cache` and `storage`. ECS task filesystems are ephemeral, so do not store user uploads there. Configure Laravel's filesystem to use an S3 bucket for durable uploads and generated assets.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id laravel-app --name "Laravel app"
+ravion project config apply laravel-app --file ravion.yaml --dry-run
+ravion project config apply laravel-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />
+
+## Sources
+
+- [Laravel deployment](https://laravel.com/docs/13.x/deployment)
+- [Laravel Octane and FrankenPHP](https://laravel.com/docs/13.x/octane)
+- [Railpack PHP and Laravel support](https://railpack.com/languages/php/)

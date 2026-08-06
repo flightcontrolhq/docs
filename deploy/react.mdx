@@ -47,8 +47,6 @@ environments:
           source_repo: my-org/my-react-app
           output_directory: dist
           railpack_build_cmd: npm run build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
 ```
 
 For Create React App, change `output_directory` to `build`. Configure your CloudFront SPA fallback for client-side routes.

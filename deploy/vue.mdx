@@ -47,8 +47,6 @@ environments:
           source_repo: my-org/my-vue-app
           output_directory: dist
           railpack_build_cmd: npm run build
-          build_infrastructure_type: ec2
-          build_instance_size: c7a.4xlarge
 ```
 
 Run `npm run build`, which invokes Vite and writes to `dist`. Use `VITE_*` variables for values embedded into browser code.

@@ -13,6 +13,15 @@ Flask
 Gunicorn
 Hasura
 Hono
+Laravel
+FrankenPHP
+composer
+artisan
+PHP
+PHP-FPM
+Caddyfile
+docroot
+pgsql
 autoapprove
 autoscaling
 aws_account_id
