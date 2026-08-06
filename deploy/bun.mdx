@@ -1,0 +1,91 @@
+---
+title: "How to Deploy Bun to AWS"
+sidebarTitle: "Bun"
+description: "Deploy a Bun HTTP server to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Bun AWS deployment", "deploy Bun to AWS", "Bun.serve", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/bun.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/bun.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer. Bun's official server API uses `Bun.serve` and honors `PORT` when you do not set a port explicitly.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+Railpack support can vary by Bun project. This example assumes your repository has a Dockerfile that runs `bun run src/index.ts`; use `build_source: dockerfile` rather than relying on autodetection.
+
+```dockerfile
+FROM oven/bun:1
+WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+COPY . .
+CMD ["bun", "run", "src/index.ts"]
+```
+
+```yaml ravion.yaml
+project:
+  givenId: bun-app
+  name: Bun app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: bun-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: bun-production
+      - givenId: web
+        name: Bun web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: bun-production-web
+          build_source: dockerfile
+          source_repo: my-org/my-bun-app
+          dockerfile: Dockerfile
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 3000
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set `port: Number(process.env.PORT) || 3000` and `hostname: "0.0.0.0"` in `Bun.serve`. The Dockerfile is responsible for the runtime start command.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id bun-app --name "Bun app"
+ravion project config apply bun-app --file ravion.yaml --dry-run
+ravion project config apply bun-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

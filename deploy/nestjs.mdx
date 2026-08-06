@@ -1,0 +1,81 @@
+---
+title: "How to Deploy NestJS to AWS"
+sidebarTitle: "NestJS"
+description: "Deploy a NestJS application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["NestJS AWS deployment", "deploy NestJS to AWS", "NestJS dist main.js", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/nestjs.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/nestjs.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy a NestJS server on ECS Fargate behind an Application Load Balancer. The Nest CLI production build writes JavaScript to `dist`, with the standard starter entry at `dist/main.js`.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+```yaml ravion.yaml
+project:
+  givenId: nestjs-app
+  name: NestJS app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: nestjs-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: nestjs-production
+      - givenId: web
+        name: NestJS web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: nestjs-production-web
+          build_source: railpack
+          source_repo: my-org/my-nestjs-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: node dist/main.js
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 3000
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set the application to listen on `0.0.0.0` and use port `3000`, or read `PORT` from the environment. Add a health endpoint and change `health_check_path` when your app does not serve `/`.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id nestjs-app --name "NestJS app"
+ravion project config apply nestjs-app --file ravion.yaml --dry-run
+ravion project config apply nestjs-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

@@ -33,11 +33,9 @@ environments:
           aws_region: us-east-1
           name: vite-site-production
           routing: spa
-          default_root_object: index.html
           default_version: main
           build_source: railpack
           source_repo: my-org/my-vite-app
-          source_base_path: .
           output_directory: dist
           railpack_build_cmd: npm run build
           build_infrastructure_type: ec2

@@ -35,11 +35,9 @@ environments:
           aws_region: us-east-1
           name: astro-site-production
           routing: filesystem
-          default_root_object: index.html
           default_version: main
           build_source: railpack
           source_repo: my-org/my-astro-site
-          source_base_path: .
           output_directory: dist
           railpack_build_cmd: npm run build
           build_infrastructure_type: ec2
@@ -67,6 +65,60 @@ Astro variables prefixed with `PUBLIC_` are exposed to browser code. Add them to
 ## Custom domain
 
 Use the CloudFront distribution hostname from the module outputs, then follow [custom domains](/guides/custom-domains) to add an ACM certificate and DNS record.
+
+## Astro SSR on ECS
+
+For on-demand rendering, install `@astrojs/node`, set `output: "server"`, and configure standalone mode. Astro writes the server entry to `dist/server/entry.mjs`; run it with Node on port `4321`.
+
+```yaml ravion.yaml
+project:
+  givenId: astro-ssr
+  name: Astro SSR app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: astro-ssr-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: astro-ssr-production
+      - givenId: web
+        name: Astro SSR web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: astro-ssr-production-web
+          build_source: railpack
+          source_repo: my-org/my-astro-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: node ./dist/server/entry.mjs
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 4321
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set `HOST=0.0.0.0` and `PORT=4321` in the runtime environment. Use the ECS service's Application Load Balancer hostname for your custom domain.
 
 ## Next steps
 

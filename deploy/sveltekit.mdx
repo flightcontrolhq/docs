@@ -1,0 +1,107 @@
+---
+title: "How to Deploy SvelteKit to AWS"
+sidebarTitle: "SvelteKit"
+description: "Deploy a SvelteKit static site with S3 and CloudFront or a Node server on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["SvelteKit AWS deployment", "deploy SvelteKit to AWS", "SvelteKit adapter-static", "SvelteKit adapter-node", "ECS Fargate", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/sveltekit.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/sveltekit.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+SvelteKit uses an adapter for its deployment target. Choose `adapter-static` for a prerendered site on S3 and CloudFront, or `adapter-node` for a Node server on ECS Fargate behind an Application Load Balancer.
+
+<DeployPrerequisites />
+
+## Static adapter
+
+Install `@sveltejs/adapter-static`, prerender the routes you need, and keep the adapter output in `build`.
+
+```yaml ravion.yaml
+project:
+  givenId: sveltekit-static
+  name: SvelteKit static site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: SvelteKit static site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: sveltekit-static-production
+          routing: filesystem
+          default_version: main
+          build_source: railpack
+          source_repo: my-org/my-sveltekit-site
+          output_directory: build
+          railpack_build_cmd: npm run build
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+```
+
+## Node adapter
+
+Install `@sveltejs/adapter-node`. `npm run build` writes a standalone server to `build`, and `node build` starts it on port `3000`.
+
+```yaml ravion.yaml
+project:
+  givenId: sveltekit-app
+  name: SvelteKit app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: sveltekit-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: sveltekit-production
+      - givenId: web
+        name: SvelteKit web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: sveltekit-production-web
+          build_source: railpack
+          source_repo: my-org/my-sveltekit-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: node build
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 3000
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+The Node adapter reads `PORT` and `HOST` environment variables. Bind to `0.0.0.0` in ECS.
+
+## Apply and connect your domain
+
+Apply the matching config, then follow [custom domains](/guides/custom-domains) for CloudFront or the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

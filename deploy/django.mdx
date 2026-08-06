@@ -1,0 +1,106 @@
+---
+title: "How to Deploy Django to AWS"
+sidebarTitle: "Django"
+description: "Deploy a Django application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Django AWS deployment", "deploy Django to AWS", "Django Gunicorn", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/django.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/django.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer. Django's production documentation recommends a WSGI server instead of `runserver`.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+Replace `myproject` with the Python package that contains your `wsgi.py` module.
+
+```dockerfile
+FROM python:3.13-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["gunicorn", "myproject.wsgi:application", "--bind", "0.0.0.0:8000"]
+```
+
+```yaml ravion.yaml
+project:
+  givenId: django-app
+  name: Django app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: django-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: django-production
+      - givenId: database
+        name: PostgreSQL database
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: django-production-db
+          restore_mode: none
+          db_name: django
+          username: django
+          engine: postgres
+          engine_major_version: "15"
+          instance_class: db.t4g.micro
+          allocated_storage: 20
+      - givenId: web
+        name: Django web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: django-production-web
+          build_source: dockerfile
+          source_repo: my-org/my-django-app
+          dockerfile: Dockerfile
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 8000
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Run migrations as a deployment step, set `ALLOWED_HOSTS` and `SECRET_KEY` as runtime values, and use `DATABASE_URL` for your database connection. Populate that secret from the RDS outputs before applying the service.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id django-app --name "Django app"
+ravion project config apply django-app --file ravion.yaml --dry-run
+ravion project config apply django-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

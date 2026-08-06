@@ -1,0 +1,91 @@
+---
+title: "How to Deploy Flask to AWS"
+sidebarTitle: "Flask"
+description: "Deploy a Flask application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Flask AWS deployment", "deploy Flask to AWS", "Flask Gunicorn", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/flask.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/flask.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy Flask with Gunicorn on ECS Fargate behind an Application Load Balancer. Flask's production documentation recommends a dedicated WSGI server instead of the built-in development server.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+This example assumes `app.py` exports `app`.
+
+```dockerfile
+FROM python:3.13-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
+```
+
+```yaml ravion.yaml
+project:
+  givenId: flask-app
+  name: Flask app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: flask-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: flask-production
+      - givenId: web
+        name: Flask web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: flask-production-web
+          build_source: dockerfile
+          source_repo: my-org/my-flask-app
+          dockerfile: Dockerfile
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 8000
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Gunicorn binds to port `8000` in this example. Use your application factory import path if the app is created by a function.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id flask-app --name "Flask app"
+ravion project config apply flask-app --file ravion.yaml --dry-run
+ravion project config apply flask-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

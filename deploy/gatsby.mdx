@@ -33,11 +33,9 @@ environments:
           aws_region: us-east-1
           name: gatsby-site-production
           routing: filesystem
-          default_root_object: index.html
           default_version: main
           build_source: railpack
           source_repo: my-org/my-gatsby-site
-          source_base_path: .
           output_directory: public
           railpack_build_cmd: npm run build
           build_infrastructure_type: ec2

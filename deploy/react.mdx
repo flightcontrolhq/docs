@@ -1,0 +1,59 @@
+---
+title: "How to Deploy React to AWS"
+sidebarTitle: "React"
+description: "Deploy a React application to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["React AWS deployment", "deploy React to AWS", "React static hosting", "Vite", "Create React App", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/react.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/react.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy a React single-page application to S3 and deliver it through CloudFront. Vite projects write to `dist`; Create React App projects write to `build`.
+
+<DeployPrerequisites />
+
+## Configure a Vite React app
+
+```yaml ravion.yaml
+project:
+  givenId: react-site
+  name: React site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: React site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: react-site-production
+          routing: spa
+          default_version: main
+          build_source: railpack
+          source_repo: my-org/my-react-app
+          output_directory: dist
+          railpack_build_cmd: npm run build
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+```
+
+For Create React App, change `output_directory` to `build`. Configure your CloudFront SPA fallback for client-side routes.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id react-site --name "React site"
+ravion project config apply react-site --file ravion.yaml --dry-run
+ravion project config apply react-site --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to CloudFront.
+
+## Next steps
+
+<DeployNextSteps />

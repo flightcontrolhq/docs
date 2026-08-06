@@ -1,0 +1,104 @@
+---
+title: "How to Deploy Rails to AWS"
+sidebarTitle: "Rails"
+description: "Deploy a Rails application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Rails AWS deployment", "deploy Rails to AWS", "Rails Puma", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/rails.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/rails.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy Rails with its bundled Puma server on ECS Fargate behind an Application Load Balancer. Rails binds to localhost by default, so the production command must bind to `0.0.0.0`.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+```dockerfile
+FROM ruby:3.3-slim
+WORKDIR /app
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+COPY . .
+CMD ["bin/rails", "server", "-e", "production", "-b", "0.0.0.0", "-p", "3000"]
+```
+
+```yaml ravion.yaml
+project:
+  givenId: rails-app
+  name: Rails app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: rails-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: rails-production
+      - givenId: database
+        name: PostgreSQL database
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: rails-production-db
+          restore_mode: none
+          db_name: rails
+          username: rails
+          engine: postgres
+          engine_major_version: "15"
+          instance_class: db.t4g.micro
+          allocated_storage: 20
+      - givenId: web
+        name: Rails web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: rails-production-web
+          build_source: dockerfile
+          source_repo: my-org/my-rails-app
+          dockerfile: Dockerfile
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 3000
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set `RAILS_MASTER_KEY`, `SECRET_KEY_BASE`, and `DATABASE_URL` as runtime secrets. Populate the database secret from the RDS outputs before applying the service.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id rails-app --name "Rails app"
+ravion project config apply rails-app --file ravion.yaml --dry-run
+ravion project config apply rails-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

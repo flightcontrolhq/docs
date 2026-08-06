@@ -57,7 +57,6 @@ environments:
           network:
             moduleGivenIdRef: network
           name: hasura-production
-          fargate_enabled: true
       - givenId: web
         name: Hasura web service
         type: rvn-ecs-web
@@ -76,8 +75,6 @@ environments:
           fargate_size:
             vcpu: 0.5
             memory_gb: 1
-          environment_variables: []
-          secrets: []
 ```
 
 Set `HASURA_GRAPHQL_DATABASE_URL`, `HASURA_GRAPHQL_ADMIN_SECRET`, and any metadata settings through runtime variables or Secrets Manager. The module schema does not automatically map an RDS output into an ECS secret, so create that secret from the RDS outputs before applying the service.

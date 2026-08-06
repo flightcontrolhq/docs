@@ -1,27 +1,27 @@
 ---
-title: "How to Deploy Remix to AWS"
-sidebarTitle: "Remix"
-description: "Deploy a Remix application to your AWS account on ECS Fargate behind an Application Load Balancer with Ravion."
-keywords: ["Remix AWS deployment", "deploy Remix to AWS", "Remix hosting", "ECS Fargate", "ALB"]
-"og:image": "https://www.ravion.com/og/docs/deploy/remix.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/remix.png"
+title: "How to Deploy Hono to AWS"
+sidebarTitle: "Hono"
+description: "Deploy a Hono Node.js application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Hono AWS deployment", "deploy Hono to AWS", "Hono Node.js", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/hono.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/hono.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Run Remix on ECS Fargate behind an Application Load Balancer. Ravion provisions the VPC, cluster, service, and ALB in your AWS account.
+Deploy a Hono Node.js application on ECS Fargate behind an Application Load Balancer. Use Hono's Node adapter and bind the server to the ECS-provided port.
 
 <DeployPrerequisites />
 
 ## Configure the deployment
 
-For the current Remix Vite workflow, `npm run build` creates `build/server/index.js` and `build/client`. Start the server with `npm start` or your adapter's documented start command.
+Use a production script such as `node dist/index.js` after compiling your TypeScript entry point to `dist/index.js`.
 
 ```yaml ravion.yaml
 project:
-  givenId: remix-app
-  name: Remix app
+  givenId: hono-app
+  name: Hono app
 environments:
   - givenId: production
     name: Production
@@ -33,7 +33,7 @@ environments:
         input:
           aws_account_id: ravion-prod
           aws_region: us-east-1
-          name: remix-production
+          name: hono-production
       - givenId: cluster
         name: ECS cluster
         type: rvn-ecs-cluster
@@ -41,17 +41,17 @@ environments:
         input:
           network:
             moduleGivenIdRef: network
-          name: remix-production
+          name: hono-production
       - givenId: web
-        name: Remix web service
+        name: Hono web service
         type: rvn-ecs-web
         version: 1.0.0
         input:
           cluster:
             moduleGivenIdRef: cluster
-          name: remix-production-web
+          name: hono-production-web
           build_source: railpack
-          source_repo: my-org/my-remix-app
+          source_repo: my-org/my-hono-app
           railpack_build_cmd: npm run build
           railpack_start_cmd: npm start
           build_infrastructure_type: ec2
@@ -66,17 +66,17 @@ environments:
             memory_gb: 1
 ```
 
-Set runtime configuration in `environment_variables` and keep secrets in `secrets`. Use the port supplied by ECS through `PORT`.
+Hono's Node server examples use port `3000`. Configure `@hono/node-server` with `port: Number(process.env.PORT) || 3000` and bind to `0.0.0.0`.
 
 ## Apply and connect your domain
 
 ```bash
-ravion project create --given-id remix-app --name "Remix app"
-ravion project config apply remix-app --file ravion.yaml --dry-run
-ravion project config apply remix-app --file ravion.yaml
+ravion project create --given-id hono-app --name "Hono app"
+ravion project config apply hono-app --file ravion.yaml --dry-run
+ravion project config apply hono-app --file ravion.yaml
 ```
 
-Use [custom domains](/guides/custom-domains) to attach your hostname.
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
 
 ## Next steps
 
