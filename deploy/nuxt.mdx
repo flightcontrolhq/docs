@@ -1,0 +1,85 @@
+---
+title: "How to Deploy Nuxt to AWS"
+sidebarTitle: "Nuxt"
+description: "Deploy a Nuxt server-rendered application to your AWS account on ECS Fargate behind an Application Load Balancer with Ravion."
+keywords: ["Nuxt AWS deployment", "deploy Nuxt to AWS", "Nuxt Nitro", "ECS Fargate", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/nuxt.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/nuxt.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Nuxt's Node server runs on ECS Fargate behind an Application Load Balancer. Ravion creates the VPC, ECS cluster, service, and load balancer in your AWS account.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+Nuxt builds with `nuxt build` and starts with `node .output/server/index.mjs`. The server listens on port 3000.
+
+```yaml ravion.yaml
+project:
+  givenId: nuxt-app
+  name: Nuxt app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: nuxt-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: nuxt-production
+          fargate_enabled: true
+      - givenId: web
+        name: Nuxt web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: nuxt-production-web
+          build_source: railpack
+          source_repo: my-org/my-nuxt-app
+          source_base_path: .
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: node .output/server/index.mjs
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 3000
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set runtime values in `environment_variables`. Nuxt exposes browser-safe values through `runtimeConfig.public`; keep secrets in `secrets`.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id nuxt-app --name "Nuxt app"
+ravion project config apply nuxt-app --file ravion.yaml --dry-run
+ravion project config apply nuxt-app --file ravion.yaml
+```
+
+Complete [custom domains](/guides/custom-domains) for the ALB hostname and TLS.
+
+## Next steps
+
+<DeployNextSteps />

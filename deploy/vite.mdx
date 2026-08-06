@@ -1,0 +1,61 @@
+---
+title: "How to Deploy Vite to AWS"
+sidebarTitle: "Vite"
+description: "Deploy a Vite single-page application to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Vite AWS deployment", "deploy Vite to AWS", "Vite static hosting", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/vite.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/vite.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy the Vite output to S3 and deliver it through CloudFront. Ravion uses SPA routing so client-side routes resolve to `index.html`.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+```yaml ravion.yaml
+project:
+  givenId: vite-site
+  name: Vite site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Vite site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: vite-site-production
+          routing: spa
+          default_root_object: index.html
+          default_version: main
+          build_source: railpack
+          source_repo: my-org/my-vite-app
+          source_base_path: .
+          output_directory: dist
+          railpack_build_cmd: npm run build
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+```
+
+Vite runs `npm run build` and writes to `dist`. Add variables needed by the browser as `VITE_*` build variables.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id vite-site --name "Vite site"
+ravion project config apply vite-site --file ravion.yaml --dry-run
+ravion project config apply vite-site --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to attach your domain to CloudFront.
+
+## Next steps
+
+<DeployNextSteps />

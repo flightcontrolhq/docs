@@ -1,0 +1,24 @@
+---
+title: "Deploy frameworks to AWS"
+sidebarTitle: "Overview"
+description: "Deploy popular application frameworks to your own AWS account with Ravion."
+keywords: ["deploy to AWS", "AWS deployment", "Ravion deploy guides", "ECS Fargate", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy.png"
+---
+
+Use these quickstarts to deploy framework applications to AWS with Ravion. Static sites run from S3 and CloudFront. Server applications run on ECS Fargate behind an Application Load Balancer.
+
+<CardGroup cols={2}>
+  <Card title="Static sites" icon="window-maximize" href="/deploy/astro">
+    Deploy generated files to S3 and serve them globally through CloudFront.
+  </Card>
+  <Card title="Server applications" icon="server" href="/deploy/nuxt">
+    Run Node-based frameworks on ECS Fargate behind an Application Load Balancer.
+  </Card>
+</CardGroup>
+
+<Note>
+  Each example uses module versions from the current Ravion standard library. Replace
+  placeholder repository and AWS account values before applying a file.
+</Note>

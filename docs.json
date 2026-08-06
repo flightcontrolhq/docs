@@ -51,6 +51,26 @@
             ]
           },
           {
+            "group": "Deploy to AWS",
+            "root": "deploy",
+            "pages": [
+              "deploy/astro",
+              "deploy/nextjs",
+              "deploy/redwood",
+              "deploy/docusaurus",
+              "deploy/vite",
+              "deploy/solid",
+              "deploy/nuxt",
+              "deploy/gatsby",
+              "deploy/backstage",
+              "deploy/hasura",
+              "deploy/remix",
+              "deploy/node-express",
+              "deploy/strapi",
+              "deploy/vike"
+            ]
+          },
+          {
             "group": "Concepts",
             "pages": [
               "concepts/core-concepts",

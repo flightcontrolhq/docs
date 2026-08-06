@@ -1,0 +1,97 @@
+---
+title: "How to Deploy Backstage to AWS"
+sidebarTitle: "Backstage"
+description: "Deploy a Backstage developer portal to your AWS account on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS through Ravion."
+keywords: ["Backstage AWS deployment", "deploy Backstage to AWS", "Backstage hosting", "ECS Fargate", "RDS", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/backstage.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/backstage.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Backstage production image to ECS Fargate behind an Application Load Balancer. Ravion creates the VPC, ECS cluster, service, and optional RDS database in your AWS account.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+Backstage's recommended production flow builds a container image. Use `image_registry` with an image pushed to ECR or another registry. The container listens on port 7007.
+
+```yaml ravion.yaml
+project:
+  givenId: backstage-app
+  name: Backstage app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: backstage-production
+      - givenId: database
+        name: PostgreSQL
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: backstage-production
+          restore_mode: none
+          db_name: backstage
+          username: backstageadmin
+          engine: postgres
+          engine_major_version: "15"
+          instance_class: db.t4g.micro
+          allocated_storage: 20
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: backstage-production
+          fargate_enabled: true
+      - givenId: web
+        name: Backstage web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: backstage-production-web
+          build_source: image_registry
+          image_repository: 123456789012.dkr.ecr.us-east-1.amazonaws.com/backstage
+          deployment_strategy: rolling
+          container_port: 7007
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 1
+            memory_gb: 2
+          environment_variables: []
+          secrets: []
+```
+
+Set the Backstage database connection and integration credentials through Secrets Manager. The current module definitions support ECS runtime secrets but do not automatically connect `rvn-rds` outputs to a secret, so create the secret after reading the RDS outputs.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id backstage-app --name "Backstage app"
+ravion project config apply backstage-app --file ravion.yaml --dry-run
+ravion project config apply backstage-app --file ravion.yaml
+```
+
+Use [custom domains](/guides/custom-domains) to configure the ALB hostname and certificate.
+
+## Next steps
+
+<DeployNextSteps />

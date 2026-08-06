@@ -1,0 +1,61 @@
+---
+title: "How to Deploy Solid to AWS"
+sidebarTitle: "Solid"
+description: "Deploy a Solid SPA to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Solid AWS deployment", "deploy Solid to AWS", "Solid SPA hosting", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/solid.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/solid.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Solid single-page application to an S3 bucket behind CloudFront. Both resources are provisioned in your AWS account.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+```yaml ravion.yaml
+project:
+  givenId: solid-site
+  name: Solid site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Solid site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: solid-site-production
+          routing: spa
+          default_root_object: index.html
+          default_version: main
+          build_source: railpack
+          source_repo: my-org/my-solid-app
+          source_base_path: .
+          output_directory: dist
+          railpack_build_cmd: npm run build
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+```
+
+The Solid Vite starter uses `npm run build` and writes to `dist`. Use `VITE_*` variables for values embedded in browser code.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id solid-site --name "Solid site"
+ravion project config apply solid-site --file ravion.yaml --dry-run
+ravion project config apply solid-site --file ravion.yaml
+```
+
+Point DNS at the CloudFront hostname with [custom domains](/guides/custom-domains).
+
+## Next steps
+
+<DeployNextSteps />

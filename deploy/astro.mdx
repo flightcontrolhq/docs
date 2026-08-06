@@ -1,0 +1,73 @@
+---
+title: "How to Deploy Astro to AWS"
+sidebarTitle: "Astro"
+description: "Deploy an Astro static site to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Astro AWS deployment", "deploy Astro to AWS", "Astro static hosting", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/astro.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/astro.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy your Astro static build to an S3 bucket behind CloudFront. The bucket and distribution stay in your AWS account, and Ravion versions each deployment.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+For a static Astro site, `astro build` writes to `dist`. Set `routing` to `filesystem` so generated paths resolve to their files.
+
+```yaml ravion.yaml
+project:
+  givenId: astro-site
+  name: Astro site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Astro site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: astro-site-production
+          routing: filesystem
+          default_root_object: index.html
+          default_version: main
+          build_source: railpack
+          source_repo: my-org/my-astro-site
+          source_base_path: .
+          output_directory: dist
+          railpack_build_cmd: npm run build
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+```
+
+## Apply the config
+
+<Steps>
+  <Step title="Create the project">
+    ```bash
+    ravion project create --given-id astro-site --name "Astro site"
+    ```
+  </Step>
+  <Step title="Preview and apply">
+    ```bash
+    ravion project config apply astro-site --file ravion.yaml --dry-run
+    ravion project config apply astro-site --file ravion.yaml
+    ```
+  </Step>
+</Steps>
+
+Astro variables prefixed with `PUBLIC_` are exposed to browser code. Add them to `build_environment_variables` when they are required at build time. Keep server-only values out of a static build.
+
+## Custom domain
+
+Use the CloudFront distribution hostname from the module outputs, then follow [custom domains](/guides/custom-domains) to add an ACM certificate and DNS record.
+
+## Next steps
+
+<DeployNextSteps />

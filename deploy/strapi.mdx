@@ -1,0 +1,102 @@
+---
+title: "How to Deploy Strapi to AWS"
+sidebarTitle: "Strapi"
+description: "Deploy Strapi to your AWS account on ECS Fargate behind an Application Load Balancer with an RDS database through Ravion."
+keywords: ["Strapi AWS deployment", "deploy Strapi to AWS", "Strapi hosting", "ECS Fargate", "RDS", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/strapi.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/strapi.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Run Strapi on ECS Fargate behind an Application Load Balancer and keep its relational database in Amazon RDS. Ravion provisions these resources in your AWS account.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+Strapi builds with `npm run build` and starts with `npm run start`. The example includes PostgreSQL RDS. After the first apply, put the RDS endpoint and credentials into the service's runtime variables or a Secrets Manager secret.
+
+```yaml ravion.yaml
+project:
+  givenId: strapi-app
+  name: Strapi app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: strapi-production
+      - givenId: database
+        name: PostgreSQL
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: strapi-production
+          restore_mode: none
+          db_name: strapi
+          username: strapiadmin
+          engine: postgres
+          engine_major_version: "15"
+          instance_class: db.t4g.micro
+          allocated_storage: 20
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: strapi-production
+          fargate_enabled: true
+      - givenId: web
+        name: Strapi web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: strapi-production-web
+          build_source: railpack
+          source_repo: my-org/my-strapi-app
+          source_base_path: .
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: npm run start
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 1337
+          health_check_path: /_health
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 1
+            memory_gb: 2
+          environment_variables: []
+          secrets: []
+```
+
+Use a Secrets Manager secret for `DATABASE_CLIENT`, `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD`. The current module schema accepts runtime `secrets`, but does not expose a typed RDS output-to-secret wiring field; create the secret from the RDS outputs before applying the service.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id strapi-app --name "Strapi app"
+ravion project config apply strapi-app --file ravion.yaml --dry-run
+ravion project config apply strapi-app --file ravion.yaml
+```
+
+Use [custom domains](/guides/custom-domains) for the ALB hostname and certificate.
+
+## Next steps
+
+<DeployNextSteps />

@@ -1,0 +1,63 @@
+---
+title: "How to Deploy Next.js to AWS"
+sidebarTitle: "Next.js"
+description: "Deploy a Next.js static export to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Next.js AWS deployment", "deploy Next.js to AWS", "Next.js static export", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/nextjs.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/nextjs.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+This page deploys a Next.js static export. Ravion provisions S3 and CloudFront in your AWS account. For server-side rendering, use an ECS web service instead.
+
+<DeployPrerequisites />
+
+## Configure Next.js
+
+Set `output: "export"` in `next.config.js` or `next.config.mjs`. Next.js then writes the export to `out`.
+
+```yaml ravion.yaml
+project:
+  givenId: nextjs-site
+  name: Next.js site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Next.js site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: nextjs-site-production
+          routing: filesystem
+          default_root_object: index.html
+          default_version: main
+          build_source: railpack
+          source_repo: my-org/my-nextjs-site
+          source_base_path: .
+          output_directory: out
+          railpack_build_cmd: npm run build
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+```
+
+Static export does not run Next.js server features such as API routes, middleware, or server actions. Use public `NEXT_PUBLIC_*` values for browser configuration.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id nextjs-site --name "Next.js site"
+ravion project config apply nextjs-site --file ravion.yaml --dry-run
+ravion project config apply nextjs-site --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) for your CloudFront hostname.
+
+## Next steps
+
+<DeployNextSteps />

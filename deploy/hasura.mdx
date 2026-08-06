@@ -1,0 +1,97 @@
+---
+title: "How to Deploy Hasura to AWS"
+sidebarTitle: "Hasura"
+description: "Deploy Hasura to your AWS account on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS through Ravion."
+keywords: ["Hasura AWS deployment", "deploy Hasura to AWS", "Hasura hosting", "ECS Fargate", "RDS", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/hasura.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/hasura.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreSQL in RDS. Ravion provisions the network, compute, and database resources in your AWS account.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+The Hasura GraphQL Engine image listens on port 8080. Use an image or a repository Dockerfile with the ECS web module. This example uses Railpack and a repository start command; replace it with your image workflow if your project does not contain a Node build.
+
+```yaml ravion.yaml
+project:
+  givenId: hasura-app
+  name: Hasura app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: hasura-production
+      - givenId: database
+        name: PostgreSQL
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: hasura-production
+          restore_mode: none
+          db_name: hasura
+          username: hasuraadmin
+          engine: postgres
+          engine_major_version: "15"
+          instance_class: db.t4g.micro
+          allocated_storage: 20
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: hasura-production
+          fargate_enabled: true
+      - givenId: web
+        name: Hasura web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: hasura-production-web
+          build_source: image_registry
+          image_repository: hasura/graphql-engine
+          deployment_strategy: rolling
+          container_port: 8080
+          health_check_path: /healthz
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+          environment_variables: []
+          secrets: []
+```
+
+Set `HASURA_GRAPHQL_DATABASE_URL`, `HASURA_GRAPHQL_ADMIN_SECRET`, and any metadata settings through runtime variables or Secrets Manager. The module schema does not automatically map an RDS output into an ECS secret, so create that secret from the RDS outputs before applying the service.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id hasura-app --name "Hasura app"
+ravion project config apply hasura-app --file ravion.yaml --dry-run
+ravion project config apply hasura-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to configure the ALB hostname.
+
+## Next steps
+
+<DeployNextSteps />

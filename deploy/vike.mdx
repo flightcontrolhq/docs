@@ -1,0 +1,63 @@
+---
+title: "How to Deploy Vike to AWS"
+sidebarTitle: "Vike"
+description: "Deploy a Vike static site to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Vike AWS deployment", "deploy Vike to AWS", "Vike static hosting", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/vike.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/vike.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Vike-generated static site to S3 and CloudFront. Ravion creates and manages the AWS resources in your account.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+Configure your Vike project for a static build, then use its generated output directory in `ravion.yaml`.
+
+```yaml ravion.yaml
+project:
+  givenId: vike-site
+  name: Vike site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Vike site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: vike-site-production
+          routing: filesystem
+          default_root_object: index.html
+          default_version: main
+          build_source: railpack
+          source_repo: my-org/my-vike-site
+          source_base_path: .
+          output_directory: dist
+          railpack_build_cmd: npm run build
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+```
+
+The Vike build command and output directory depend on the adapter and project configuration. Verify the generated directory is `dist` before applying. If your app uses a server adapter, use the ECS pattern instead of this static page.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id vike-site --name "Vike site"
+ravion project config apply vike-site --file ravion.yaml --dry-run
+ravion project config apply vike-site --file ravion.yaml
+```
+
+Use [custom domains](/guides/custom-domains) to configure the CloudFront alias.
+
+## Next steps
+
+<DeployNextSteps />

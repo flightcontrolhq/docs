@@ -1,0 +1,102 @@
+---
+title: "How to Deploy RedwoodJS to AWS"
+sidebarTitle: "RedwoodJS"
+description: "Deploy a RedwoodJS application to your AWS account on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS through Ravion."
+keywords: ["RedwoodJS AWS deployment", "deploy RedwoodJS to AWS", "RedwoodJS hosting", "ECS Fargate", "RDS", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/redwood.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/redwood.png"
+---
+
+import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+
+Run RedwoodJS on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS. Ravion provisions the VPC, cluster, web service, and database in your AWS account.
+
+<DeployPrerequisites />
+
+## Configure the deployment
+
+Build the Redwood API and web sides with `yarn rw build`. Redwood's production server command depends on the generated deployment target; use the start command from your Redwood version's deployment documentation.
+
+```yaml ravion.yaml
+project:
+  givenId: redwood-app
+  name: RedwoodJS app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: redwood-production
+      - givenId: database
+        name: PostgreSQL
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: redwood-production
+          restore_mode: none
+          db_name: redwood
+          username: redwoodadmin
+          engine: postgres
+          engine_major_version: "15"
+          instance_class: db.t4g.micro
+          allocated_storage: 20
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: redwood-production
+          fargate_enabled: true
+      - givenId: web
+        name: Redwood web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: redwood-production-web
+          build_source: railpack
+          source_repo: my-org/my-redwood-app
+          source_base_path: .
+          railpack_build_cmd: yarn rw build
+          railpack_start_cmd: yarn rw serve
+          build_infrastructure_type: ec2
+          build_instance_size: c7a.4xlarge
+          deployment_strategy: rolling
+          container_port: 8910
+          health_check_path: /
+          health_check_matcher: 200-399
+          capacity_provider: fargate
+          fargate_size:
+            vcpu: 1
+            memory_gb: 2
+          environment_variables: []
+          secrets: []
+```
+
+Provide the RDS connection as `DATABASE_URL` and Redwood's required runtime settings through Secrets Manager. The module schema does not automatically wire RDS outputs into ECS secrets; create the secret from the database outputs before applying the service.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id redwood-app --name "RedwoodJS app"
+ravion project config apply redwood-app --file ravion.yaml --dry-run
+ravion project config apply redwood-app --file ravion.yaml
+```
+
+Configure the ALB hostname with [custom domains](/guides/custom-domains).
+
+## Next steps
+
+<DeployNextSteps />
