@@ -9,9 +9,17 @@ keywords: ["Strapi AWS deployment", "deploy Strapi to AWS", "Strapi hosting", "E
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Run Strapi on ECS Fargate behind an Application Load Balancer and keep its relational database in Amazon RDS. Ravion provisions these resources in your AWS account.
+
+<Prompt description="Set up this Strapi app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/strapi as the source of truth and:
+  1. Confirm this repository contains Strapi and locate its app root in a monorepo.
+  2. Inspect `package.json`, `config/database.*`, server config, Docker files, and scripts to detect the real build/start commands, port, health endpoint, and upload storage needs.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for database credentials rather than inventing RDS references.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, ports, or database credentials.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -93,10 +101,6 @@ ravion project config apply strapi-app --file ravion.yaml
 ```
 
 Use [custom domains](/guides/custom-domains) for the ALB hostname and certificate.
-
-<AskAssistant question="How do I wire Strapi's PostgreSQL credentials and health endpoint to the RDS-backed ECS service on Ravion?">
-  "How do I wire Strapi's PostgreSQL credentials and health endpoint to the RDS-backed ECS service on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

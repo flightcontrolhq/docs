@@ -9,9 +9,17 @@ keywords: ["FastAPI AWS deployment", "deploy FastAPI to AWS", "FastAPI Uvicorn",
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer. FastAPI's deployment documentation uses an ASGI server rather than a development server.
+
+<Prompt description="Set up this FastAPI app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/fastapi as the source of truth and:
+  1. Confirm this repository contains FastAPI and locate the app root in a monorepo.
+  2. Inspect Python dependency files, the ASGI entrypoint, Docker files, and scripts to detect the real Uvicorn command, port, workers, and health path; bind to `0.0.0.0`.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, Python module paths, or ports.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -86,10 +94,6 @@ ravion project config apply fastapi-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
-
-<AskAssistant question="How do I configure FastAPI health checks and Uvicorn workers for ECS Fargate on Ravion?">
-  "How do I configure FastAPI health checks and Uvicorn workers for ECS Fargate on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

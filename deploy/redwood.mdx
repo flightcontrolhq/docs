@@ -9,9 +9,17 @@ keywords: ["RedwoodJS AWS deployment", "deploy RedwoodJS to AWS", "RedwoodJS hos
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Run RedwoodJS on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS. Ravion provisions the VPC, cluster, web service, and database in your AWS account.
+
+<Prompt description="Set up this RedwoodJS app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/redwood as the source of truth and:
+  1. Confirm this repository contains RedwoodJS and locate the workspace root in a monorepo.
+  2. Inspect `package.json`, Redwood config, Prisma schema, and scripts to detect the real build/start commands, web port, health route, and migration steps.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for the database connection rather than inventing RDS output references.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, ports, or database credentials.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -93,10 +101,6 @@ ravion project config apply redwood-app --file ravion.yaml
 ```
 
 Configure the ALB hostname with [custom domains](/guides/custom-domains).
-
-<AskAssistant question="How do I run Redwood migrations and connect the RDS database secret to the ECS service on Ravion?">
-  "How do I run Redwood migrations and connect the RDS database secret to the ECS service on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

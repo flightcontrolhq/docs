@@ -9,9 +9,17 @@ keywords: ["Vite AWS deployment", "deploy Vite to AWS", "Vite static hosting", "
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy the Vite output to S3 and deliver it through CloudFront. Ravion uses SPA routing so client-side routes resolve to `index.html`.
+
+<Prompt description="Set up this Vite app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/vite as the source of truth and:
+  1. Confirm this repository contains the Vite app and locate its root in a monorepo.
+  2. Inspect `package.json`, `vite.config.*`, and router setup to detect the real build command, `dist` output, base path, and SPA fallback requirement.
+  3. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or output paths.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -54,10 +62,6 @@ ravion project config apply vite-site --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to attach your domain to CloudFront.
-
-<AskAssistant question="How do I configure Vite SPA fallback and VITE_* build variables for CloudFront on Ravion?">
-  "How do I configure Vite SPA fallback and VITE_* build variables for CloudFront on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

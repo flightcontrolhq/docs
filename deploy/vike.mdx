@@ -9,9 +9,17 @@ keywords: ["Vike AWS deployment", "deploy Vike to AWS", "Vike static hosting", "
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Vike-generated static site to S3 and CloudFront. Ravion creates and manages the AWS resources in your account.
+
+<Prompt description="Set up this Vike app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/vike as the source of truth and:
+  1. Confirm this repository contains Vike and locate its app root in a monorepo.
+  2. Inspect `package.json`, Vike config, and adapter settings to determine the actual build command, generated output directory, and whether client-side routing needs SPA handling.
+  3. Generate `ravion.yaml` with `rvn-aws-static` and the repository's real AWS account, region, branch, slug, and output values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or adapter output.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -56,10 +64,6 @@ ravion project config apply vike-site --file ravion.yaml
 ```
 
 Use [custom domains](/guides/custom-domains) to configure the CloudFront alias.
-
-<AskAssistant question="How do I confirm my Vike adapter's output directory before deploying it to CloudFront on Ravion?">
-  "How do I confirm my Vike adapter's output directory before deploying it to CloudFront on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

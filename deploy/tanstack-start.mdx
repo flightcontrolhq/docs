@@ -9,9 +9,17 @@ keywords: ["TanStack Start AWS deployment", "deploy TanStack Start to AWS", "Tan
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy TanStack Start on ECS Fargate behind an Application Load Balancer. The current Node deployment uses Vite and Nitro, producing a server entry at `.output/server/index.mjs`.
+
+<Prompt description="Set up this TanStack Start app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/tanstack-start as the source of truth and:
+  1. Confirm this repository contains TanStack Start and locate the app root in a monorepo.
+  2. Inspect `package.json`, Vite config, and TanStack Start config to detect the real `vite build` command, `.output/server/index.mjs` entrypoint, port, and health route.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, binding the Node server to `0.0.0.0` and `process.env.PORT`, with real AWS and repository values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -87,10 +95,6 @@ ravion project config apply tanstack-start-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
-
-<AskAssistant question="How do I configure TanStack Start's Nitro server output and port for ECS Fargate on Ravion?">
-  "How do I configure TanStack Start's Nitro server output and port for ECS Fargate on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

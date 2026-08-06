@@ -9,9 +9,17 @@ keywords: ["Hono AWS deployment", "deploy Hono to AWS", "Hono Node.js", "ECS Far
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Hono Node.js application on ECS Fargate behind an Application Load Balancer. Use Hono's Node adapter and bind the server to the ECS-provided port.
+
+<Prompt description="Set up this Hono app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/hono as the source of truth and:
+  1. Confirm this repository contains Hono and locate the app root in a monorepo.
+  2. Inspect `package.json`, the Hono Node adapter entrypoint, build scripts, and config to detect the actual build/start commands, port, and health route; bind to `0.0.0.0` and `process.env.PORT`.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, substituting real AWS, branch, repository, and runtime values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -78,10 +86,6 @@ ravion project config apply hono-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
-
-<AskAssistant question="How do I deploy Hono with the Node adapter and expose the ECS PORT through Ravion?">
-  "How do I deploy Hono with the Node adapter and expose the ECS PORT through Ravion?"
-</AskAssistant>
 
 ## Next steps
 

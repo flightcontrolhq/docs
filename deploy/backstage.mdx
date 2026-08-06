@@ -9,9 +9,17 @@ keywords: ["Backstage AWS deployment", "deploy Backstage to AWS", "Backstage hos
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Backstage production image to ECS Fargate behind an Application Load Balancer. Ravion creates the VPC, ECS cluster, service, and optional RDS database in your AWS account.
+
+<Prompt description="Set up this Backstage app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/backstage as the source of truth and:
+  1. Confirm this repository contains Backstage and locate the app root in a monorepo.
+  2. Inspect `package.json`, `app-config.*`, and Docker or build files to detect the real build/start commands, port, and health path.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, substituting real AWS, repository, branch, and runtime values. Bind to `0.0.0.0`; create the documented Secrets Manager database step rather than inventing RDS references.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -89,10 +97,6 @@ ravion project config apply backstage-app --file ravion.yaml
 ```
 
 Use [custom domains](/guides/custom-domains) to configure the ALB hostname and certificate.
-
-<AskAssistant question="How do I wire Backstage's PostgreSQL connection secret to the RDS-backed ECS service on Ravion?">
-  "How do I wire Backstage's PostgreSQL connection secret to the RDS-backed ECS service on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

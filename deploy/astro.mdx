@@ -9,9 +9,17 @@ keywords: ["Astro AWS deployment", "deploy Astro to AWS", "Astro static hosting"
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy your Astro static build to an S3 bucket behind CloudFront. The bucket and distribution stay in your AWS account, and Ravion versions each deployment.
+
+<Prompt description="Set up this Astro app for Ravion static or SSR hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/astro as the source of truth and:
+  1. Confirm this repository contains the Astro app and locate its root in any monorepo.
+  2. Inspect `package.json` and `astro.config.*` to detect the real build command, adapter, output mode, server entry, and port. Preserve `PUBLIC_` for browser-visible variables.
+  3. Generate `ravion.yaml` using the static `rvn-aws-static` modules or SSR `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` modules, with real repo and AWS values substituted. Bind SSR to `0.0.0.0`.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, database credentials, or adapter output.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -120,10 +128,6 @@ environments:
 ```
 
 Set `HOST=0.0.0.0` and `PORT=4321` in the runtime environment. Use the ECS service's Application Load Balancer hostname for your custom domain.
-
-<AskAssistant question="How do I add a custom domain and preview environments to my Astro static or SSR deployment on Ravion?">
-  "How do I add a custom domain and preview environments to my Astro static or SSR deployment on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

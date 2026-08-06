@@ -9,9 +9,17 @@ keywords: ["Docusaurus AWS deployment", "deploy Docusaurus to AWS", "Docusaurus 
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy the Docusaurus `build` directory to S3 and serve it globally through CloudFront. Ravion provisions the resources in your AWS account.
+
+<Prompt description="Set up this Docusaurus app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/docusaurus as the source of truth and:
+  1. Confirm this repository contains Docusaurus and locate the app root in a monorepo.
+  2. Inspect `package.json` and `docusaurus.config.*` to detect the actual build command, `build` output, `url`, and `baseUrl`.
+  3. Generate `ravion.yaml` with `rvn-aws-static`, filesystem routing, and the repository's real AWS, branch, slug, and output values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or base paths.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -54,10 +62,6 @@ ravion project config apply docusaurus-site --file ravion.yaml
 ```
 
 Point your domain at the CloudFront hostname and complete [custom domains](/guides/custom-domains).
-
-<AskAssistant question="How do I configure Docusaurus baseUrl and CloudFront paths for a Ravion deployment?">
-  "How do I configure Docusaurus baseUrl and CloudFront paths for a Ravion deployment?"
-</AskAssistant>
 
 ## Next steps
 

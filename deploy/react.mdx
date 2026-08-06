@@ -9,9 +9,17 @@ keywords: ["React AWS deployment", "deploy React to AWS", "React static hosting"
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a React single-page application to S3 and deliver it through CloudFront. Vite projects write to `dist`; Create React App projects write to `build`.
+
+<Prompt description="Set up this React app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/react as the source of truth and:
+  1. Confirm this repository contains React and locate the app root in a monorepo.
+  2. Inspect `package.json` and Vite or CRA config to detect the real build command and whether output is `dist` or `build`; inspect the router for SPA fallback needs.
+  3. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and the repository's real AWS, branch, slug, and output values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or output directories.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -54,10 +62,6 @@ ravion project config apply react-site --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to CloudFront.
-
-<AskAssistant question="How do I choose the correct dist or build output and SPA fallback for my React app on Ravion?">
-  "How do I choose the correct dist or build output and SPA fallback for my React app on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

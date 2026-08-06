@@ -9,9 +9,17 @@ keywords: ["Solid AWS deployment", "deploy Solid to AWS", "Solid SPA hosting", "
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Solid single-page application to an S3 bucket behind CloudFront. Both resources are provisioned in your AWS account.
+
+<Prompt description="Set up this Solid app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/solid as the source of truth and:
+  1. Confirm this repository contains Solid and locate the app root in a monorepo.
+  2. Inspect `package.json`, Vite config, and router setup to determine the real build command, `dist` output, and SPA fallback requirements.
+  3. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or output paths.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -54,10 +62,6 @@ ravion project config apply solid-site --file ravion.yaml
 ```
 
 Point DNS at the CloudFront hostname with [custom domains](/guides/custom-domains).
-
-<AskAssistant question="How do I configure Solid's client-side routing fallback for S3 and CloudFront on Ravion?">
-  "How do I configure Solid's client-side routing fallback for S3 and CloudFront on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

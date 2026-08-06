@@ -9,9 +9,17 @@ keywords: ["Angular AWS deployment", "deploy Angular to AWS", "Angular static ho
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy the Angular production build to S3 and deliver it through CloudFront. Angular CLI writes to `dist/<project-name>` by default; replace the example directory with the `outputPath` from your `angular.json`.
+
+<Prompt description="Set up this Angular app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/angular as the source of truth and:
+  1. Confirm this repository contains the Angular app and locate its root, including in a monorepo.
+  2. Inspect `package.json`, `angular.json`, and workspace scripts to determine the real build command and `outputPath`; do not assume `dist/my-angular-app`.
+  3. Generate `ravion.yaml` with `rvn-aws-static`, substituting the real AWS account, region, repository, branch, and output directory. Use SPA routing.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave a TODO instead of guessing any AWS account ID, repository slug, project ID, or output path.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -54,10 +62,6 @@ ravion project config apply angular-site --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your domain to CloudFront.
-
-<AskAssistant question="How do I configure Angular outputPath and SPA routing for CloudFront on Ravion?">
-  "How do I configure Angular outputPath and SPA routing for CloudFront on Ravion?"
-</AskAssistant>
 
 ## Next steps
 

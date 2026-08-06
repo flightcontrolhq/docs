@@ -9,9 +9,17 @@ keywords: ["Next.js AWS deployment", "deploy Next.js to AWS", "Next.js SSR", "EC
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
-import { AskAssistant } from "/snippets/ask-assistant.mdx";
 
 Deploy a Next.js App Router or Pages Router application on ECS Fargate behind an Application Load Balancer. Ravion provisions the network and compute resources in your AWS account.
+
+<Prompt description="Set up this Next.js app for Ravion SSR or static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/nextjs as the source of truth and:
+  1. Confirm this repository contains Next.js and locate the app root in a monorepo.
+  2. Inspect `package.json`, `next.config.*`, and App or Pages Router files to detect the real build command, SSR versus export mode, `.next/standalone/server.js` or `out` output, port, and runtime variables.
+  3. Generate `ravion.yaml` with the matching static or ECS module set. For SSR use standalone output, bind to `0.0.0.0`, and pass `PORT`; substitute real AWS, branch, repository, and runtime values.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, output modes, or ports.
+</Prompt>
 
 <DeployPrerequisites />
 
@@ -110,10 +118,6 @@ ravion project config apply nextjs-app --file ravion.yaml
 ```
 
 Follow [custom domains](/guides/custom-domains) to connect your Application Load Balancer hostname. For static export, connect the CloudFront hostname instead.
-
-<AskAssistant question="How do I choose between Next.js standalone SSR and static export when deploying on Ravion?">
-  "How do I choose between Next.js standalone SSR and static export when deploying on Ravion?"
-</AskAssistant>
 
 ## Next steps
 
