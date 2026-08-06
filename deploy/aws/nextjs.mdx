@@ -6,13 +6,12 @@ keywords: ["Next.js AWS deployment", "deploy Next.js to AWS", "Next.js SSR", "EC
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/nextjs.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/nextjs.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy a Next.js App Router or Pages Router application on ECS Fargate behind an Application Load Balancer. Ravion provisions the network and compute resources in your AWS account.
+Deploy a Next.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+<DeployPrerequisites />
 
 <Prompt description="Set up this Next.js app for Ravion SSR or static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,13 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, output modes, or ports.
 </Prompt>
 
-<DeployPrerequisites />
+## Configure the deployment
 
-## Configure Next.js for SSR
+Deploy a Next.js App Router or Pages Router application on ECS Fargate behind an Application Load Balancer. Ravion provisions the network and compute resources in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+ Next.js for SSR
 
 Set `output: "standalone"` in `next.config.js` or `next.config.mjs`. Next.js writes a self-contained server to `.next/standalone/server.js`. Copy `public` and `.next/static` into the standalone image as described in the Next.js deployment documentation.
 

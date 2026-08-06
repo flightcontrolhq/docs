@@ -6,13 +6,12 @@ keywords: ["SvelteKit AWS deployment", "deploy SvelteKit to AWS", "SvelteKit ada
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/sveltekit.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/sveltekit.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-SvelteKit uses an adapter for its deployment target. Choose `adapter-static` for a prerendered site on S3 and CloudFront, or `adapter-node` for a Node server on ECS Fargate behind an Application Load Balancer.
+SvelteKit uses an adapter for its deployment target.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+<DeployPrerequisites />
 
 <Prompt description="Set up this SvelteKit app for Ravion static or server hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,13 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, adapter settings, or database credentials.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Static adapter
+
+Choose `adapter-static` for a prerendered site on S3 and CloudFront, or `adapter-node` for a Node server on ECS Fargate behind an Application Load Balancer.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+
 
 Install `@sveltejs/adapter-static`, prerender the routes you need, and keep the adapter output in `build`.
 

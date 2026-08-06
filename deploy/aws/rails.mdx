@@ -6,13 +6,12 @@ keywords: ["Rails AWS deployment", "deploy Rails to AWS", "Rails Puma", "ECS Far
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/rails.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/rails.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy Rails with its bundled Puma server on ECS Fargate behind an Application Load Balancer. Rails binds to localhost by default, so the production command must bind to `0.0.0.0`.
+Deploy Rails with its bundled Puma server on ECS Fargate behind an Application Load Balancer.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Rails from the application files.
+<DeployPrerequisites />
 
 <Prompt description="Set up this Rails app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,11 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Rails binds to localhost by default, so the production command must bind to `0.0.0.0`.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Rails from the application files.
 
 Railpack detects Rails through `Gemfile` and `config/application.rb`. It reads the Ruby version from `.ruby-version`, `Gemfile`, or mise files, installs Node when frontend tooling requires it, precompiles assets and Bootsnap, and configures common native dependencies. Set the production start command to `bin/rails server -e production -b 0.0.0.0` when your repository does not provide one. Ravion injects `PORT` automatically from `container_port`.
 

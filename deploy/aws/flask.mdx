@@ -6,13 +6,12 @@ keywords: ["Flask AWS deployment", "deploy Flask to AWS", "Flask Gunicorn", "ECS
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/flask.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/flask.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy Flask with Gunicorn on ECS Fargate behind an Application Load Balancer. Flask's production documentation recommends a dedicated WSGI server instead of the built-in development server.
+Deploy Flask with Gunicorn on ECS Fargate behind an Application Load Balancer.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Flask from the application dependencies.
+<DeployPrerequisites />
 
 <Prompt description="Set up this Flask app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,11 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, Python module paths, or ports.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Flask's production documentation recommends a dedicated WSGI server instead of the built-in development server.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Flask from the application dependencies.
 
 Railpack detects Flask when `flask` is a dependency. It starts `gunicorn --bind 0.0.0.0:${PORT:-8000} main:app` only when `gunicorn` is also a dependency, so add Gunicorn to your requirements and use a custom start command when your module or application factory differs from `main:app`. Ravion injects `PORT` automatically from `container_port`.
 

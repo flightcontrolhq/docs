@@ -6,13 +6,12 @@ keywords: ["Vite AWS deployment", "deploy Vite to AWS", "Vite static hosting", "
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/vite.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/vite.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy the Vite output to S3 and deliver it through CloudFront. Ravion uses SPA routing so client-side routes resolve to `index.html`.
+Deploy the Vite output to S3 and deliver it through CloudFront.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+<DeployPrerequisites />
 
 <Prompt description="Set up this Vite app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,11 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or output paths.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Ravion uses SPA routing so client-side routes resolve to `index.html`.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 ```yaml ravion.yaml
 project:

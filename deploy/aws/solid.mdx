@@ -6,13 +6,12 @@ keywords: ["Solid AWS deployment", "deploy Solid to AWS", "Solid SPA hosting", "
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/solid.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/solid.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy a Solid single-page application to an S3 bucket behind CloudFront. Both resources are provisioned in your AWS account.
+Deploy a Solid single-page application to an S3 bucket behind CloudFront.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+<DeployPrerequisites />
 
 <Prompt description="Set up this Solid app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,11 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or output paths.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Both resources are provisioned in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 ```yaml ravion.yaml
 project:

@@ -6,13 +6,12 @@ keywords: ["Strapi AWS deployment", "deploy Strapi to AWS", "Strapi hosting", "E
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/strapi.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/strapi.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Run Strapi on ECS Fargate behind an Application Load Balancer and keep its relational database in Amazon RDS. Ravion provisions these resources in your AWS account.
+Run Strapi on ECS Fargate behind an Application Load Balancer and keep its relational database in Amazon RDS.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+<DeployPrerequisites />
 
 <Prompt description="Set up this Strapi app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,11 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, ports, or database credentials.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Ravion provisions these resources in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 Strapi builds with `npm run build` and starts with `npm run start`. The example includes PostgreSQL RDS. After the first apply, put the RDS endpoint and credentials into the service's runtime variables or a Secrets Manager secret.
 

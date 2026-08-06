@@ -6,11 +6,12 @@ keywords: ["Bun AWS deployment", "deploy Bun to AWS", "Bun.serve", "ECS Fargate"
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/bun.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/bun.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer. Bun's official server API uses `Bun.serve` and honors `PORT` when you do not set a port explicitly.
+Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer.
+
+<DeployPrerequisites />
 
 <Prompt description="Set up this Bun app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -21,9 +22,9 @@ Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer. Bun
   6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Bun's official server API uses `Bun.serve` and honors `PORT` when you do not set a port explicitly.
 
 [Railpack](https://railpack.com) detects Bun from the `packageManager` field, `engines.bun`, or a `bun.lock` or `bun.lockb` file. Otherwise it uses its Node.js framework, monorepo, or SPA detection. Set the production start command to your actual Bun entrypoint when it is not inferred from the repository. Ravion injects `PORT` automatically from `container_port`.
 

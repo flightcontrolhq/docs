@@ -6,13 +6,12 @@ keywords: ["RedwoodJS AWS deployment", "deploy RedwoodJS to AWS", "RedwoodJS hos
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/redwood.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/redwood.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Run RedwoodJS on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS. Ravion provisions the VPC, cluster, web service, and database in your AWS account.
+Run RedwoodJS on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+<DeployPrerequisites />
 
 <Prompt description="Set up this RedwoodJS app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,11 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, ports, or database credentials.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Ravion provisions the VPC, cluster, web service, and database in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 Build the Redwood API and web sides with `yarn rw build`. Redwood's production server command depends on the generated deployment target; use the start command from your Redwood version's deployment documentation.
 

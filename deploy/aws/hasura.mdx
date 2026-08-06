@@ -6,11 +6,12 @@ keywords: ["Hasura AWS deployment", "deploy Hasura to AWS", "Hasura hosting", "E
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/hasura.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/hasura.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreSQL in RDS. Ravion provisions the network, compute, and database resources in your AWS account.
+Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreSQL in RDS.
+
+<DeployPrerequisites />
 
 <Prompt description="Set up this Hasura app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -21,9 +22,9 @@ Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreS
   6. Leave TODOs instead of guessing AWS account IDs, image or repository values, project IDs, or database credentials.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Ravion provisions the network, compute, and database resources in your AWS account.
 
 The Hasura GraphQL Engine publishes an official `hasura/graphql-engine` image that listens on port 8080. This example deploys that prebuilt image through `build_source: image_registry`; it does not build from your repository. The `/healthz` endpoint is used for the ALB health check.
 

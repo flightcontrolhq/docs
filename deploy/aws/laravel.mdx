@@ -6,11 +6,12 @@ keywords: ["Laravel AWS deployment", "deploy Laravel to AWS", "Laravel FrankenPH
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/laravel.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/laravel.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy Laravel with [Railpack](https://railpack.com/languages/php/)'s FrankenPHP runtime on ECS Fargate behind an Application Load Balancer. Ravion creates the network, ECS cluster, web service, and PostgreSQL database in your AWS account.
+Deploy Laravel with [Railpack](https://railpack.
+
+<DeployPrerequisites />
 
 <Prompt description="Set up this Laravel app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -22,9 +23,9 @@ Deploy Laravel with [Railpack](https://railpack.com/languages/php/)'s FrankenPHP
   7. Leave clear TODOs instead of guessing the PHP version, app root, AWS account ID, repository slug, project ID, or database credentials.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+com/languages/php/)'s FrankenPHP runtime on ECS Fargate behind an Application Load Balancer. Ravion creates the network, ECS cluster, web service, and PostgreSQL database in your AWS account.
 
 Railpack detects Laravel when the source contains an `artisan` file. It reads the PHP version from `composer.json`, uses FrankenPHP, sets the document root to `public/`, and runs the Laravel startup tasks. This is the preferred quickstart because it follows the current Laravel and Railpack container path without adding a separate Nginx process.
 

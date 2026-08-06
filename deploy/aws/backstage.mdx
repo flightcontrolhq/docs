@@ -6,13 +6,12 @@ keywords: ["Backstage AWS deployment", "deploy Backstage to AWS", "Backstage hos
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/backstage.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/backstage.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy a Backstage production image to ECS Fargate behind an Application Load Balancer. Ravion creates the VPC, ECS cluster, service, and optional RDS database in your AWS account.
+Deploy a Backstage production image to ECS Fargate behind an Application Load Balancer.
 
-This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
+<DeployPrerequisites />
 
 <Prompt description="Set up this Backstage app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,11 @@ This guide uses a repository Dockerfile instead of [Railpack](https://railpack.c
   6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Ravion creates the VPC, ECS cluster, service, and optional RDS database in your AWS account.
+
+This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
 
 Backstage's production Docker guide documents a host-build variant and a multi-stage variant. Ravion builds from your repository, so use the multi-stage Dockerfile from [Backstage's Docker deployment guide](https://backstage.io/docs/deployment/docker/) at the repository root. The scaffolded `packages/backend/Dockerfile` is the host-build variant: it expects `yarn install`, `yarn tsc`, and `yarn build:backend` to run before `docker build`, so it does not work unmodified with Ravion. Backstage also documents different `.dockerignore` requirements for the two variants. The container listens on port 7007.
 

@@ -6,13 +6,12 @@ keywords: ["Hono AWS deployment", "deploy Hono to AWS", "Hono Node.js", "ECS Far
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/hono.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/hono.png"
 ---
-
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
 import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
-Deploy a Hono Node.js application on ECS Fargate behind an Application Load Balancer. Use Hono's Node adapter and bind the server to the ECS-provided port.
+Deploy a Hono Node.
 
-This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+<DeployPrerequisites />
 
 <Prompt description="Set up this Hono app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
@@ -23,9 +22,11 @@ This example uses [Railpack](https://railpack.com) for the build. Use `build_sou
   6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
 </Prompt>
 
-<DeployPrerequisites />
-
 ## Configure the deployment
+
+Deploy a Hono application on ECS Fargate behind an Application Load Balancer. Use Hono's Node adapter and bind the server to the ECS-provided port.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 Use a production script such as `node dist/index.js` after compiling your TypeScript entry point to `dist/index.js`.
 
