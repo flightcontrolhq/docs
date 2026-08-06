@@ -8,6 +8,15 @@ Docker
 ECR
 Yarn
 app-config
+Bootsnap
+Sprockets
+Propshaft
+jemalloc
+YJIT
+libpq
+libvips
+ASGI
+mise
 Astro
 Bun
 Dockerfile
