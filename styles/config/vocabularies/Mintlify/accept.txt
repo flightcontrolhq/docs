@@ -2,6 +2,10 @@ alias_name
 alias_zone_id
 ARN
 ARNs
+Astro
+Dockerfile
+Docusaurus
+Hasura
 autoapprove
 autoscaling
 aws_account_id
@@ -32,6 +36,7 @@ hyperscaler
 multiline
 namespace
 namespaces
+Nuxt
 OAuth
 opencode
 parallelization
@@ -58,10 +63,13 @@ subnet
 subnets
 target_type
 teardown
+Strapi
 templateable
 tfvars
 Valkey
 Vercel
+Vike
+Vite
 vpc
 walkthrough
 walkthrough's
