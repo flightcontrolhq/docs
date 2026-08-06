@@ -94,7 +94,7 @@ steps:
       image_ref: << steps.build_web_app.output.image_digest >>
 ```
 
-Variant input values can be hard-coded and cannot be overridden at run time. Stack change runs normally stop at an approval gate; destroy runs always require manual approval. Stack and deploy locks prevent conflicting operations. A custom pipeline can add policy-check steps, but the public docs do not define a built-in agent policy engine, guardrail preset, or least-privilege agent role.
+Variant input values can be hard-coded and cannot be overridden at run time. Stack change runs normally stop at an approval gate; destroy runs always require manual approval. Stack and deploy locks prevent conflicting operations. A custom pipeline can add policy-check steps.
 
 ## Give the agent an appropriate interface
 
@@ -112,7 +112,7 @@ ravion report feedback "<what was confusing or missing>"
 ```
 
 <Note>
-  The current CLI reference documents `OWNER` as the available service-account role. It does not document fine-grained agent permissions or least-privilege API keys. Treat credentials and approval policy as an explicit platform-team decision.
+  Service accounts are created with the `OWNER` role. Decide credential scope and approval policy deliberately at the platform-team level.
 </Note>
 
 <CardGroup cols={2}>

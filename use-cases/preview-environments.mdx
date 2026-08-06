@@ -27,7 +27,7 @@ Create environments in your project config, then add the same module pattern to 
 
 This pipeline targets whichever named environment you select when you start the run:
 
-```yaml ravion-pipeline.yaml
+```yaml pipeline.yaml
 variants:
   - id: production
     name: Production
@@ -59,7 +59,7 @@ ravion project config apply <project-id> --file ravion.yaml
 Removing a module instance from the config runs a Terraform destroy plan and waits for manual approval before the instance is deleted. Treat one-off test environments as real infrastructure: review the plan and remove them when you are finished.
 
 <Note>
-  Ravion's high-level product overview describes ephemeral preview environments and environment templates. The current public docs do not yet document an automated per-pull-request environment workflow, automatic teardown on merge, or a dedicated preview-environment command. See [contact support](/contact-support) before promising that flow.
+  An automated per-pull-request environment workflow with teardown on merge is not documented yet. [Contact support](/contact-support) if you need that workflow.
 </Note>
 
 ## Review changes before production

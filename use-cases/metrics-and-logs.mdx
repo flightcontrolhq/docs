@@ -15,7 +15,7 @@ When a module definition provides observability capabilities, the dashboard disp
 
 ## Start with the dashboard
 
-Open a supported module and use its metric charts or **Logs** tab to inspect the running service. The exact charts depend on the module definition, so use “when supported” rather than expecting every module to expose the same inventory.
+Open a supported module and use its metric charts or **Logs** tab to inspect the running service. The available charts depend on the module definition.
 
 Here are documented examples:
 
@@ -60,7 +60,7 @@ ravion metrics cloudwatch \
   --end-time <ISO-8601>
 ```
 
-The generic CLI commands accept the Ravion AWS account database ID used to resolve credentials. They do not promise that every CloudWatch metric appears as a module chart.
+The generic CLI commands accept the Ravion AWS account database ID used to resolve credentials. Use them when you need a metric that is not shown as a module chart.
 
 ## Use the right view for the question
 
