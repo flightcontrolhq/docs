@@ -161,13 +161,12 @@
         ]
       },
       {
-        "tab": "Deploy",
+        "tab": "Deploy to AWS",
         "groups": [
           {
-            "group": "Deploy to AWS",
+            "group": "Frameworks",
             "root": "deploy/aws",
             "pages": [
-              "deploy/aws",
               "deploy/aws/angular",
               "deploy/aws/astro",
               "deploy/aws/docusaurus",
