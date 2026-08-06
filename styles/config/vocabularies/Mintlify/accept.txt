@@ -1,5 +1,6 @@
 alias_name
 alias_zone_id
+api
 ARN
 ARNs
 autoapprove
@@ -19,8 +20,10 @@ deploy's
 devs
 distribution_acm_certificate
 distribution_aliases
+Dockerfile
 domain_name
 env
+environment_variables
 Fargate
 Flightcontrol
 givenId
@@ -61,6 +64,7 @@ teardown
 templateable
 tfvars
 Valkey
+valueFrom
 Vercel
 vpc
 walkthrough
