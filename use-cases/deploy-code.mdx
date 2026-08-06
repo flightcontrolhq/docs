@@ -9,7 +9,7 @@ Author the deployment workflow in your pipeline, then let the target module carr
 
 ## How it works
 
-There is no non-module raw deploy CI step. You write the pipeline wiring with module steps such as `deploy` and `rollback`, CI steps such as `custom`, and control-flow steps such as `approval`.
+You author the workflow from `deploy` and `rollback` module steps, `custom` CI steps, and `approval` control-flow steps. The module's deploy manager carries out the rollout using the strategy, health checks, hooks, and other settings configured on that module.
 
 ## Write the deployment workflow
 
@@ -17,6 +17,12 @@ This pipeline runs tests, waits for approval, and deploys the exact image produc
 
 ```yaml pipeline.yaml
 steps:
+  - id: build_web_app
+    name: Build web-app
+    type: build
+    module_instance: << pipeline.variant.id >>.web-app
+    input:
+      branch: << pipeline.input.branch >>
   - id: run_tests
     name: Run tests
     type: custom
@@ -38,7 +44,7 @@ steps:
     type: deploy
     module_instance: << pipeline.variant.id >>.web-app
     input:
-      image_ref: << steps.build_image.output.image_digest >>
+      image_ref: << steps.build_web_app.output.image_digest >>
 ```
 
 Use a `rollback` step when you need to recover a module to a specific previous deployment:

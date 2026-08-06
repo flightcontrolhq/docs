@@ -69,7 +69,7 @@ Run tests or other commands alongside those build steps with `custom`:
 
 ## Pass the artifact to deployment
 
-Build steps produce `build_ref` and type-specific outputs such as `image_uri`, `image_digest`, `s3_bucket`, `s3_directory`, and `s3_key`. A deploy step can consume the exact image produced by the build:
+Each build step exposes outputs for the artifact it creates. `build:image` returns `build_ref`, `image_uri`, and `image_digest`; `build:static` returns `build_ref`, `s3_bucket`, `s3_directory`, and `s3_uri`. Module `build` steps also expose type-specific values such as `s3_key` for package builds. A deploy step can consume the exact image produced by `build:image`:
 
 ```yaml
 - id: deploy_web_app
@@ -123,7 +123,13 @@ There is no standalone `ravion build` command. To inspect a pipeline build, use 
 
 <CardGroup cols={2}>
   <Card title="Module builds" icon="hammer" href="/modules/build">Learn how module build configuration and artifact outputs work.</Card>
-  <Card title="Pipeline step types" icon="arrow-progress" href="/pipelines/step-types">Compare image, static, custom, and module build steps.</Card>
-  <Card title="Pipeline examples" icon="file-code" href="/pipelines/examples">Start with complete build, test, and deploy workflows.</Card>
-  <Card title="ECS web server" icon="server" href="/module-definitions/catalog/rvn-ecs-web">Configure module-provided builders and ECS runtime settings.</Card>
+  <Card title="Pipeline step types" icon="arrow-progress" href="/pipelines/step-types">
+    Compare image, static, custom, and module build steps.
+  </Card>
+  <Card title="Pipeline examples" icon="file-code" href="/pipelines/examples">
+    Start with complete build, test, and deploy workflows.
+  </Card>
+  <Card title="ECS web server" icon="server" href="/module-definitions/catalog/rvn-ecs-web">
+    Configure module-provided builders and ECS runtime settings.
+  </Card>
 </CardGroup>
