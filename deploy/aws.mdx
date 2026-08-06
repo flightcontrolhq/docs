@@ -1,43 +1,116 @@
 ---
-title: "Deploy to AWS"
-sidebarTitle: "AWS"
-description: "Deploy framework applications to your AWS account with Ravion."
-keywords: ["deploy to AWS", "AWS deployment", "Ravion AWS", "ECS Fargate", "S3", "CloudFront"]
+title: "Deploy frameworks to AWS"
+sidebarTitle: "Overview"
+description: "Deploy popular application frameworks to your own AWS account with Ravion."
+keywords: ["deploy to AWS", "AWS deployment", "Ravion deploy guides", "ECS Fargate", "S3", "CloudFront"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws.png"
 ---
 
-Use these guides to deploy framework applications to your AWS account with Ravion. Choose a static deployment with S3 and CloudFront or a server deployment with ECS Fargate behind an Application Load Balancer.
 
-## Static sites
+Use these quickstarts to deploy framework applications to AWS with Ravion. Choose a static site deployment with S3 and CloudFront or a server deployment with ECS Fargate behind an Application Load Balancer. [Railpack](https://railpack.com) can build supported application stacks without a custom Dockerfile.
 
-- [Angular](/deploy/aws/angular)
-- [Astro](/deploy/aws/astro)
-- [Docusaurus](/deploy/aws/docusaurus)
-- [Gatsby](/deploy/aws/gatsby)
-- [React](/deploy/aws/react)
-- [Solid](/deploy/aws/solid)
-- [SvelteKit](/deploy/aws/sveltekit)
-- [Vike](/deploy/aws/vike)
-- [Vite](/deploy/aws/vite)
-- [Vue](/deploy/aws/vue)
+<Prompt description="Choose and apply the right Ravion deploy guide for this repository." icon="sparkles" actions={["copy", "cursor"]}>
+  Use https://www.ravion.com/docs/deploy/aws as the source of truth and:
+  1. Inspect this repository to identify its framework, application root, and whether it needs static hosting or an ECS server. Search monorepo workspaces rather than assuming the repository root.
+  2. Read the matching framework guide linked on this page, then inspect package manifests, framework config, Dockerfiles, and scripts to determine the real build command, output directory, start command, port, and health path.
+  3. Generate `ravion.yaml` from that guide's module set with real AWS account, region, repository, branch, and runtime values substituted. Use Secrets Manager and an RDS module where the framework requires a database.
+  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
+  5. Leave clear TODOs instead of guessing any AWS account ID, repository slug, project ID, database credential, command, path, or port.
+</Prompt>
 
-## Server applications
+## Static sites: S3 and CloudFront
 
-- [Backstage](/deploy/aws/backstage)
-- [Bun](/deploy/aws/bun)
-- [Django](/deploy/aws/django)
-- [FastAPI](/deploy/aws/fastapi)
-- [Flask](/deploy/aws/flask)
-- [Hasura](/deploy/aws/hasura)
-- [Hono](/deploy/aws/hono)
-- [Laravel](/deploy/aws/laravel)
-- [NestJS](/deploy/aws/nestjs)
-- [Next.js](/deploy/aws/nextjs)
-- [Node.js / Express](/deploy/aws/node-express)
-- [Nuxt](/deploy/aws/nuxt)
-- [Rails](/deploy/aws/rails)
-- [RedwoodJS](/deploy/aws/redwood)
-- [Remix](/deploy/aws/remix)
-- [Strapi](/deploy/aws/strapi)
-- [TanStack Start](/deploy/aws/tanstack-start)
+<CardGroup cols={3}>
+  <Card title="Angular" icon="shapes" href="/deploy/aws/angular">
+    Deploy an Angular production build to S3 and CloudFront.
+  </Card>
+  <Card title="Astro" icon="sparkles" href="/deploy/aws/astro">
+    Deploy an Astro static build to S3 and CloudFront.
+  </Card>
+  <Card title="Docusaurus" icon="book-open" href="/deploy/aws/docusaurus">
+    Deploy a Docusaurus documentation site to S3 and CloudFront.
+  </Card>
+  <Card title="Gatsby" icon="bolt" href="/deploy/aws/gatsby">
+    Deploy Gatsby's generated site to S3 and CloudFront.
+  </Card>
+  <Card title="React" icon="atom" href="/deploy/aws/react">
+    Deploy a React single-page app to S3 and CloudFront.
+  </Card>
+  <Card title="Solid" icon="shapes" href="/deploy/aws/solid">
+    Deploy a Solid single-page app to S3 and CloudFront.
+  </Card>
+  <Card title="SvelteKit" icon="code" href="/deploy/aws/sveltekit">
+    Deploy SvelteKit statically or with a Node server.
+  </Card>
+  <Card title="Vike" icon="code" href="/deploy/aws/vike">
+    Deploy a Vike static site to S3 and CloudFront.
+  </Card>
+  <Card title="Vite" icon="gauge" href="/deploy/aws/vite">
+    Deploy a Vite single-page app to S3 and CloudFront.
+  </Card>
+  <Card title="Vue" icon="window-maximize" href="/deploy/aws/vue">
+    Deploy a Vue application to S3 and CloudFront.
+  </Card>
+</CardGroup>
+
+## Server applications: ECS Fargate and ALB
+
+<CardGroup cols={3}>
+  <Card title="Backstage" icon="building" href="/deploy/aws/backstage">
+    Run Backstage on ECS Fargate behind an Application Load Balancer.
+  </Card>
+  <Card title="Bun" icon="bolt" href="/deploy/aws/bun">
+    Run a Bun HTTP server on ECS Fargate.
+  </Card>
+  <Card title="Django" icon="python" href="/deploy/aws/django">
+    Run Django with Gunicorn on ECS Fargate.
+  </Card>
+  <Card title="FastAPI" icon="bolt" href="/deploy/aws/fastapi">
+    Run FastAPI with Uvicorn on ECS Fargate.
+  </Card>
+  <Card title="Flask" icon="flask" href="/deploy/aws/flask">
+    Run Flask with Gunicorn on ECS Fargate.
+  </Card>
+  <Card title="Hasura" icon="database" href="/deploy/aws/hasura">
+    Run Hasura on ECS Fargate with PostgreSQL on RDS.
+  </Card>
+  <Card title="Hono" icon="code" href="/deploy/aws/hono">
+    Run a Hono Node.js server on ECS Fargate.
+  </Card>
+  <Card title="Laravel" icon="server" href="/deploy/aws/laravel">
+    Run Laravel with FrankenPHP on ECS Fargate and PostgreSQL on RDS.
+  </Card>
+  <Card title="NestJS" icon="server" href="/deploy/aws/nestjs">
+    Run NestJS on ECS Fargate behind an Application Load Balancer.
+  </Card>
+  <Card title="Next.js" icon="arrow-up-right-from-square" href="/deploy/aws/nextjs">
+    Run Next.js SSR on ECS Fargate behind an Application Load Balancer.
+  </Card>
+  <Card title="Node.js / Express" icon="server" href="/deploy/aws/node-express">
+    Run a Node.js or Express server on ECS Fargate.
+  </Card>
+  <Card title="Nuxt" icon="globe" href="/deploy/aws/nuxt">
+    Run a Nuxt server-rendered app on ECS Fargate.
+  </Card>
+  <Card title="Rails" icon="train" href="/deploy/aws/rails">
+    Run Rails with Puma on ECS Fargate and PostgreSQL on RDS.
+  </Card>
+  <Card title="RedwoodJS" icon="tree" href="/deploy/aws/redwood">
+    Run RedwoodJS on ECS Fargate with PostgreSQL on RDS.
+  </Card>
+  <Card title="Remix" icon="route" href="/deploy/aws/remix">
+    Run a Remix app on ECS Fargate behind an ALB.
+  </Card>
+  <Card title="Strapi" icon="pen-to-square" href="/deploy/aws/strapi">
+    Run Strapi on ECS Fargate with PostgreSQL on RDS.
+  </Card>
+  <Card title="TanStack Start" icon="route" href="/deploy/aws/tanstack-start">
+    Run TanStack Start on ECS Fargate behind an ALB.
+  </Card>
+</CardGroup>
+
+<Note>
+  Each example uses module versions from the current Ravion standard library. Replace
+  placeholder repository and AWS account values before applying a file.
+</Note>
