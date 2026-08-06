@@ -18,8 +18,8 @@ Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer.
   2. Use https://www.ravion.com/docs/deploy/aws/bun as the framework-specific source of truth and:
   3. Confirm this repository contains Bun and locate the app root in a monorepo.
   4. Inspect `package.json`, `bun.lock`, source entrypoints, and Docker files to detect the real build/start command and port; bind `Bun.serve` to `0.0.0.0` and `process.env.PORT`.
-  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` using Railpack and real AWS and repository values. Leave a TODO if Railpack cannot determine the Bun entrypoint.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` using Railpack and real AWS and repository values. Ask the user for the Bun entrypoint if Railpack cannot determine it.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, entrypoints, or ports before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

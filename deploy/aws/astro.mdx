@@ -19,7 +19,7 @@ Deploy your Astro static build to an S3 bucket behind CloudFront.
   3. Confirm this repository contains the Astro app and locate its root in any monorepo.
   4. Inspect `package.json` and `astro.config.*` to detect the real build command, adapter, output mode, server entry, and port. Preserve `PUBLIC_` for browser-visible variables.
   5. Generate `ravion.yaml` using the static `rvn-aws-static` modules or SSR `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` modules, with real repo and AWS values substituted. Bind SSR to `0.0.0.0`.
-  6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, database credentials, or adapter output.
+  6. Ask the user for missing AWS account IDs, repository slugs, database credentials, or adapter output before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

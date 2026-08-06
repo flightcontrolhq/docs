@@ -19,7 +19,7 @@ Deploy the Angular production build to S3 and deliver it through CloudFront.
   3. Confirm this repository contains the Angular app and locate its root, including in a monorepo.
   4. Inspect `package.json`, `angular.json`, and workspace scripts to determine the real build command and `outputPath`; do not assume `dist/my-angular-app`.
   5. Generate `ravion.yaml` with `rvn-aws-static`, substituting the real AWS account, region, repository, branch, and output directory. Use SPA routing.
-  6. Leave a TODO instead of guessing any AWS account ID, repository slug, project ID, or output path.
+  6. Ask the user for any AWS account ID, repository slug, project ID, or output path before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

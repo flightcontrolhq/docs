@@ -19,7 +19,7 @@ Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer.
   3. Confirm this repository contains Django and locate the project root in a monorepo.
   4. Inspect `pyproject.toml`, `requirements.txt`, Django settings, and Docker files to detect the real WSGI/ASGI module, migrations, Gunicorn or Uvicorn command, port, and health path; never use `runserver`.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, real repository values, and a documented Secrets Manager step for `DATABASE_URL`.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, Django module paths, or database credentials.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, Django module paths, or database credentials before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

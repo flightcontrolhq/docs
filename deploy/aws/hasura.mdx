@@ -19,7 +19,7 @@ Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreS
   3. Confirm this repository contains Hasura and locate its config root in a monorepo.
   4. Inspect Docker files, metadata, environment templates, and scripts to detect the image/start command, port, health endpoint, and migration workflow.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`; use Secrets Manager for `HASURA_GRAPHQL_DATABASE_URL` and admin secrets rather than inventing output references.
-  6. Leave TODOs instead of guessing AWS account IDs, image or repository values, project IDs, or database credentials.
+  6. Ask the user for AWS account IDs, image or repository values, project IDs, or database credentials before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

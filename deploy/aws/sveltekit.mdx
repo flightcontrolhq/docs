@@ -19,7 +19,7 @@ SvelteKit uses an adapter for its deployment target.
   3. Confirm this repository contains SvelteKit and locate the app root in a monorepo.
   4. Inspect `package.json`, `svelte.config.*`, and adapter settings to determine the real build command, static versus Node mode, output, start command, and port.
   5. Generate `ravion.yaml` with the matching `rvn-aws-static` or ECS module set and real AWS, branch, repository, and output values. Bind Node mode to `0.0.0.0`.
-  6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, adapter settings, or database credentials.
+  6. Ask the user for missing AWS account IDs, repository slugs, project IDs, adapter settings, or database credentials before proceeding; do not guess.
 </Prompt>
 
 ## Static adapter

@@ -20,7 +20,7 @@ Deploy Laravel with [Railpack](https://railpack.
   4. Inspect `composer.json`, `artisan`, `bootstrap/app.php`, `config/`, Dockerfiles, and scripts. Detect the required PHP version, `public/` document root, frontend build, and whether the app uses Railpack's FrankenPHP runtime, Laravel Octane, or a custom PHP-FPM setup.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, substituting the repository, branch, AWS account, region, and project values you actually find. Keep the web root at `public/`, and use `/up` for the health check when the stock Laravel health route is enabled.
   6. Wire `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and the `DB_*` values through Secrets Manager. Never generate an `APP_KEY` into the repository. Keep user uploads on S3 because the container filesystem is ephemeral.
-  7. Leave clear TODOs instead of guessing the PHP version, app root, AWS account ID, repository slug, project ID, or database credentials.
+  7. Ask the user for the PHP version, app root, AWS account ID, repository slug, project ID, or database credentials before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

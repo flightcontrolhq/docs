@@ -19,7 +19,7 @@ Deploy a Backstage production image to ECS Fargate behind an Application Load Ba
   3. Confirm this repository contains Backstage and locate the app root in a monorepo.
   4. Inspect `package.json`, `app-config.*`, the Backstage multi-stage Dockerfile documentation, and repository Docker files to detect the real build/start commands, port, and health path. Do not assume the scaffolded `packages/backend/Dockerfile` can run without a host build.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using `build_source: dockerfile` and the repository-root Dockerfile, substituting real AWS, repository, branch, and runtime values. Bind to `0.0.0.0`; create the documented Secrets Manager database step rather than inventing RDS references.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, or database credentials before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

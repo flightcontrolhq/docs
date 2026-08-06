@@ -19,7 +19,7 @@ Deploy a React single-page application to S3 and deliver it through CloudFront.
   3. Confirm this repository contains React and locate the app root in a monorepo.
   4. Inspect `package.json` and Vite or CRA config to detect the real build command and whether output is `dist` or `build`; inspect the router for SPA fallback needs.
   5. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and the repository's real AWS, branch, slug, and output values.
-  6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or output directories.
+  6. Ask the user for missing AWS account IDs, repository slugs, project IDs, or output directories before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

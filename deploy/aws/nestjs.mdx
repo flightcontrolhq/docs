@@ -19,7 +19,7 @@ Deploy a NestJS server on ECS Fargate behind an Application Load Balancer.
   3. Confirm this repository contains NestJS and locate the app root in a monorepo.
   4. Inspect `package.json`, `nest-cli.json`, TypeScript config, and source bootstrap to detect the real build command, `dist` entrypoint, port, and health route; bind to `0.0.0.0` and `process.env.PORT`.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, entrypoints, or ports before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

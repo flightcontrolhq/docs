@@ -19,7 +19,7 @@ Deploy Rails with its bundled Puma server on ECS Fargate behind an Application L
   3. Confirm this repository contains Rails and locate the app root in a monorepo.
   4. Inspect `Gemfile`, Rails config, Docker files, credentials, assets, and scripts to detect the real Puma start command, port, health path, and migration or asset steps; bind to `0.0.0.0`.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for `DATABASE_URL` and `RAILS_MASTER_KEY` rather than inventing RDS references.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, or database credentials before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

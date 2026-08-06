@@ -19,7 +19,7 @@ Run RedwoodJS on ECS Fargate behind an Application Load Balancer with PostgreSQL
   3. Confirm this repository contains RedwoodJS and locate the workspace root in a monorepo.
   4. Inspect `package.json`, Redwood config, Prisma schema, and scripts to detect the real build/start commands, web port, health route, and migration steps.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for the database connection rather than inventing RDS output references.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, ports, or database credentials.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, ports, or database credentials before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

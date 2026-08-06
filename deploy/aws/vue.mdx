@@ -19,7 +19,7 @@ Deploy a Vue application built with Vite to S3 and deliver it through CloudFront
   3. Confirm this repository contains Vue and locate its app root in a monorepo.
   4. Inspect `package.json`, Vite or Vue CLI config, and router setup to detect the actual build command, `dist` output, base path, and SPA fallback requirement.
   5. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.
-  6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, or output paths.
+  6. Ask the user for missing AWS account IDs, repository slugs, project IDs, or output paths before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

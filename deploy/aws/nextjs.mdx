@@ -19,7 +19,7 @@ Deploy a Next.
   3. Confirm this repository contains Next.js and locate the app root in a monorepo.
   4. Inspect `package.json`, `next.config.*`, and App or Pages Router files to detect the real build command, SSR versus export mode, `.next/standalone/server.js` or `out` output, port, and runtime variables.
   5. Generate `ravion.yaml` with the matching static or ECS module set. For SSR use standalone output, bind to `0.0.0.0`, and pass `PORT`; substitute real AWS, branch, repository, and runtime values.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, output modes, or ports.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, output modes, or ports before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

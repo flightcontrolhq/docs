@@ -18,7 +18,7 @@ Use these quickstarts to deploy framework applications to AWS with Ravion. Choos
   3. Inspect this repository to identify its framework, application root, and whether it needs static hosting or an ECS server. Search monorepo workspaces rather than assuming the repository root.
   4. Read the matching framework guide linked on this page, then inspect package manifests, framework config, Dockerfiles, and scripts to determine the real build command, output directory, start command, port, and health path.
   5. Generate `ravion.yaml` from that guide's module set with real AWS account, region, repository, branch, and runtime values substituted. Use Secrets Manager and an RDS module where the framework requires a database.
-  6. Leave clear TODOs instead of guessing any AWS account ID, repository slug, project ID, database credential, command, path, or port.
+  6. Ask the user for any AWS account ID, repository slug, project ID, database credential, command, path, or port before proceeding; do not guess.
 </Prompt>
 
 ## Static sites: S3 and CloudFront
@@ -113,6 +113,6 @@ Use these quickstarts to deploy framework applications to AWS with Ravion. Choos
 </CardGroup>
 
 <Note>
-  Each example uses module versions from the current Ravion standard library. Replace
-  placeholder repository and AWS account values before applying a file.
+  Each example uses module versions from the current Ravion standard library. Ask the
+  user for the repository and AWS account values before applying a file.
 </Note>

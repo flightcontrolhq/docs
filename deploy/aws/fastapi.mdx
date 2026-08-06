@@ -19,7 +19,7 @@ Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer.
   3. Confirm this repository contains FastAPI and locate the app root in a monorepo.
   4. Inspect Python dependency files, the ASGI entrypoint, Docker files, and scripts to detect the real Uvicorn command, port, workers, and health path; bind to `0.0.0.0`.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, Python module paths, or ports.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, Python module paths, or ports before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

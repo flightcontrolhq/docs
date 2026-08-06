@@ -19,7 +19,7 @@ Run Strapi on ECS Fargate behind an Application Load Balancer and keep its relat
   3. Confirm this repository contains Strapi and locate its app root in a monorepo.
   4. Inspect `package.json`, `config/database.*`, server config, Docker files, and scripts to detect the real build/start commands, port, health endpoint, and upload storage needs.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for database credentials rather than inventing RDS references.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, ports, or database credentials.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, ports, or database credentials before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment

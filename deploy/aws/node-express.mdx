@@ -19,7 +19,7 @@ Deploy a Node.
   3. Confirm this repository contains the Node.js or Express app and locate its root in a monorepo.
   4. Inspect `package.json`, the server entrypoint, TypeScript or bundler config, and scripts to detect the real build/start commands, port, and health route.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS, branch, repository, and runtime values. Bind the server to `0.0.0.0` and `process.env.PORT`.
-  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, entrypoints, or ports before proceeding; do not guess.
 </Prompt>
 
 ## Configure the deployment
