@@ -23,6 +23,9 @@ PHP-FPM
 Caddyfile
 docroot
 pgsql
+Composer
+Nginx
+PostgreSQL
 autoapprove
 autoscaling
 aws_account_id
