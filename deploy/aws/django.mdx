@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy Django to AWS"
+title: "How to deploy Django to AWS"
 sidebarTitle: "Django"
 description: "Deploy a Django application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["Django AWS deployment", "deploy Django to AWS", "Django Gunicorn", "ECS Fargate", "Application Load Balancer"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/django.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/django.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer.
 
@@ -15,7 +15,7 @@ Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer.
 
 <Prompt description="Set up this Django app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/django as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/django as the framework-specific source of truth.
   3. Confirm this repository contains Django and locate the project root in a monorepo.
   4. Inspect `pyproject.toml`, `requirements.txt`, Django settings, and Docker files to detect the real WSGI/ASGI module, migrations, Gunicorn or Uvicorn command, port, and health path; never use `runserver`.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, real repository values, and a documented Secrets Manager step for `DATABASE_URL`.

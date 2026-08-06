@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy Solid to AWS"
+title: "How to deploy Solid to AWS"
 sidebarTitle: "Solid"
 description: "Deploy a Solid SPA to your AWS account with S3 and CloudFront through Ravion."
 keywords: ["Solid AWS deployment", "deploy Solid to AWS", "Solid SPA hosting", "S3", "CloudFront"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/solid.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/solid.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Deploy a Solid single-page application to an S3 bucket behind CloudFront.
 
@@ -15,7 +15,7 @@ Deploy a Solid single-page application to an S3 bucket behind CloudFront.
 
 <Prompt description="Set up this Solid app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/solid as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/solid as the framework-specific source of truth.
   3. Confirm this repository contains Solid and locate the app root in a monorepo.
   4. Inspect `package.json`, Vite config, and router setup to determine the real build command, `dist` output, and SPA fallback requirements.
   5. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.
@@ -24,7 +24,7 @@ Deploy a Solid single-page application to an S3 bucket behind CloudFront.
 
 ## Configure the deployment
 
-Both resources are provisioned in your AWS account.
+The S3 bucket and CloudFront distribution are provisioned in your AWS account.
 
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 

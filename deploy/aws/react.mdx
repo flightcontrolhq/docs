@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy React to AWS"
+title: "How to deploy React to AWS"
 sidebarTitle: "React"
 description: "Deploy a React application to your AWS account with S3 and CloudFront through Ravion."
 keywords: ["React AWS deployment", "deploy React to AWS", "React static hosting", "Vite", "Create React App", "S3", "CloudFront"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/react.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/react.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Deploy a React single-page application to S3 and deliver it through CloudFront.
 
@@ -15,7 +15,7 @@ Deploy a React single-page application to S3 and deliver it through CloudFront.
 
 <Prompt description="Set up this React app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/react as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/react as the framework-specific source of truth.
   3. Confirm this repository contains React and locate the app root in a monorepo.
   4. Inspect `package.json` and Vite or CRA config to detect the real build command and whether output is `dist` or `build`; inspect the router for SPA fallback needs.
   5. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and the repository's real AWS, branch, slug, and output values.
@@ -28,7 +28,7 @@ Vite projects write to `dist`; Create React App projects write to `build`.
 
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
- a Vite React app
+This example deploys a Vite React app.
 
 ```yaml ravion.yaml
 project:
@@ -51,7 +51,7 @@ environments:
           railpack_build_cmd: npm run build
 ```
 
-For Create React App, change `output_directory` to `build`. Configure your CloudFront SPA fallback for client-side routes.
+For Create React App, add `output_directory: build` to the module input. The default `spa` routing mode serves `index.html` for client-side routes.
 
 ## Apply and connect your domain
 

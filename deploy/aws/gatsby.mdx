@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy Gatsby to AWS"
+title: "How to deploy Gatsby to AWS"
 sidebarTitle: "Gatsby"
 description: "Deploy a Gatsby static site to your AWS account with S3 and CloudFront through Ravion."
 keywords: ["Gatsby AWS deployment", "deploy Gatsby to AWS", "Gatsby hosting", "S3", "CloudFront"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/gatsby.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/gatsby.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Deploy Gatsby's generated `public` directory to S3 and serve it through CloudFront in your AWS account.
 
@@ -15,7 +15,7 @@ Deploy Gatsby's generated `public` directory to S3 and serve it through CloudFro
 
 <Prompt description="Set up this Gatsby app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/gatsby as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/gatsby as the framework-specific source of truth.
   3. Confirm this repository contains Gatsby and locate the app root in a monorepo.
   4. Inspect `package.json` and `gatsby-config.*` to detect the real build command and generated `public` directory, including any path prefix.
   5. Generate `ravion.yaml` with `rvn-aws-static`, filesystem routing, and the repository's real AWS account, region, branch, and slug.

@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy Remix to AWS"
+title: "How to deploy Remix to AWS"
 sidebarTitle: "Remix"
 description: "Deploy a Remix application to your AWS account on ECS Fargate behind an Application Load Balancer with Ravion."
 keywords: ["Remix AWS deployment", "deploy Remix to AWS", "Remix hosting", "ECS Fargate", "ALB"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/remix.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/remix.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Run Remix on ECS Fargate behind an Application Load Balancer.
 
@@ -15,7 +15,7 @@ Run Remix on ECS Fargate behind an Application Load Balancer.
 
 <Prompt description="Set up this Remix app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/remix as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/remix as the framework-specific source of truth.
   3. Confirm this repository contains Remix and locate the app root in a monorepo.
   4. Inspect `package.json`, `vite.config.*`, Remix config, and scripts to detect the actual server and client build outputs, start command, port, and health path.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, binding the server to `0.0.0.0` and `process.env.PORT`, with real AWS and repository values.

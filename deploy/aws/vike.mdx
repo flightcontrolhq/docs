@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy Vike to AWS"
+title: "How to deploy Vike to AWS"
 sidebarTitle: "Vike"
 description: "Deploy a Vike static site to your AWS account with S3 and CloudFront through Ravion."
 keywords: ["Vike AWS deployment", "deploy Vike to AWS", "Vike static hosting", "S3", "CloudFront"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/vike.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/vike.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Deploy a Vike-generated static site to S3 and CloudFront.
 
@@ -15,7 +15,7 @@ Deploy a Vike-generated static site to S3 and CloudFront.
 
 <Prompt description="Set up this Vike app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/vike as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/vike as the framework-specific source of truth.
   3. Confirm this repository contains Vike and locate its app root in a monorepo.
   4. Inspect `package.json`, Vike config, and adapter settings to determine the actual build command, generated output directory, and whether client-side routing needs SPA handling.
   5. Generate `ravion.yaml` with `rvn-aws-static` and the repository's real AWS account, region, branch, slug, and output values.

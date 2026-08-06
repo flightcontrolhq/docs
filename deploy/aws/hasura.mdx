@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy Hasura to AWS"
+title: "How to deploy Hasura to AWS"
 sidebarTitle: "Hasura"
 description: "Deploy Hasura to your AWS account on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS through Ravion."
 keywords: ["Hasura AWS deployment", "deploy Hasura to AWS", "Hasura hosting", "ECS Fargate", "RDS", "ALB"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/hasura.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/hasura.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreSQL in RDS.
 
@@ -15,7 +15,7 @@ Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreS
 
 <Prompt description="Set up this Hasura app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/hasura as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/hasura as the framework-specific source of truth.
   3. Confirm this repository contains Hasura and locate its config root in a monorepo.
   4. Inspect Docker files, metadata, environment templates, and scripts to detect the image/start command, port, health endpoint, and migration workflow.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`; use Secrets Manager for `HASURA_GRAPHQL_DATABASE_URL` and admin secrets rather than inventing output references.

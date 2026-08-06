@@ -1,21 +1,21 @@
 ---
-title: "How to Deploy Hono to AWS"
+title: "How to deploy Hono to AWS"
 sidebarTitle: "Hono"
 description: "Deploy a Hono Node.js application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["Hono AWS deployment", "deploy Hono to AWS", "Hono Node.js", "ECS Fargate", "Application Load Balancer"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/hono.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/hono.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
-Deploy a Hono Node.
+Deploy a Hono Node.js server on ECS Fargate behind an Application Load Balancer.
 
 <DeployPrerequisites />
 
 <Prompt description="Set up this Hono app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/hono as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/hono as the framework-specific source of truth.
   3. Confirm this repository contains Hono and locate the app root in a monorepo.
   4. Inspect `package.json`, the Hono Node adapter entrypoint, build scripts, and config to detect the actual build/start commands, port, and health route; bind to `0.0.0.0` and `process.env.PORT`.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, substituting real AWS, branch, repository, and runtime values.

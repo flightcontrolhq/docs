@@ -6,7 +6,7 @@ keywords: ["deploy to AWS", "AWS deployment", "Ravion deploy guides", "ECS Farga
 "og:image": "https://www.ravion.com/og/docs/deploy/aws.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
 
 Use these quickstarts to deploy framework applications to AWS with Ravion. Choose a static site deployment with S3 and CloudFront or a server deployment with ECS Fargate behind an Application Load Balancer. [Railpack](https://railpack.com) can build supported application stacks without a custom Dockerfile.
 
@@ -14,7 +14,7 @@ Use these quickstarts to deploy framework applications to AWS with Ravion. Choos
 
 <Prompt description="Choose and apply the right Ravion deploy guide for this repository." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws as the framework-specific source of truth.
   3. Inspect this repository to identify its framework, application root, and whether it needs static hosting or an ECS server. Search monorepo workspaces rather than assuming the repository root.
   4. Read the matching framework guide linked on this page, then inspect package manifests, framework config, Dockerfiles, and scripts to determine the real build command, output directory, start command, port, and health path.
   5. Generate `ravion.yaml` from that guide's module set with real AWS account, region, repository, branch, and runtime values substituted. Use Secrets Manager and an RDS module where the framework requires a database.
@@ -39,13 +39,13 @@ Use these quickstarts to deploy framework applications to AWS with Ravion. Choos
   <Card title="React" icon="atom" href="/deploy/aws/react">
     Deploy a React single-page app to S3 and CloudFront.
   </Card>
-  <Card title="Solid" icon="shapes" href="/deploy/aws/solid">
+  <Card title="Solid" icon="circle-nodes" href="/deploy/aws/solid">
     Deploy a Solid single-page app to S3 and CloudFront.
   </Card>
   <Card title="SvelteKit" icon="code" href="/deploy/aws/sveltekit">
     Deploy SvelteKit statically or with a Node server.
   </Card>
-  <Card title="Vike" icon="code" href="/deploy/aws/vike">
+  <Card title="Vike" icon="mountain" href="/deploy/aws/vike">
     Deploy a Vike static site to S3 and CloudFront.
   </Card>
   <Card title="Vite" icon="gauge" href="/deploy/aws/vite">
@@ -62,13 +62,13 @@ Use these quickstarts to deploy framework applications to AWS with Ravion. Choos
   <Card title="Backstage" icon="building" href="/deploy/aws/backstage">
     Run Backstage on ECS Fargate behind an Application Load Balancer.
   </Card>
-  <Card title="Bun" icon="bolt" href="/deploy/aws/bun">
+  <Card title="Bun" icon="cookie" href="/deploy/aws/bun">
     Run a Bun HTTP server on ECS Fargate.
   </Card>
   <Card title="Django" icon="python" href="/deploy/aws/django">
     Run Django with Gunicorn on ECS Fargate.
   </Card>
-  <Card title="FastAPI" icon="bolt" href="/deploy/aws/fastapi">
+  <Card title="FastAPI" icon="rocket" href="/deploy/aws/fastapi">
     Run FastAPI with Uvicorn on ECS Fargate.
   </Card>
   <Card title="Flask" icon="flask" href="/deploy/aws/flask">
@@ -77,7 +77,7 @@ Use these quickstarts to deploy framework applications to AWS with Ravion. Choos
   <Card title="Hasura" icon="database" href="/deploy/aws/hasura">
     Run Hasura on ECS Fargate with PostgreSQL on RDS.
   </Card>
-  <Card title="Hono" icon="code" href="/deploy/aws/hono">
+  <Card title="Hono" icon="fire" href="/deploy/aws/hono">
     Run a Hono Node.js server on ECS Fargate.
   </Card>
   <Card title="Laravel" icon="server" href="/deploy/aws/laravel">
@@ -113,6 +113,6 @@ Use these quickstarts to deploy framework applications to AWS with Ravion. Choos
 </CardGroup>
 
 <Note>
-  Each example uses module versions from the current Ravion standard library. Ask the
-  user for the repository and AWS account values before applying a file.
+  Each example uses module versions from the current Ravion standard library. Replace the
+  placeholder repository and AWS account values with your own before applying a file.
 </Note>

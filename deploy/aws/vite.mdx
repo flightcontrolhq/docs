@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy Vite to AWS"
+title: "How to deploy Vite to AWS"
 sidebarTitle: "Vite"
 description: "Deploy a Vite single-page application to your AWS account with S3 and CloudFront through Ravion."
 keywords: ["Vite AWS deployment", "deploy Vite to AWS", "Vite static hosting", "S3", "CloudFront"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/vite.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/vite.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Deploy the Vite output to S3 and deliver it through CloudFront.
 
@@ -15,7 +15,7 @@ Deploy the Vite output to S3 and deliver it through CloudFront.
 
 <Prompt description="Set up this Vite app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/vite as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/vite as the framework-specific source of truth.
   3. Confirm this repository contains the Vite app and locate its root in a monorepo.
   4. Inspect `package.json`, `vite.config.*`, and router setup to detect the real build command, `dist` output, base path, and SPA fallback requirement.
   5. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.

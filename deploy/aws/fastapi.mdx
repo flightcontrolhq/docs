@@ -1,13 +1,13 @@
 ---
-title: "How to Deploy FastAPI to AWS"
+title: "How to deploy FastAPI to AWS"
 sidebarTitle: "FastAPI"
 description: "Deploy a FastAPI application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["FastAPI AWS deployment", "deploy FastAPI to AWS", "FastAPI Uvicorn", "ECS Fargate", "Application Load Balancer"]
 "og:image": "https://www.ravion.com/og/docs/deploy/aws/fastapi.png"
 "twitter:image": "https://www.ravion.com/og/docs/deploy/aws/fastapi.png"
 ---
-import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
-import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
 
 Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer.
 
@@ -15,7 +15,7 @@ Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer.
 
 <Prompt description="Set up this FastAPI app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
-  2. Use https://www.ravion.com/docs/deploy/aws/fastapi as the framework-specific source of truth and:
+  2. Use https://www.ravion.com/docs/deploy/aws/fastapi as the framework-specific source of truth.
   3. Confirm this repository contains FastAPI and locate the app root in a monorepo.
   4. Inspect Python dependency files, the ASGI entrypoint, Docker files, and scripts to detect the real Uvicorn command, port, workers, and health path; bind to `0.0.0.0`.
   5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values.
