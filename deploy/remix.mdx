@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Run Remix on ECS Fargate behind an Application Load Balancer. Ravion provisions the VPC, cluster, service, and ALB in your AWS account.
 
+Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+
 <Prompt description="Set up this Remix app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/remix as the source of truth and:
   1. Confirm this repository contains Remix and locate the app root in a monorepo.

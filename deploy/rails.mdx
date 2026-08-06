@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy Rails with its bundled Puma server on ECS Fargate behind an Application Load Balancer. Rails binds to localhost by default, so the production command must bind to `0.0.0.0`.
 
+This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
+
 <Prompt description="Set up this Rails app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/rails as the source of truth and:
   1. Confirm this repository contains Rails and locate the app root in a monorepo.

@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Nuxt's Node server runs on ECS Fargate behind an Application Load Balancer. Ravion creates the VPC, ECS cluster, service, and load balancer in your AWS account.
 
+Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+
 <Prompt description="Set up this Nuxt Nitro app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/nuxt as the source of truth and:
   1. Confirm this repository contains Nuxt and locate the app root in a monorepo.

@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy your Astro static build to an S3 bucket behind CloudFront. The bucket and distribution stay in your AWS account, and Ravion versions each deployment.
 
+Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+
 <Prompt description="Set up this Astro app for Ravion static or SSR hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/astro as the source of truth and:
   1. Confirm this repository contains the Astro app and locate its root in any monorepo.

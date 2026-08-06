@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Run RedwoodJS on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS. Ravion provisions the VPC, cluster, web service, and database in your AWS account.
 
+Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+
 <Prompt description="Set up this RedwoodJS app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/redwood as the source of truth and:
   1. Confirm this repository contains RedwoodJS and locate the workspace root in a monorepo.

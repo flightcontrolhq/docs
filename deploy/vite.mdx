@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy the Vite output to S3 and deliver it through CloudFront. Ravion uses SPA routing so client-side routes resolve to `index.html`.
 
+Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+
 <Prompt description="Set up this Vite app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/vite as the source of truth and:
   1. Confirm this repository contains the Vite app and locate its root in a monorepo.

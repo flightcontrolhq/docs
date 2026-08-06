@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer. FastAPI's deployment documentation uses an ASGI server rather than a development server.
 
+This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
+
 <Prompt description="Set up this FastAPI app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/fastapi as the source of truth and:
   1. Confirm this repository contains FastAPI and locate the app root in a monorepo.

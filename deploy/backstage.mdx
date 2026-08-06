@@ -12,11 +12,13 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy a Backstage production image to ECS Fargate behind an Application Load Balancer. Ravion creates the VPC, ECS cluster, service, and optional RDS database in your AWS account.
 
+This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
+
 <Prompt description="Set up this Backstage app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/backstage as the source of truth and:
   1. Confirm this repository contains Backstage and locate the app root in a monorepo.
-  2. Inspect `package.json`, `app-config.*`, and Docker or build files to detect the real build/start commands, port, and health path.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, substituting real AWS, repository, branch, and runtime values. Bind to `0.0.0.0`; create the documented Secrets Manager database step rather than inventing RDS references.
+  2. Inspect `package.json`, `app-config.*`, the Backstage multi-stage Dockerfile documentation, and repository Docker files to detect the real build/start commands, port, and health path. Do not assume the scaffolded `packages/backend/Dockerfile` can run without a host build.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using `build_source: dockerfile` and the repository-root Dockerfile, substituting real AWS, repository, branch, and runtime values. Bind to `0.0.0.0`; create the documented Secrets Manager database step rather than inventing RDS references.
   4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
   5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
 </Prompt>
@@ -25,7 +27,7 @@ Deploy a Backstage production image to ECS Fargate behind an Application Load Ba
 
 ## Configure the deployment
 
-Backstage's recommended production flow builds a container image. Use `image_registry` with an image pushed to ECR or another registry. The container listens on port 7007.
+Backstage's production Docker guide documents a host-build variant and a multi-stage variant. Ravion builds from your repository, so use the multi-stage Dockerfile from [Backstage's Docker deployment guide](https://backstage.io/docs/deployment/docker/) at the repository root. The scaffolded `packages/backend/Dockerfile` is the host-build variant: it expects `yarn install`, `yarn tsc`, and `yarn build:backend` to run before `docker build`, so it does not work unmodified with Ravion. Backstage also documents different `.dockerignore` requirements for the two variants. The container listens on port 7007.
 
 ```yaml ravion.yaml
 project:
@@ -70,8 +72,9 @@ environments:
           cluster:
             moduleGivenIdRef: cluster
           name: backstage-production-web
-          build_source: image_registry
-          image_repository: 123456789012.dkr.ecr.us-east-1.amazonaws.com/backstage
+          build_source: dockerfile
+          source_repo: my-org/my-backstage-app
+          dockerfile: Dockerfile
           container_port: 7007
           fargate_size:
             vcpu: 1

@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy the Docusaurus `build` directory to S3 and serve it globally through CloudFront. Ravion provisions the resources in your AWS account.
 
+Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+
 <Prompt description="Set up this Docusaurus app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/docusaurus as the source of truth and:
   1. Confirm this repository contains Docusaurus and locate the app root in a monorepo.

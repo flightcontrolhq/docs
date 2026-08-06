@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy a Vike-generated static site to S3 and CloudFront. Ravion creates and manages the AWS resources in your account.
 
+Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+
 <Prompt description="Set up this Vike app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/vike as the source of truth and:
   1. Confirm this repository contains Vike and locate its app root in a monorepo.

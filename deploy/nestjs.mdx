@@ -12,6 +12,8 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy a NestJS server on ECS Fargate behind an Application Load Balancer. The Nest CLI production build writes JavaScript to `dist`, with the standard starter entry at `dist/main.js`.
 
+Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+
 <Prompt description="Set up this NestJS app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/nestjs as the source of truth and:
   1. Confirm this repository contains NestJS and locate the app root in a monorepo.
