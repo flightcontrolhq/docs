@@ -62,9 +62,6 @@ environments:
           railpack_build_cmd: npm run build
           railpack_start_cmd: node dist/main.js
           container_port: 3000
-          health_check_path: /
-          health_check_matcher: 200-399
-          capacity_provider: fargate
           fargate_size:
             vcpu: 0.5
             memory_gb: 1

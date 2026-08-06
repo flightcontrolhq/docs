@@ -51,13 +51,9 @@ environments:
           network:
             moduleGivenIdRef: network
           name: strapi-production
-          restore_mode: none
           db_name: strapi
           username: strapiadmin
-          engine: postgres
           engine_major_version: "15"
-          instance_class: db.t4g.micro
-          allocated_storage: 20
       - givenId: cluster
         name: ECS cluster
         type: rvn-ecs-cluster
@@ -80,8 +76,6 @@ environments:
           railpack_start_cmd: npm run start
           container_port: 1337
           health_check_path: /_health
-          health_check_matcher: 200-399
-          capacity_provider: fargate
           fargate_size:
             vcpu: 1
             memory_gb: 2

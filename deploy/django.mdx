@@ -68,13 +68,9 @@ environments:
           network:
             moduleGivenIdRef: network
           name: django-production-db
-          restore_mode: none
           db_name: django
           username: django
-          engine: postgres
           engine_major_version: "15"
-          instance_class: db.t4g.micro
-          allocated_storage: 20
       - givenId: web
         name: Django web service
         type: rvn-ecs-web
@@ -87,9 +83,6 @@ environments:
           source_repo: my-org/my-django-app
           dockerfile: Dockerfile
           container_port: 8000
-          health_check_path: /
-          health_check_matcher: 200-399
-          capacity_provider: fargate
           fargate_size:
             vcpu: 0.5
             memory_gb: 1

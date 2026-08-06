@@ -51,13 +51,9 @@ environments:
           network:
             moduleGivenIdRef: network
           name: backstage-production
-          restore_mode: none
           db_name: backstage
           username: backstageadmin
-          engine: postgres
           engine_major_version: "15"
-          instance_class: db.t4g.micro
-          allocated_storage: 20
       - givenId: cluster
         name: ECS cluster
         type: rvn-ecs-cluster
@@ -77,9 +73,6 @@ environments:
           build_source: image_registry
           image_repository: 123456789012.dkr.ecr.us-east-1.amazonaws.com/backstage
           container_port: 7007
-          health_check_path: /
-          health_check_matcher: 200-399
-          capacity_provider: fargate
           fargate_size:
             vcpu: 1
             memory_gb: 2

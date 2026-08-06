@@ -51,13 +51,9 @@ environments:
           network:
             moduleGivenIdRef: network
           name: redwood-production
-          restore_mode: none
           db_name: redwood
           username: redwoodadmin
-          engine: postgres
           engine_major_version: "15"
-          instance_class: db.t4g.micro
-          allocated_storage: 20
       - givenId: cluster
         name: ECS cluster
         type: rvn-ecs-cluster
@@ -79,9 +75,6 @@ environments:
           railpack_build_cmd: yarn rw build
           railpack_start_cmd: yarn rw serve
           container_port: 8910
-          health_check_path: /
-          health_check_matcher: 200-399
-          capacity_provider: fargate
           fargate_size:
             vcpu: 1
             memory_gb: 2

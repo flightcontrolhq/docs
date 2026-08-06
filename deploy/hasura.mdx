@@ -51,13 +51,9 @@ environments:
           network:
             moduleGivenIdRef: network
           name: hasura-production
-          restore_mode: none
           db_name: hasura
           username: hasuraadmin
-          engine: postgres
           engine_major_version: "15"
-          instance_class: db.t4g.micro
-          allocated_storage: 20
       - givenId: cluster
         name: ECS cluster
         type: rvn-ecs-cluster
@@ -78,8 +74,6 @@ environments:
           image_repository: hasura/graphql-engine
           container_port: 8080
           health_check_path: /healthz
-          health_check_matcher: 200-399
-          capacity_provider: fargate
           fargate_size:
             vcpu: 0.5
             memory_gb: 1

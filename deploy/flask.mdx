@@ -72,9 +72,6 @@ environments:
           source_repo: my-org/my-flask-app
           dockerfile: Dockerfile
           container_port: 8000
-          health_check_path: /
-          health_check_matcher: 200-399
-          capacity_provider: fargate
           fargate_size:
             vcpu: 0.5
             memory_gb: 1
