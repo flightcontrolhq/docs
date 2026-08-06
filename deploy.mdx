@@ -7,14 +7,57 @@ keywords: ["deploy to AWS", "AWS deployment", "Ravion deploy guides", "ECS Farga
 "twitter:image": "https://www.ravion.com/og/docs/deploy.png"
 ---
 
-Use these quickstarts to deploy framework applications to AWS with Ravion. Static sites run from S3 and CloudFront. Server applications run on ECS Fargate behind an Application Load Balancer.
+Use these quickstarts to deploy framework applications to AWS with Ravion. Choose a static site deployment with S3 and CloudFront or a server deployment with ECS Fargate behind an Application Load Balancer.
 
-<CardGroup cols={2}>
-  <Card title="Static sites" icon="window-maximize" href="/deploy/astro">
-    Deploy generated files to S3 and serve them globally through CloudFront.
+## Static sites: S3 and CloudFront
+
+<CardGroup cols={3}>
+  <Card title="Astro" icon="sparkles" href="/deploy/astro">
+    Deploy an Astro static build to S3 and CloudFront.
   </Card>
-  <Card title="Server applications" icon="server" href="/deploy/nuxt">
-    Run Node-based frameworks on ECS Fargate behind an Application Load Balancer.
+  <Card title="Docusaurus" icon="book-open" href="/deploy/docusaurus">
+    Deploy a Docusaurus documentation site to S3 and CloudFront.
+  </Card>
+  <Card title="Gatsby" icon="bolt" href="/deploy/gatsby">
+    Deploy Gatsby's generated site to S3 and CloudFront.
+  </Card>
+  <Card title="Next.js" icon="arrow-up-right-from-square" href="/deploy/nextjs">
+    Deploy a Next.js static export to S3 and CloudFront.
+  </Card>
+  <Card title="Solid" icon="shapes" href="/deploy/solid">
+    Deploy a Solid single-page app to S3 and CloudFront.
+  </Card>
+  <Card title="Vike" icon="code" href="/deploy/vike">
+    Deploy a Vike static site to S3 and CloudFront.
+  </Card>
+  <Card title="Vite" icon="gauge" href="/deploy/vite">
+    Deploy a Vite single-page app to S3 and CloudFront.
+  </Card>
+</CardGroup>
+
+## Server applications: ECS Fargate and ALB
+
+<CardGroup cols={3}>
+  <Card title="Backstage" icon="building" href="/deploy/backstage">
+    Run Backstage on ECS Fargate behind an Application Load Balancer.
+  </Card>
+  <Card title="Hasura" icon="database" href="/deploy/hasura">
+    Run Hasura on ECS Fargate with PostgreSQL on RDS.
+  </Card>
+  <Card title="Node.js / Express" icon="server" href="/deploy/node-express">
+    Run a Node.js or Express server on ECS Fargate.
+  </Card>
+  <Card title="Nuxt" icon="globe" href="/deploy/nuxt">
+    Run a Nuxt server-rendered app on ECS Fargate.
+  </Card>
+  <Card title="RedwoodJS" icon="tree" href="/deploy/redwood">
+    Run RedwoodJS on ECS Fargate with PostgreSQL on RDS.
+  </Card>
+  <Card title="Remix" icon="route" href="/deploy/remix">
+    Run a Remix app on ECS Fargate behind an ALB.
+  </Card>
+  <Card title="Strapi" icon="pen-to-square" href="/deploy/strapi">
+    Run Strapi on ECS Fargate with PostgreSQL on RDS.
   </Card>
 </CardGroup>
 
