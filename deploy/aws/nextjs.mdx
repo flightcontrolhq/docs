@@ -3,8 +3,8 @@ title: "How to Deploy Next.js to AWS"
 sidebarTitle: "Next.js"
 description: "Deploy a Next.js SSR application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["Next.js AWS deployment", "deploy Next.js to AWS", "Next.js SSR", "ECS Fargate", "Application Load Balancer", "static export"]
-"og:image": "https://www.ravion.com/og/docs/deploy/nextjs.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/nextjs.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/nextjs.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/nextjs.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy a Next.js App Router or Pages Router application on ECS Fargate behind an
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Next.js app for Ravion SSR or static hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/nextjs as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/nextjs as the source of truth and:
   1. Confirm this repository contains Next.js and locate the app root in a monorepo.
   2. Inspect `package.json`, `next.config.*`, and App or Pages Router files to detect the real build command, SSR versus export mode, `.next/standalone/server.js` or `out` output, port, and runtime variables.
   3. Generate `ravion.yaml` with the matching static or ECS module set. For SSR use standalone output, bind to `0.0.0.0`, and pass `PORT`; substitute real AWS, branch, repository, and runtime values.

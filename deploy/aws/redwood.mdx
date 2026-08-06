@@ -3,8 +3,8 @@ title: "How to Deploy RedwoodJS to AWS"
 sidebarTitle: "RedwoodJS"
 description: "Deploy a RedwoodJS application to your AWS account on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS through Ravion."
 keywords: ["RedwoodJS AWS deployment", "deploy RedwoodJS to AWS", "RedwoodJS hosting", "ECS Fargate", "RDS", "ALB"]
-"og:image": "https://www.ravion.com/og/docs/deploy/redwood.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/redwood.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/redwood.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/redwood.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Run RedwoodJS on ECS Fargate behind an Application Load Balancer with PostgreSQL
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this RedwoodJS app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/redwood as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/redwood as the source of truth and:
   1. Confirm this repository contains RedwoodJS and locate the workspace root in a monorepo.
   2. Inspect `package.json`, Redwood config, Prisma schema, and scripts to detect the real build/start commands, web port, health route, and migration steps.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for the database connection rather than inventing RDS output references.

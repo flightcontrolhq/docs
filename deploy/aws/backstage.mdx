@@ -3,8 +3,8 @@ title: "How to Deploy Backstage to AWS"
 sidebarTitle: "Backstage"
 description: "Deploy a Backstage developer portal to your AWS account on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS through Ravion."
 keywords: ["Backstage AWS deployment", "deploy Backstage to AWS", "Backstage hosting", "ECS Fargate", "RDS", "ALB"]
-"og:image": "https://www.ravion.com/og/docs/deploy/backstage.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/backstage.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/backstage.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/backstage.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy a Backstage production image to ECS Fargate behind an Application Load Ba
 This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
 
 <Prompt description="Set up this Backstage app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/backstage as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/backstage as the source of truth and:
   1. Confirm this repository contains Backstage and locate the app root in a monorepo.
   2. Inspect `package.json`, `app-config.*`, the Backstage multi-stage Dockerfile documentation, and repository Docker files to detect the real build/start commands, port, and health path. Do not assume the scaffolded `packages/backend/Dockerfile` can run without a host build.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using `build_source: dockerfile` and the repository-root Dockerfile, substituting real AWS, repository, branch, and runtime values. Bind to `0.0.0.0`; create the documented Secrets Manager database step rather than inventing RDS references.

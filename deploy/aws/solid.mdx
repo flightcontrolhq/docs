@@ -3,8 +3,8 @@ title: "How to Deploy Solid to AWS"
 sidebarTitle: "Solid"
 description: "Deploy a Solid SPA to your AWS account with S3 and CloudFront through Ravion."
 keywords: ["Solid AWS deployment", "deploy Solid to AWS", "Solid SPA hosting", "S3", "CloudFront"]
-"og:image": "https://www.ravion.com/og/docs/deploy/solid.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/solid.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/solid.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/solid.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy a Solid single-page application to an S3 bucket behind CloudFront. Both r
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Solid app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/solid as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/solid as the source of truth and:
   1. Confirm this repository contains Solid and locate the app root in a monorepo.
   2. Inspect `package.json`, Vite config, and router setup to determine the real build command, `dist` output, and SPA fallback requirements.
   3. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.

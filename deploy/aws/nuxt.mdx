@@ -3,8 +3,8 @@ title: "How to Deploy Nuxt to AWS"
 sidebarTitle: "Nuxt"
 description: "Deploy a Nuxt server-rendered application to your AWS account on ECS Fargate behind an Application Load Balancer with Ravion."
 keywords: ["Nuxt AWS deployment", "deploy Nuxt to AWS", "Nuxt Nitro", "ECS Fargate", "ALB"]
-"og:image": "https://www.ravion.com/og/docs/deploy/nuxt.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/nuxt.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/nuxt.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/nuxt.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Nuxt's Node server runs on ECS Fargate behind an Application Load Balancer. Ravi
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Nuxt Nitro app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/nuxt as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/nuxt as the source of truth and:
   1. Confirm this repository contains Nuxt and locate the app root in a monorepo.
   2. Inspect `package.json`, `nuxt.config.*`, Nitro settings, and runtime config to detect the real build/start commands, `.output` entrypoint, port, and health route.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, binding Nitro to `0.0.0.0` and `process.env.PORT`, with real AWS and repository values.

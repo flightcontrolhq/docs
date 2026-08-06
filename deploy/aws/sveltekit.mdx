@@ -3,8 +3,8 @@ title: "How to Deploy SvelteKit to AWS"
 sidebarTitle: "SvelteKit"
 description: "Deploy a SvelteKit static site with S3 and CloudFront or a Node server on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["SvelteKit AWS deployment", "deploy SvelteKit to AWS", "SvelteKit adapter-static", "SvelteKit adapter-node", "ECS Fargate", "S3", "CloudFront"]
-"og:image": "https://www.ravion.com/og/docs/deploy/sveltekit.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/sveltekit.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/sveltekit.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/sveltekit.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ SvelteKit uses an adapter for its deployment target. Choose `adapter-static` for
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this SvelteKit app for Ravion static or server hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/sveltekit as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/sveltekit as the source of truth and:
   1. Confirm this repository contains SvelteKit and locate the app root in a monorepo.
   2. Inspect `package.json`, `svelte.config.*`, and adapter settings to determine the real build command, static versus Node mode, output, start command, and port.
   3. Generate `ravion.yaml` with the matching `rvn-aws-static` or ECS module set and real AWS, branch, repository, and output values. Bind Node mode to `0.0.0.0`.

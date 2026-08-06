@@ -3,8 +3,8 @@ title: "How to Deploy TanStack Start to AWS"
 sidebarTitle: "TanStack Start"
 description: "Deploy a TanStack Start server application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["TanStack Start AWS deployment", "deploy TanStack Start to AWS", "TanStack Start Vite", "ECS Fargate", "Application Load Balancer"]
-"og:image": "https://www.ravion.com/og/docs/deploy/tanstack-start.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/tanstack-start.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/tanstack-start.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/tanstack-start.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy TanStack Start on ECS Fargate behind an Application Load Balancer. The cu
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this TanStack Start app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/tanstack-start as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/tanstack-start as the source of truth and:
   1. Confirm this repository contains TanStack Start and locate the app root in a monorepo.
   2. Inspect `package.json`, Vite config, and TanStack Start config to detect the real `vite build` command, `.output/server/index.mjs` entrypoint, port, and health route.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, binding the Node server to `0.0.0.0` and `process.env.PORT`, with real AWS and repository values.

@@ -3,8 +3,8 @@ title: "How to Deploy Astro to AWS"
 sidebarTitle: "Astro"
 description: "Deploy an Astro static site to your AWS account with S3 and CloudFront through Ravion."
 keywords: ["Astro AWS deployment", "deploy Astro to AWS", "Astro static hosting", "S3", "CloudFront"]
-"og:image": "https://www.ravion.com/og/docs/deploy/astro.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/astro.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/astro.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/astro.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy your Astro static build to an S3 bucket behind CloudFront. The bucket and
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Astro app for Ravion static or SSR hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/astro as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/astro as the source of truth and:
   1. Confirm this repository contains the Astro app and locate its root in any monorepo.
   2. Inspect `package.json` and `astro.config.*` to detect the real build command, adapter, output mode, server entry, and port. Preserve `PUBLIC_` for browser-visible variables.
   3. Generate `ravion.yaml` using the static `rvn-aws-static` modules or SSR `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` modules, with real repo and AWS values substituted. Bind SSR to `0.0.0.0`.

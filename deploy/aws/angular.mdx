@@ -3,8 +3,8 @@ title: "How to Deploy Angular to AWS"
 sidebarTitle: "Angular"
 description: "Deploy an Angular application to your AWS account with S3 and CloudFront through Ravion."
 keywords: ["Angular AWS deployment", "deploy Angular to AWS", "Angular static hosting", "S3", "CloudFront"]
-"og:image": "https://www.ravion.com/og/docs/deploy/angular.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/angular.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/angular.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/angular.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy the Angular production build to S3 and deliver it through CloudFront. Ang
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Angular app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/angular as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/angular as the source of truth and:
   1. Confirm this repository contains the Angular app and locate its root, including in a monorepo.
   2. Inspect `package.json`, `angular.json`, and workspace scripts to determine the real build command and `outputPath`; do not assume `dist/my-angular-app`.
   3. Generate `ravion.yaml` with `rvn-aws-static`, substituting the real AWS account, region, repository, branch, and output directory. Use SPA routing.

@@ -3,8 +3,8 @@ title: "How to Deploy Node.js and Express to AWS"
 sidebarTitle: "Node.js / Express"
 description: "Deploy a Node.js or Express server to your AWS account on ECS Fargate behind an Application Load Balancer with Ravion."
 keywords: ["Node.js AWS deployment", "Express AWS deployment", "deploy Express to AWS", "ECS Fargate", "ALB"]
-"og:image": "https://www.ravion.com/og/docs/deploy/node-express.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/node-express.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/node-express.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/node-express.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy a Node.js or Express server to ECS Fargate behind an Application Load Bal
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Node.js or Express app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/node-express as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/node-express as the source of truth and:
   1. Confirm this repository contains the Node.js or Express app and locate its root in a monorepo.
   2. Inspect `package.json`, the server entrypoint, TypeScript or bundler config, and scripts to detect the real build/start commands, port, and health route.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS, branch, repository, and runtime values. Bind the server to `0.0.0.0` and `process.env.PORT`.

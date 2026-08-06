@@ -3,8 +3,8 @@ title: "How to Deploy Rails to AWS"
 sidebarTitle: "Rails"
 description: "Deploy a Rails application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["Rails AWS deployment", "deploy Rails to AWS", "Rails Puma", "ECS Fargate", "Application Load Balancer"]
-"og:image": "https://www.ravion.com/og/docs/deploy/rails.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/rails.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/rails.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/rails.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy Rails with its bundled Puma server on ECS Fargate behind an Application L
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Rails from the application files.
 
 <Prompt description="Set up this Rails app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/rails as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/rails as the source of truth and:
   1. Confirm this repository contains Rails and locate the app root in a monorepo.
   2. Inspect `Gemfile`, Rails config, Docker files, credentials, assets, and scripts to detect the real Puma start command, port, health path, and migration or asset steps; bind to `0.0.0.0`.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for `DATABASE_URL` and `RAILS_MASTER_KEY` rather than inventing RDS references.

@@ -3,8 +3,8 @@ title: "How to Deploy NestJS to AWS"
 sidebarTitle: "NestJS"
 description: "Deploy a NestJS application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["NestJS AWS deployment", "deploy NestJS to AWS", "NestJS dist main.js", "ECS Fargate", "Application Load Balancer"]
-"og:image": "https://www.ravion.com/og/docs/deploy/nestjs.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/nestjs.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/nestjs.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/nestjs.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy a NestJS server on ECS Fargate behind an Application Load Balancer. The N
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this NestJS app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/nestjs as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/nestjs as the source of truth and:
   1. Confirm this repository contains NestJS and locate the app root in a monorepo.
   2. Inspect `package.json`, `nest-cli.json`, TypeScript config, and source bootstrap to detect the real build command, `dist` entrypoint, port, and health route; bind to `0.0.0.0` and `process.env.PORT`.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values.

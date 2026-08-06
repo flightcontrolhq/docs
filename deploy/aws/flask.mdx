@@ -3,8 +3,8 @@ title: "How to Deploy Flask to AWS"
 sidebarTitle: "Flask"
 description: "Deploy a Flask application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["Flask AWS deployment", "deploy Flask to AWS", "Flask Gunicorn", "ECS Fargate", "Application Load Balancer"]
-"og:image": "https://www.ravion.com/og/docs/deploy/flask.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/flask.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/flask.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/flask.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy Flask with Gunicorn on ECS Fargate behind an Application Load Balancer. F
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Flask from the application dependencies.
 
 <Prompt description="Set up this Flask app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/flask as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/flask as the source of truth and:
   1. Confirm this repository contains Flask and locate the app root in a monorepo.
   2. Inspect Python dependency files, app modules, Docker files, and scripts to detect the real Gunicorn target, factory syntax, port, and health path; never use Flask's development server.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values. Bind Gunicorn to `0.0.0.0`.

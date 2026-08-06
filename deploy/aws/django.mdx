@@ -3,8 +3,8 @@ title: "How to Deploy Django to AWS"
 sidebarTitle: "Django"
 description: "Deploy a Django application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
 keywords: ["Django AWS deployment", "deploy Django to AWS", "Django Gunicorn", "ECS Fargate", "Application Load Balancer"]
-"og:image": "https://www.ravion.com/og/docs/deploy/django.png"
-"twitter:image": "https://www.ravion.com/og/docs/deploy/django.png"
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/django.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/django.png"
 ---
 
 import { DeployPrerequisites } from "/snippets/deploy/prerequisites.mdx";
@@ -15,7 +15,7 @@ Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer. 
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Django from the application files and dependencies.
 
 <Prompt description="Set up this Django app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/django as the source of truth and:
+  Use https://www.ravion.com/docs/deploy/aws/django as the source of truth and:
   1. Confirm this repository contains Django and locate the project root in a monorepo.
   2. Inspect `pyproject.toml`, `requirements.txt`, Django settings, and Docker files to detect the real WSGI/ASGI module, migrations, Gunicorn or Uvicorn command, port, and health path; never use `runserver`.
   3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, real repository values, and a documented Secrets Manager step for `DATABASE_URL`.
