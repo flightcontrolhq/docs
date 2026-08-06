@@ -13,12 +13,13 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 Deploy Laravel with [Railpack](https://railpack.com/languages/php/)'s FrankenPHP runtime on ECS Fargate behind an Application Load Balancer. Ravion creates the network, ECS cluster, web service, and PostgreSQL database in your AWS account.
 
 <Prompt description="Set up this Laravel app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/laravel as the source of truth and:
-  1. Confirm this repository contains Laravel and locate the application root, including the correct workspace in a monorepo.
-  2. Inspect `composer.json`, `artisan`, `bootstrap/app.php`, `config/`, Dockerfiles, and scripts. Detect the required PHP version, `public/` document root, frontend build, and whether the app uses Railpack's FrankenPHP runtime, Laravel Octane, or a custom PHP-FPM setup.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, substituting the repository, branch, AWS account, region, and project values you actually find. Keep the web root at `public/`, and use `/up` for the health check when the stock Laravel health route is enabled.
-  4. Wire `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and the `DB_*` values through Secrets Manager. Never generate an `APP_KEY` into the repository. Keep user uploads on S3 because the container filesystem is ephemeral.
-  5. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation. Leave clear TODOs instead of guessing the PHP version, app root, AWS account ID, repository slug, project ID, or database credentials.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/laravel as the framework-specific source of truth and:
+  3. Confirm this repository contains Laravel and locate the application root, including the correct workspace in a monorepo.
+  4. Inspect `composer.json`, `artisan`, `bootstrap/app.php`, `config/`, Dockerfiles, and scripts. Detect the required PHP version, `public/` document root, frontend build, and whether the app uses Railpack's FrankenPHP runtime, Laravel Octane, or a custom PHP-FPM setup.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, substituting the repository, branch, AWS account, region, and project values you actually find. Keep the web root at `public/`, and use `/up` for the health check when the stock Laravel health route is enabled.
+  6. Wire `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and the `DB_*` values through Secrets Manager. Never generate an `APP_KEY` into the repository. Keep user uploads on S3 because the container filesystem is ephemeral.
+  7. Leave clear TODOs instead of guessing the PHP version, app root, AWS account ID, repository slug, project ID, or database credentials.
 </Prompt>
 
 <DeployPrerequisites />

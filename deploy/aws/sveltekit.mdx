@@ -15,12 +15,12 @@ SvelteKit uses an adapter for its deployment target. Choose `adapter-static` for
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this SvelteKit app for Ravion static or server hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/sveltekit as the source of truth and:
-  1. Confirm this repository contains SvelteKit and locate the app root in a monorepo.
-  2. Inspect `package.json`, `svelte.config.*`, and adapter settings to determine the real build command, static versus Node mode, output, start command, and port.
-  3. Generate `ravion.yaml` with the matching `rvn-aws-static` or ECS module set and real AWS, branch, repository, and output values. Bind Node mode to `0.0.0.0`.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, adapter settings, or database credentials.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/sveltekit as the framework-specific source of truth and:
+  3. Confirm this repository contains SvelteKit and locate the app root in a monorepo.
+  4. Inspect `package.json`, `svelte.config.*`, and adapter settings to determine the real build command, static versus Node mode, output, start command, and port.
+  5. Generate `ravion.yaml` with the matching `rvn-aws-static` or ECS module set and real AWS, branch, repository, and output values. Bind Node mode to `0.0.0.0`.
+  6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, project IDs, adapter settings, or database credentials.
 </Prompt>
 
 <DeployPrerequisites />

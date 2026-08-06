@@ -15,12 +15,12 @@ Run Strapi on ECS Fargate behind an Application Load Balancer and keep its relat
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Strapi app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/strapi as the source of truth and:
-  1. Confirm this repository contains Strapi and locate its app root in a monorepo.
-  2. Inspect `package.json`, `config/database.*`, server config, Docker files, and scripts to detect the real build/start commands, port, health endpoint, and upload storage needs.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for database credentials rather than inventing RDS references.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, ports, or database credentials.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/strapi as the framework-specific source of truth and:
+  3. Confirm this repository contains Strapi and locate its app root in a monorepo.
+  4. Inspect `package.json`, `config/database.*`, server config, Docker files, and scripts to detect the real build/start commands, port, health endpoint, and upload storage needs.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for database credentials rather than inventing RDS references.
+  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, ports, or database credentials.
 </Prompt>
 
 <DeployPrerequisites />

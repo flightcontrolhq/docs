@@ -15,12 +15,12 @@ Deploy a Backstage production image to ECS Fargate behind an Application Load Ba
 This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
 
 <Prompt description="Set up this Backstage app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/backstage as the source of truth and:
-  1. Confirm this repository contains Backstage and locate the app root in a monorepo.
-  2. Inspect `package.json`, `app-config.*`, the Backstage multi-stage Dockerfile documentation, and repository Docker files to detect the real build/start commands, port, and health path. Do not assume the scaffolded `packages/backend/Dockerfile` can run without a host build.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using `build_source: dockerfile` and the repository-root Dockerfile, substituting real AWS, repository, branch, and runtime values. Bind to `0.0.0.0`; create the documented Secrets Manager database step rather than inventing RDS references.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/backstage as the framework-specific source of truth and:
+  3. Confirm this repository contains Backstage and locate the app root in a monorepo.
+  4. Inspect `package.json`, `app-config.*`, the Backstage multi-stage Dockerfile documentation, and repository Docker files to detect the real build/start commands, port, and health path. Do not assume the scaffolded `packages/backend/Dockerfile` can run without a host build.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using `build_source: dockerfile` and the repository-root Dockerfile, substituting real AWS, repository, branch, and runtime values. Bind to `0.0.0.0`; create the documented Secrets Manager database step rather than inventing RDS references.
+  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
 </Prompt>
 
 <DeployPrerequisites />

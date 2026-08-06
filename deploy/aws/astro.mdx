@@ -15,12 +15,12 @@ Deploy your Astro static build to an S3 bucket behind CloudFront. The bucket and
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Astro app for Ravion static or SSR hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/astro as the source of truth and:
-  1. Confirm this repository contains the Astro app and locate its root in any monorepo.
-  2. Inspect `package.json` and `astro.config.*` to detect the real build command, adapter, output mode, server entry, and port. Preserve `PUBLIC_` for browser-visible variables.
-  3. Generate `ravion.yaml` using the static `rvn-aws-static` modules or SSR `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` modules, with real repo and AWS values substituted. Bind SSR to `0.0.0.0`.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, database credentials, or adapter output.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/astro as the framework-specific source of truth and:
+  3. Confirm this repository contains the Astro app and locate its root in any monorepo.
+  4. Inspect `package.json` and `astro.config.*` to detect the real build command, adapter, output mode, server entry, and port. Preserve `PUBLIC_` for browser-visible variables.
+  5. Generate `ravion.yaml` using the static `rvn-aws-static` modules or SSR `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` modules, with real repo and AWS values substituted. Bind SSR to `0.0.0.0`.
+  6. Leave TODOs instead of guessing missing AWS account IDs, repository slugs, database credentials, or adapter output.
 </Prompt>
 
 <DeployPrerequisites />

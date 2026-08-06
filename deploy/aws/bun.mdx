@@ -13,12 +13,12 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer. Bun's official server API uses `Bun.serve` and honors `PORT` when you do not set a port explicitly.
 
 <Prompt description="Set up this Bun app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/bun as the source of truth and:
-  1. Confirm this repository contains Bun and locate the app root in a monorepo.
-  2. Inspect `package.json`, `bun.lock`, source entrypoints, and Docker files to detect the real build/start command and port; bind `Bun.serve` to `0.0.0.0` and `process.env.PORT`.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` using Railpack and real AWS and repository values. Leave a TODO if Railpack cannot determine the Bun entrypoint.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/bun as the framework-specific source of truth and:
+  3. Confirm this repository contains Bun and locate the app root in a monorepo.
+  4. Inspect `package.json`, `bun.lock`, source entrypoints, and Docker files to detect the real build/start command and port; bind `Bun.serve` to `0.0.0.0` and `process.env.PORT`.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` using Railpack and real AWS and repository values. Leave a TODO if Railpack cannot determine the Bun entrypoint.
+  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
 </Prompt>
 
 <DeployPrerequisites />

@@ -164,7 +164,7 @@
         "tab": "Deploy",
         "groups": [
           {
-            "group": "AWS",
+            "group": "Deploy to AWS",
             "root": "deploy/aws",
             "pages": [
               "deploy/aws",

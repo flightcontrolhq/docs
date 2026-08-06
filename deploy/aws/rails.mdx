@@ -15,12 +15,12 @@ Deploy Rails with its bundled Puma server on ECS Fargate behind an Application L
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Rails from the application files.
 
 <Prompt description="Set up this Rails app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/rails as the source of truth and:
-  1. Confirm this repository contains Rails and locate the app root in a monorepo.
-  2. Inspect `Gemfile`, Rails config, Docker files, credentials, assets, and scripts to detect the real Puma start command, port, health path, and migration or asset steps; bind to `0.0.0.0`.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for `DATABASE_URL` and `RAILS_MASTER_KEY` rather than inventing RDS references.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/rails as the framework-specific source of truth and:
+  3. Confirm this repository contains Rails and locate the app root in a monorepo.
+  4. Inspect `Gemfile`, Rails config, Docker files, credentials, assets, and scripts to detect the real Puma start command, port, health path, and migration or asset steps; bind to `0.0.0.0`.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for `DATABASE_URL` and `RAILS_MASTER_KEY` rather than inventing RDS references.
+  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, or database credentials.
 </Prompt>
 
 <DeployPrerequisites />

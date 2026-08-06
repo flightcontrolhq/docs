@@ -15,12 +15,12 @@ Run Remix on ECS Fargate behind an Application Load Balancer. Ravion provisions 
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Remix app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/remix as the source of truth and:
-  1. Confirm this repository contains Remix and locate the app root in a monorepo.
-  2. Inspect `package.json`, `vite.config.*`, Remix config, and scripts to detect the actual server and client build outputs, start command, port, and health path.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, binding the server to `0.0.0.0` and `process.env.PORT`, with real AWS and repository values.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, output paths, or ports.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/remix as the framework-specific source of truth and:
+  3. Confirm this repository contains Remix and locate the app root in a monorepo.
+  4. Inspect `package.json`, `vite.config.*`, Remix config, and scripts to detect the actual server and client build outputs, start command, port, and health path.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, binding the server to `0.0.0.0` and `process.env.PORT`, with real AWS and repository values.
+  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, output paths, or ports.
 </Prompt>
 
 <DeployPrerequisites />

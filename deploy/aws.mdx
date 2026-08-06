@@ -1,5 +1,5 @@
 ---
-title: "Deploy frameworks to AWS"
+title: "Deploy to AWS"
 sidebarTitle: "Overview"
 description: "Deploy popular application frameworks to your own AWS account with Ravion."
 keywords: ["deploy to AWS", "AWS deployment", "Ravion deploy guides", "ECS Fargate", "S3", "CloudFront"]
@@ -11,12 +11,12 @@ keywords: ["deploy to AWS", "AWS deployment", "Ravion deploy guides", "ECS Farga
 Use these quickstarts to deploy framework applications to AWS with Ravion. Choose a static site deployment with S3 and CloudFront or a server deployment with ECS Fargate behind an Application Load Balancer. [Railpack](https://railpack.com) can build supported application stacks without a custom Dockerfile.
 
 <Prompt description="Choose and apply the right Ravion deploy guide for this repository." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws as the source of truth and:
-  1. Inspect this repository to identify its framework, application root, and whether it needs static hosting or an ECS server. Search monorepo workspaces rather than assuming the repository root.
-  2. Read the matching framework guide linked on this page, then inspect package manifests, framework config, Dockerfiles, and scripts to determine the real build command, output directory, start command, port, and health path.
-  3. Generate `ravion.yaml` from that guide's module set with real AWS account, region, repository, branch, and runtime values substituted. Use Secrets Manager and an RDS module where the framework requires a database.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave clear TODOs instead of guessing any AWS account ID, repository slug, project ID, database credential, command, path, or port.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws as the framework-specific source of truth and:
+  3. Inspect this repository to identify its framework, application root, and whether it needs static hosting or an ECS server. Search monorepo workspaces rather than assuming the repository root.
+  4. Read the matching framework guide linked on this page, then inspect package manifests, framework config, Dockerfiles, and scripts to determine the real build command, output directory, start command, port, and health path.
+  5. Generate `ravion.yaml` from that guide's module set with real AWS account, region, repository, branch, and runtime values substituted. Use Secrets Manager and an RDS module where the framework requires a database.
+  6. Leave clear TODOs instead of guessing any AWS account ID, repository slug, project ID, database credential, command, path, or port.
 </Prompt>
 
 ## Static sites: S3 and CloudFront

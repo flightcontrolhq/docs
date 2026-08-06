@@ -15,12 +15,12 @@ Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer. 
 This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects FastAPI from the application dependencies.
 
 <Prompt description="Set up this FastAPI app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
-  Use https://www.ravion.com/docs/deploy/aws/fastapi as the source of truth and:
-  1. Confirm this repository contains FastAPI and locate the app root in a monorepo.
-  2. Inspect Python dependency files, the ASGI entrypoint, Docker files, and scripts to detect the real Uvicorn command, port, workers, and health path; bind to `0.0.0.0`.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values.
-  4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
-  5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, Python module paths, or ports.
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/fastapi as the framework-specific source of truth and:
+  3. Confirm this repository contains FastAPI and locate the app root in a monorepo.
+  4. Inspect Python dependency files, the ASGI entrypoint, Docker files, and scripts to detect the real Uvicorn command, port, workers, and health path; bind to `0.0.0.0`.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values.
+  6. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, Python module paths, or ports.
 </Prompt>
 
 <DeployPrerequisites />
