@@ -105,7 +105,7 @@ php artisan storage:link
 php artisan optimize
 ```
 
-Never use `php artisan serve` in production. If you do not use Railpack's FrankenPHP runtime, follow Laravel's documented PHP-FPM and Nginx setup: Nginx must use `public/` as its root and route requests to `public/index.php`.
+Never use `php artisan serve` in production. If you do not use Railpack's FrankenPHP runtime, follow Laravel's documented [PHP-FPM and Nginx setup](https://laravel.com/docs/13.x/deployment): Nginx must use `public/` as its root and route requests to `public/index.php`.
 
 ## Health checks and storage
 
@@ -126,9 +126,3 @@ Follow [custom domains](/guides/custom-domains) to connect your domain to the Ap
 ## Next steps
 
 <DeployNextSteps />
-
-## Sources
-
-- [Laravel deployment](https://laravel.com/docs/13.x/deployment)
-- [Laravel Octane and FrankenPHP](https://laravel.com/docs/13.x/octane)
-- [Railpack PHP and Laravel support](https://railpack.com/languages/php/)
