@@ -1,0 +1,107 @@
+---
+title: "Stuck Terraform state lock"
+description: "Identify a Terraform state lock left behind by an interrupted run, confirm that no operation still holds it, and release it from the dashboard, the CLI, or the API."
+"og:image": "https://www.ravion.com/og/docs/troubleshooting/stuck-terraform-state-lock.png"
+"twitter:image": "https://www.ravion.com/og/docs/troubleshooting/stuck-terraform-state-lock.png"
+---
+
+Terraform and OpenTofu lock a stack's state for the duration of every operation that touches it. Both `plan` and `apply` acquire the lock, because both refresh state as they run. The lock prevents two operations from working on the same workspace at once and leaving the state inconsistent. It is released when the operation completes.
+
+An interrupted run can leave the lock behind. Common causes are a cancelled runner, a lost network connection, and an infrastructure failure partway through an apply. The state stays locked with no operation holding it, and the next run fails immediately:
+
+```text
+Error: Error acquiring the state lock
+
+Error message: workspace already locked
+Lock Info:
+  ID:        lock_1785936163253230000
+  Operation: lock
+  Info:      Locked by OpenTofu
+  Created:   2026-08-04 18:22:41 UTC
+```
+
+This is a stuck lock. Releasing it allows the stack to run again.
+
+## Confirm the lock is stuck
+
+A run holds the lock only while a Terraform operation is executing. Each `plan` and each `apply` takes the lock and releases it as that operation finishes.
+
+Open the stack and review its runs. Wait for a running operation to finish, or cancel it. Ravion enforces this for you, and takes the cautious line: an unlock is rejected while any run on the stack is active, naming the run that blocks it.
+
+<Note>
+  Ravion can release locks only for stacks that store their Terraform state in Ravion — those that
+  set `ravion_state_backend_workspace` in their [stack config](/modules/stack). Stacks using a
+  self-managed backend, such as S3 with DynamoDB, hold their locks in that backend. Release those
+  with the backend's own tooling.
+</Note>
+
+## Release the lock
+
+<Tabs>
+  <Tab title="Dashboard">
+    Open the stack. **Unlock stack** replaces the **Run plan** button while the state is locked and
+    no run is active. Select it to open a confirmation, which identifies the run that acquired the
+    lock so you can review how that run ended.
+
+    The button returns to **Run plan** once the lock is released.
+  </Tab>
+
+  <Tab title="CLI">
+    Review the lock:
+
+    ```bash
+    ravion stack get-lock <stack-id>
+    ```
+
+    Release it:
+
+    ```bash
+    ravion stack unlock <stack-id>
+    ```
+
+    Add `--json` to either command to return the lock as JSON.
+
+    An unlock is rejected while a run is active. See
+    [Runs that never complete](#runs-that-never-complete) for the one exception.
+  </Tab>
+
+  <Tab title="API">
+    ```bash
+    curl -X POST https://api.ravion.com/stacks/<stack-id>/unlock \
+      -H "Authorization: Bearer $RAVION_API_KEY" \
+      -H "x-organization-id: $RAVION_ORG_ID"
+    ```
+
+    `GET /stacks/{id}/lock` returns the current lock without modifying it.
+  </Tab>
+</Tabs>
+
+## Runs that never complete
+
+Every run reaches a final state, including runs that fail. A run that stays in progress and does not respond to cancellation indicates a problem beyond the stack itself. This is not expected behaviour — [contact support](/contact-support) when you encounter it.
+
+Such a run keeps hold of the lock, and a standard unlock stays rejected. `--force` releases the lock regardless of run status:
+
+```bash
+ravion stack unlock <stack-id> --force
+```
+
+The command states what releasing costs and asks you to confirm. Pass `--yes` alongside it to skip the prompt in a script.
+
+Use `--force` only in this situation. The run keeps going, and its state write is refused once the lock is gone, so the run fails and any cloud resources it already changed go unrecorded. Cancel the run first whenever cancellation succeeds.
+
+`--force` is unavailable in the dashboard. The **Unlock stack** button requires every run to be inactive, which keeps forcing a deliberate action taken through the CLI or the API.
+
+## What unlocking changes
+
+Releasing the lock discards a state write that the interrupted run had reserved and never finished. State from completed operations is untouched: Ravion keeps every finalized version, and the stack still points at the same current state. A lock left behind by a run that died before writing anything costs you nothing at all.
+
+The gap to watch is your real infrastructure. An apply that stopped partway can create resources that the state never recorded. Run a plan after unlocking and review it before applying: Terraform proposes creating every resource missing from the state.
+
+## Locks that reappear
+
+A lock that returns immediately after release is held by an active process. Review the stack's runs, then review every other system that runs Terraform against the same workspace, such as a local `terraform apply` or a CI job outside Ravion.
+
+## Get help
+
+[Contact support](/contact-support) for anything this page does not resolve, including a lock that survives an unlock, a run that stays active without producing output, or a plan that reports missing resources after a release. Include the stack ID and the output of `ravion stack get-lock`.

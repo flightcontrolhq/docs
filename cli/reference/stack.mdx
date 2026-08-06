@@ -28,6 +28,20 @@ ravion stack get <id> [flags]
 | --- | --- | --- |
 | `--json` |  | emit response as JSON |
 
+### `ravion stack get-lock`
+
+Read a stack's Terraform state lock
+
+```bash
+ravion stack get-lock <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
 ### `ravion stack list`
 
 List Stacks
@@ -78,4 +92,20 @@ ravion stack trigger-pipeline <id> [flags]
 | `--pipeline-type <string>` | yes | Which stack pipeline to trigger. Available values: change, destroy. |
 | `--autoapprove` |  | Pass autoapprove=true to stack change pipeline runs when supported. |
 | `--json` |  | emit response as JSON |
+
+### `ravion stack unlock`
+
+Force-release a stack's Terraform state lock
+
+```bash
+ravion stack unlock <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--force` |  | Release the lock while a run is still active on the stack. This covers a run that never completes and does not respond to cancellation, which is not expected behaviour. That run keeps going, and its state write is refused once the lock is gone, so the run fails and any cloud resources it already changed go unrecorded. State from completed operations is untouched. Cancel the run first whenever cancellation succeeds. |
+| `--json` |  | emit response as JSON |
+| `-y, --yes` |  | skip confirmation prompt |
 

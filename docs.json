@@ -132,6 +132,12 @@
             ]
           },
           {
+            "group": "Troubleshooting",
+            "pages": [
+              "troubleshooting/stuck-terraform-state-lock"
+            ]
+          },
+          {
             "group": "Module definitions",
             "pages": [
               "module-definitions/catalog",
@@ -293,8 +299,8 @@
   },
   "footer": {
     "socials": {
-      "linkedin": "https://www.linkedin.com",
-      "x": "https://twitter.com"
+      "linkedin": "https://www.linkedin.com/company/ravionhq/",
+      "x": "https://x.com/ravion"
     }
   }
 }
