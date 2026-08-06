@@ -89,8 +89,10 @@ environments:
         version: 1.0.0
         input:
           aws_account_id: ravion-prod
+          aws_region: us-east-1
           name: nextjs-static-production
           routing: filesystem
+          default_version: main
           build_source: railpack
           source_repo: my-org/my-nextjs-site
           output_directory: out

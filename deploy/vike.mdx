@@ -41,10 +41,13 @@ environments:
         version: 1.0.0
         input:
           aws_account_id: ravion-prod
+          aws_region: us-east-1
           name: vike-site-production
           routing: filesystem
+          default_version: main
           build_source: railpack
           source_repo: my-org/my-vike-site
+          output_directory: dist
           railpack_build_cmd: npm run build
 ```
 

@@ -15,6 +15,7 @@ Hasura
 Hono
 Laravel
 FrankenPHP
+Octane
 composer
 artisan
 PHP
