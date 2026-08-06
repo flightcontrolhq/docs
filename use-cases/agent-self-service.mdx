@@ -1,12 +1,131 @@
 ---
 title: "Agent self-service"
-description: "Give AI agents a guarded, policy-controlled path to provision and deploy cloud infrastructure on Ravion without risking production safety."
+description: "Give AI agents a documented path to provision and deploy through Ravion's config, pipeline, CLI, API, and read-only Docs MCP workflows."
 "og:image": "https://www.ravion.com/og/docs/use-cases/agent-self-service.png"
 "twitter:image": "https://www.ravion.com/og/docs/use-cases/agent-self-service.png"
 ---
 
-Give AI agents a guarded self-service path to provision and deploy infrastructure safely.
+AI agents can use the same source-controlled config, pipelines, CLI, and API as humans. Ravion's documented controls are schema discovery, dry runs, approval gates, state and deployment locks, locked variant values, and custom pipelines that your platform team can extend with policy-check steps.
 
-{/* TODO: Expand this page. */}
+## Start with human-owned setup
 
-_This page is a work in progress_
+Connect the AWS account and Git repository first. Then install the read-only Docs MCP server and CLI so the agent can read current instructions and operate in the intended organization.
+
+```bash
+npx add-mcp https://www.ravion.com/docs/mcp --name ravion-docs
+ravion login
+ravion switch
+```
+
+The Ravion Docs MCP server searches and reads indexed public documentation. It does not provision infrastructure or change Ravion resources.
+
+## Use a schema-first workflow
+
+<Steps>
+  <Step title="Read the model and current config">
+    Start with [Core concepts](/concepts/core-concepts), then pull the project's live config. Preserve existing given IDs and module versions.
+  </Step>
+  <Step title="Check schemas before editing">
+    Use `ravion project config schema`, `ravion module definition list`, and `ravion module schema <module-type> [version]` before adding or changing modules.
+  </Step>
+  <Step title="Preview before applying">
+    Run `ravion project config apply` with `--dry-run`. Apply only after the plan is correct and the required person has approved it.
+  </Step>
+  <Step title="Inspect and report">
+    Inspect pipeline runs, Terraform plans, deploys, and logs. Report unexpected failures with the non-interactive CLI commands.
+  </Step>
+</Steps>
+
+## Configure a module for the agent to use
+
+Keep the infrastructure contract in `ravion.yaml`:
+
+```yaml ravion.yaml
+project:
+  givenId: demo
+  name: Demo
+environments:
+  - givenId: staging
+    name: Staging
+    moduleInstances:
+      - givenId: web-app
+        name: web-app
+        type: rvn-ecs-web
+        version: 0.5.0
+        input:
+          cluster:
+            moduleGivenIdRef: ecs-cluster
+          name: demo-staging-web-app
+          public_web_service_enabled: true
+          build_type: dockerfile
+          source_repo: my-org/my-repo
+          dockerfile: Dockerfile
+          container_port: 80
+```
+
+The agent can preview and apply this file with:
+
+```bash
+ravion project config pull <project-id> --file ravion.yaml
+ravion project config schema
+ravion module schema rvn-ecs-web
+ravion project config apply <project-id> --file ravion.yaml --dry-run
+ravion project config apply <project-id> --file ravion.yaml
+```
+
+## Put deployment work in a pipeline
+
+Use variants to lock environment-specific values and reuse one workflow:
+
+```yaml
+variants:
+  - id: staging
+    name: Staging
+  - id: production
+    name: Production
+steps:
+  - id: build_web_app
+    type: build
+    module_instance: << pipeline.variant.id >>.web-app
+  - id: deploy_web_app
+    type: deploy
+    module_instance: << pipeline.variant.id >>.web-app
+    input:
+      image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+Variant input values can be hard-coded and cannot be overridden at run time. Stack change runs normally stop at an approval gate; destroy runs always require manual approval. Stack and deploy locks prevent conflicting operations. A custom pipeline can add policy-check steps, but the public docs do not define a built-in agent policy engine, guardrail preset, or least-privilege agent role.
+
+## Give the agent an appropriate interface
+
+- Use **Docs MCP** for current documentation context. It is read-only and public.
+- Use the **CLI** for config, pipeline, deploy, stack, logs, metrics, and Terraform operations.
+- Use the **REST API** for automation from your own tools. Authenticate with a bearer token; use service accounts and API keys for automation rather than a person's dashboard session.
+- Use **CI integration** to plan config changes on pull requests and apply them after merge.
+
+For unattended error reporting:
+
+```bash
+ravion report bug "<what happened and what you expected>" \
+  --command "<the command that failed>"
+ravion report feedback "<what was confusing or missing>"
+```
+
+<Note>
+  The current CLI reference documents `OWNER` as the available service-account role. It does not document fine-grained agent permissions or least-privilege API keys. Treat credentials and approval policy as an explicit platform-team decision.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Start here" icon="rocket" href="/start-here">
+    Set up Ravion for a human and an agent.
+  </Card>
+  <Card title="Ravion Docs MCP" icon="sparkles" href="/mcp/overview">
+    Connect an AI tool to read-only Ravion documentation.
+  </Card>
+  <Card title="Project config agent tips" icon="file-code" href="/config-as-code/project-config-file#agent-tips">
+    Follow the required schema, dry-run, and approval workflow.
+  </Card>
+  <Card title="API overview" icon="code" href="/api-reference/overview">
+    Automate Ravion workflows with the REST API.
+  </Card>
+</CardGroup>

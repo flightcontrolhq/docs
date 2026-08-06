@@ -5,8 +5,83 @@ description: "Deploy application code to AWS ECS services and static site hostin
 "twitter:image": "https://www.ravion.com/og/docs/use-cases/deploy-code.png"
 ---
 
-Deploy application code with strategies such as blue-green rollouts and rollback.
+Ravion turns a built artifact into a tracked deployment. It handles the rollout in your AWS account, surfaces low-level status and health events, and gives you explicit rollback and redeploy operations when you need them.
 
-{/* TODO: Expand this page. */}
+## How it works
 
-_This page is a work in progress_
+Build an artifact in a pipeline or an external CI system, then pass its reference to the module's deploy manager. Ravion records the release, monitors the rollout, and keeps a snapshot that can be used for rollback.
+
+```yaml pipeline.yaml
+- id: deploy_web_app
+  name: Deploy web-app
+  type: deploy
+  module_instance: << pipeline.variant.id >>.web-app
+  input:
+    image_ref: << steps.build_web_app.output.image_digest >>
+```
+
+For external CI, trigger the same deploy flow from the CLI:
+
+```bash
+ravion deploy create --module-instance-id <mi-id> \
+  --description "Release v1.4.2" \
+  --inputs '{"image_ref":"<digest-pinned-image-uri>"}'
+```
+
+## Choose a rollout strategy
+
+The module definition determines how the deployment runs. For `rvn-ecs-web`, the supported strategies are:
+
+| Strategy | How traffic moves |
+| --- | --- |
+| `rolling` | ECS replaces tasks using the standard rolling deployment. This is the default. |
+| `blue_green` | ECS shifts traffic between production and alternate target groups. |
+| `canary` | Sends a configured percentage to the new deployment, waits through a bake time, then shifts the remaining traffic. |
+| `linear` | Moves a configured percentage at each step, waiting through a bake time between steps. |
+
+Blue/green, canary, and linear deployments can include manual approval gates and pause stages. ECS also supports optional pre-deploy and post-deploy tasks, such as database migrations. A failed pre-deploy task aborts the deployment.
+
+Other module types use their own deploy managers:
+
+- **EC2:** Updates Auto Scaling Group hosts in place over SSM. Container mode drains the host, replaces the app container, health-gates it, and re-registers it.
+- **Lambda:** Updates code, publishes a new version, and moves the live alias.
+- **Static:** Promotes a new S3 directory and can optionally invalidate CloudFront.
+- **Kubernetes:** Coming soon. Do not use this page as Kubernetes deployment documentation.
+
+## Watch and recover
+
+Ravion surfaces deploy phases, ECS task status, target-group health, and AWS infrastructure events in the dashboard. The same deployment data is available through the API and CLI:
+
+```bash
+ravion deploy get <deployment-id>
+ravion deploy list --module-instance-id <mi-id>
+ravion deploy rollback-candidates <deployment-id>
+ravion deploy rollback <deployment-id-to-roll-back-to>
+ravion deploy redeploy <deployment-id>
+ravion deploy cancel <deployment-id>
+ravion deploy continue <deployment-id>
+```
+
+Rollback starts a new deployment from a previous successful snapshot. Deploys are locked per module instance, so concurrent triggers queue instead of colliding.
+
+## Pick the integration that fits
+
+- Use a `deploy` pipeline step to build and release as one workflow.
+- Use an external CI provider to build artifacts, then trigger Ravion through the CLI or REST API.
+- Use pipeline variants to reuse one build-and-deploy workflow across production, staging, and other environments.
+- Trigger a deployment from the dashboard when you need a manual release.
+
+<CardGroup cols={2}>
+  <Card title="Module deploys" icon="rocket" href="/modules/deploy">
+    Learn how deployment events, snapshots, and recovery operations work.
+  </Card>
+  <Card title="ECS web server" icon="server" href="/module-definitions/catalog/rvn-ecs-web">
+    Configure ECS traffic shifting, hooks, health checks, and capacity.
+  </Card>
+  <Card title="Pipeline step types" icon="arrow-progress" href="/pipelines/step-types">
+    Connect builds, deploys, rollbacks, approvals, and CI tasks.
+  </Card>
+  <Card title="Deploy CLI reference" icon="terminal" href="/cli/reference/deploy">
+    Trigger, inspect, pause, cancel, and roll back deployments.
+  </Card>
+</CardGroup>

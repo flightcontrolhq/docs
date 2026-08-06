@@ -7,6 +7,79 @@ description: "View live CloudWatch metrics and logs for your Ravion modules and 
 
 Monitor your modules with CloudWatch metrics and logs.
 
-{/* TODO: Expand this page. */}
+Ravion brings supported CloudWatch metrics and logs into the module experience so you can investigate a release without switching between the dashboard, AWS console, and CI logs. Data is queried from your AWS account, with metrics requests cached briefly to reduce CloudWatch costs.
 
-_This page is a work in progress_
+## How it works
+
+When a module definition provides observability capabilities, the dashboard displays metric charts and a **Logs** tab. Logs support sorting, filtering, and custom time ranges. You can also query CloudWatch and stream pipeline-step logs from the CLI.
+
+## Start with the dashboard
+
+Open a supported module and use its metric charts or **Logs** tab to inspect the running service. The exact charts depend on the module definition, so use “when supported” rather than expecting every module to expose the same inventory.
+
+Here are documented examples:
+
+- `rvn-ec2-service` shows desired and in-service instance counts. Web services also show request count, target response time, target 4xx and 5xx responses, and healthy and unhealthy host counts. Worker groups omit load-balancer metrics.
+- `rvn-aws-static` shows CloudFront requests, total error rate, 4xx error rate, 5xx error rate, bytes downloaded, and bytes uploaded.
+- `rvn-lambda` creates a CloudWatch log group by default at `/aws/lambda/{function name}`. Its log retention and optional KMS key are configurable.
+- Static hosting access logs use CloudWatch Logs by default and are viewable in Ravion. An S3 access-log destination is supported for high-volume logging, but those logs are not viewable in Ravion.
+
+## Query and stream from the CLI
+
+Use `ravion logs cloudwatch` for historical logs or live tailing:
+
+```bash
+ravion logs cloudwatch \
+  --aws-account-id <aws-account-db-id> \
+  --region us-east-1 \
+  --log-group-name <log-group> \
+  --start-time <ISO-8601> \
+  --end-time <ISO-8601> \
+  --filter-pattern '<pattern>' \
+  --tail
+```
+
+Pipeline steps have their own stream command:
+
+```bash
+ravion logs pipeline-step <step-execution-id> --tail
+```
+
+Query a CloudWatch metric by namespace, name, dimensions, statistic, and period:
+
+```bash
+ravion metrics cloudwatch \
+  --aws-account-id <aws-account-db-id> \
+  --region us-east-1 \
+  --metric-namespace AWS/ECS \
+  --metric-name CPUUtilization \
+  --dimensions ClusterName=<cluster>,ServiceName=<service> \
+  --statistic Average \
+  --period 300 \
+  --start-time <ISO-8601> \
+  --end-time <ISO-8601>
+```
+
+The generic CLI commands accept the Ravion AWS account database ID used to resolve credentials. They do not promise that every CloudWatch metric appears as a module chart.
+
+## Use the right view for the question
+
+- Use module metrics to see service-level trends and deployment health when the module exposes charts.
+- Use the Logs tab for live AWS logs with filters and time ranges.
+- Use pipeline-step logs to debug builds, tests, Terraform runs, and other CI work.
+- Use the CLI for scripted queries, live tails, and metrics that are not represented by a module chart.
+
+<CardGroup cols={2}>
+  <Card title="Module metrics" icon="chart-line" href="/modules/metrics">
+    See how Ravion queries and caches supported CloudWatch charts.
+  </Card>
+  <Card title="Module logs" icon="file-lines" href="/modules/logs">
+    Learn about live log queries, filters, and time ranges.
+  </Card>
+  <Card title="Metrics CLI reference" icon="terminal" href="/cli/reference/metrics">
+    Query CloudWatch metrics from scripts and terminals.
+  </Card>
+  <Card title="Logs CLI reference" icon="terminal" href="/cli/reference/logs">
+    Query historical logs and stream live output.
+  </Card>
+</CardGroup>

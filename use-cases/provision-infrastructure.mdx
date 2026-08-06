@@ -1,12 +1,113 @@
 ---
 title: "Provision infrastructure"
-description: "Use Ravion to provision Terraform-managed cloud infrastructure declaratively, with reviewable plans, guarded applies, and drift detection."
+description: "Use Ravion to provision Terraform-managed cloud infrastructure declaratively, with reviewable plans, approval gates, and tracked state changes."
 "og:image": "https://www.ravion.com/og/docs/use-cases/provision-infrastructure.png"
 "twitter:image": "https://www.ravion.com/og/docs/use-cases/provision-infrastructure.png"
 ---
 
-Provision and manage cloud infrastructure with Terraform-backed modules.
+Ravion gives you a declarative way to provision infrastructure in your AWS account without coupling infrastructure changes to application releases. Define modules in source control, preview the Terraform plan, and apply only after the change is ready for review.
 
-_This page is a work in progress_
+## How it works
 
-{/* TODO: Expand this page. */}
+Ravion models infrastructure as versioned modules. A module can have a Terraform or OpenTofu-backed stack that records its resources, outputs, plans, and applies.
+
+<Steps>
+  <Step title="Define your project">
+    Put environments and module instances in a `ravion.yaml` file. Modules can reference one another with `moduleGivenIdRef`.
+  </Step>
+  <Step title="Preview the change">
+    Pull the current configuration, check the schemas, and run `ravion project config apply` with `--dry-run`.
+  </Step>
+  <Step title="Review and apply">
+    Apply the file to start the stack change pipeline. Ravion runs the plan, waits for approval when required, and applies the exact reviewed plan.
+  </Step>
+</Steps>
+
+## Define infrastructure as code
+
+This project config creates a VPC, an ECS cluster, and a web service. The cluster and service consume outputs from the modules they reference.
+
+```yaml ravion.yaml
+project:
+  givenId: demo
+  name: Demo
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: vpc
+        name: VPC
+        type: rvn-aws-network
+        version: 0.1.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: ca-central-1
+          name: demo-production
+          vpc_cidr: 10.0.0.0/16
+          nat_gateway_enabled: true
+      - givenId: ecs-cluster
+        name: ECS Cluster
+        type: rvn-ecs-cluster
+        version: 0.1.2
+        input:
+          network:
+            moduleGivenIdRef: vpc
+          name: demo-production
+          fargate_enabled: true
+          fargate_spot_enabled: true
+          public_alb_enabled: true
+      - givenId: web-app
+        name: web-app
+        type: rvn-ecs-web
+        version: 0.5.0
+        input:
+          cluster:
+            moduleGivenIdRef: ecs-cluster
+          name: demo-production-web-app
+          public_web_service_enabled: true
+          build_type: dockerfile
+          source_repo: my-org/my-repo
+          source_base_path: "."
+          dockerfile: Dockerfile
+          container_port: 80
+          health_check_path: /
+```
+
+## Reviewable changes by default
+
+Use the CLI to inspect the live configuration and preview changes before applying them:
+
+```bash
+ravion project config schema
+ravion module definition list
+ravion module schema rvn-ecs-web
+ravion project config pull <project-id> --file ravion.yaml
+ravion project config apply <project-id> --file ravion.yaml --dry-run
+ravion project config apply <project-id> --file ravion.yaml
+```
+
+For a stack-backed module, the apply starts a change pipeline with `terraform:plan`, an approval gate when needed, and `terraform:apply`. Stack runs are locked so two runs cannot apply to the same state at the same time. Destroy runs always require manual approval. `--autoapprove` applies only to supported change runs.
+
+Your platform team can replace the read-only system pipelines with custom pipelines at organization, project, or environment scope. Custom pipelines can add policy-check steps, notifications, or different approval rules.
+
+## Choose the workflow that fits
+
+- Use the standard library for common AWS infrastructure such as networks, ECS clusters, databases, and storage.
+- Use a custom module definition when your platform team wants to package its own infrastructure pattern.
+- Use Ravion-managed state with `ravion_state_backend_workspace`, or use an external remote backend such as S3 and DynamoDB.
+- Run config changes locally with the CLI, or plan them on pull requests and apply them after merge with [CI integration](/config-as-code/ci-integration).
+
+<CardGroup cols={2}>
+  <Card title="Project config file" icon="file-code" href="/config-as-code/project-config-file">
+    Define environments, module instances, and references in source control.
+  </Card>
+  <Card title="Module stack" icon="layers" href="/modules/stack">
+    Inspect plans, resources, outputs, approvals, and state history.
+  </Card>
+  <Card title="Standard library" icon="boxes-stacked" href="/module-definitions/standard-library">
+    Browse versioned Ravion modules for common infrastructure.
+  </Card>
+  <Card title="Infrastructure as code" icon="code" href="/concepts/infrastructure-as-code">
+    Learn how Ravion runs and tracks Terraform and OpenTofu workflows.
+  </Card>
+</CardGroup>
