@@ -41,6 +41,7 @@ hostnames
 hyperscale
 hyperscaler
 multiline
+monorepo
 namespace
 namespaces
 NestJS
@@ -81,6 +82,10 @@ baseUrl
 autodetection
 prerender
 prerendered
+Prisma
+Dockerfiles
+TODOs
+bundler
 Strapi
 SvelteKit
 TanStack
