@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 SvelteKit uses an adapter for its deployment target. Choose `adapter-static` for a prerendered site on S3 and CloudFront, or `adapter-node` for a Node server on ECS Fargate behind an Application Load Balancer.
 
-Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this SvelteKit app for Ravion static or server hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/sveltekit as the source of truth and:

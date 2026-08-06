@@ -25,7 +25,7 @@ Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreS
 
 ## Configure the deployment
 
-The Hasura GraphQL Engine image listens on port 8080. Use an image or a repository Dockerfile with the ECS web module. This example uses [Railpack](https://railpack.com) and a repository start command; replace it with your image workflow if your project does not contain a Node build.
+The Hasura GraphQL Engine publishes an official `hasura/graphql-engine` image that listens on port 8080. This example deploys that prebuilt image through `build_source: image_registry`; it does not build from your repository. The `/healthz` endpoint is used for the ALB health check.
 
 ```yaml ravion.yaml
 project:

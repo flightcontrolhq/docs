@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer. Django's production documentation recommends a WSGI server instead of `runserver`.
 
-Ravion uses [Railpack](https://railpack.com) to build Django applications from the repository.
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Django from the application files and dependencies.
 
 <Prompt description="Set up this Django app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/django as the source of truth and:

@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy a React single-page application to S3 and deliver it through CloudFront. Vite projects write to `dist`; Create React App projects write to `build`.
 
-Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this React app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/react as the source of truth and:

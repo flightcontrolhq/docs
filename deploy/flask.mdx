@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy Flask with Gunicorn on ECS Fargate behind an Application Load Balancer. Flask's production documentation recommends a dedicated WSGI server instead of the built-in development server.
 
-Ravion uses [Railpack](https://railpack.com) to build Flask applications from the repository.
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Flask from the application dependencies.
 
 <Prompt description="Set up this Flask app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/flask as the source of truth and:

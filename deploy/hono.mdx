@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy a Hono Node.js application on ECS Fargate behind an Application Load Balancer. Use Hono's Node adapter and bind the server to the ECS-provided port.
 
-Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Hono app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/hono as the source of truth and:

@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy the Angular production build to S3 and deliver it through CloudFront. Angular CLI writes to `dist/<project-name>` by default; replace the example directory with the `outputPath` from your `angular.json`.
 
-Ravion uses [Railpack](https://railpack.com) for the build when the framework is detected from your repository.
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
 
 <Prompt description="Set up this Angular app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/angular as the source of truth and:
