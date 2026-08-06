@@ -132,6 +132,12 @@
             ]
           },
           {
+            "group": "Troubleshooting",
+            "pages": [
+              "troubleshooting/stuck-terraform-state-lock"
+            ]
+          },
+          {
             "group": "Module definitions",
             "pages": [
               "module-definitions/catalog",
