@@ -4,6 +4,10 @@ ARN
 ARNs
 Angular
 Backstage
+Docker
+ECR
+Yarn
+app-config
 Astro
 Bun
 Dockerfile
