@@ -5,71 +5,13 @@ description: "Build container images, AWS Lambda functions, and static front-end
 "twitter:image": "https://www.ravion.com/og/docs/use-cases/build-code.png"
 ---
 
-Build application artifacts — container images, Lambda functions, and static assets — from your source. Ravion puts build configuration next to the module that consumes the artifact, then passes a pinned result to deployment.
+Build application artifacts directly in a Ravion pipeline. Write the source, builder, destination, and compute settings as steps, then pass the pinned artifact into deployment. Ravion's CI steps run on provisioned compute configured with an `infrastructure` block: use `build:image` for container images, `build:static` for static assets, and `custom` for tests, linters, migrations, or other shell commands.
 
-## How it works
+## Write the build steps
 
-Module builds run through pipelines on temporary EC2 instances in your AWS account. A build produces a pinned artifact reference that a later deploy can consume.
-
-<Steps>
-  <Step title="Configure the module">
-    Set the source repository and builder in the module inputs. ECS modules can build with Railpack or a Dockerfile, or pull an existing registry image.
-  </Step>
-  <Step title="Add a build step">
-    Point a `build` step at the module instance and pass values such as a branch or commit.
-  </Step>
-  <Step title="Pass the artifact forward">
-    Use the build output, such as `image_digest`, `s3_directory`, or `s3_key`, as the input to a deploy step.
-  </Step>
-</Steps>
-
-## Build a module in a pipeline
-
-This pipeline builds the module for the selected variant and passes the commit through to the module:
+This pipeline builds a Docker image and pushes it to ECR:
 
 ```yaml pipeline.yaml
-inputs:
-  - id: branch
-    type: string
-    default: main
-  - id: commit
-    type: string
-    required: false
-variants:
-  - id: production
-    name: Production
-steps:
-  - id: build_web_app
-    name: Build web-app
-    type: build
-    module_instance: << pipeline.variant.id >>.web-app
-    input:
-      branch: << pipeline.input.branch >>
-      ref: << pipeline.input.commit >>
-  - id: deploy_web_app
-    name: Deploy web-app
-    type: deploy
-    module_instance: << pipeline.variant.id >>.web-app
-    input:
-      image_ref: << steps.build_web_app.output.image_digest >>
-```
-
-The `build` step outputs `build_ref` and type-specific values such as `image_uri`, `image_digest`, `s3_directory`, and `s3_key`. The deploy consumes the exact artifact produced by the build.
-
-## Choose your builder and destination
-
-| Artifact | Documented options |
-| --- | --- |
-| ECS container image | Railpack, Dockerfile, or pull from an image registry |
-| Static site | Railpack or Dockerfile build to S3 |
-| Lambda zip package | Package build to S3, or pull from S3 |
-| Lambda container image | Railpack or Dockerfile build to ECR, or pull from an ECR image registry |
-
-Railpack provides automatic framework detection. For standalone pipeline CI steps, use `railpack`; the `nixpacks` builder is deprecated.
-
-If you need to control the cache source yourself, use a standalone `build:image` step:
-
-```yaml
 - id: build_image
   type: build:image
   source:
@@ -78,9 +20,6 @@ If you need to control the cache source yourself, use a standalone `build:image`
     branch: main
   builder:
     type: dockerfile
-    dockerfile: Dockerfile
-    cache_from:
-      tag: release
   destinations:
     - id: ecr
       type: ecr
@@ -90,11 +29,89 @@ If you need to control the cache source yourself, use a standalone `build:image`
     instance_size: medium
 ```
 
-Container module builds reuse Docker layers from the destination ECR repository. Static and Lambda builds do not use registry layer cache.
+Use `build:static` to build and upload a static site to S3:
+
+```yaml
+- id: build_site
+  type: build:static
+  source:
+    type: git
+    repo: https://github.com/my-org/my-repo
+    branch: main
+  builder:
+    type: railpack
+  destinations:
+    - id: s3
+      type: s3
+      bucket: my-static-bucket
+      region: us-east-1
+  infrastructure:
+    type: ec2
+    instance_size: small
+```
+
+Run tests or other commands alongside those build steps with `custom`:
+
+```yaml
+- id: run_tests
+  type: custom
+  source:
+    type: git
+    repo: https://github.com/my-org/my-repo
+    branch: main
+  commands:
+    - npm ci
+    - npm test
+  infrastructure:
+    type: ec2
+    instance_size: medium
+```
+
+## Pass the artifact to deployment
+
+Build steps produce `build_ref` and type-specific outputs such as `image_uri`, `image_digest`, `s3_bucket`, `s3_directory`, and `s3_key`. A deploy step can consume the exact image produced by the build:
+
+```yaml
+- id: deploy_web_app
+  name: Deploy web-app
+  type: deploy
+  module_instance: << pipeline.variant.id >>.web-app
+  input:
+    image_ref: << steps.build_image.output.image_digest >>
+```
+
+## Let a module supply the build settings
+
+Some modules let you put build settings on the module itself. `rvn-ecs-web`, `rvn-ecs-worker`, `rvn-aws-static`, and `rvn-lambda` support module-configured build options such as the source repository, builder, Dockerfile path, and artifact destination.
+
+When the module owns those settings, the pipeline only needs a `build` step that references the module instance:
+
+```yaml
+- id: build_web_app
+  name: Build web-app
+  type: build
+  module_instance: << pipeline.variant.id >>.web-app
+  input:
+    branch: << pipeline.input.branch >>
+    ref: << pipeline.input.commit >>
+```
+
+The module supplies the source, builder, and destination configuration, so you do not repeat those blocks in the step.
+
+## Choose the artifact path
+
+| Artifact | Documented options |
+| --- | --- |
+| ECS container image | Railpack, Dockerfile, or pull from an image registry |
+| Static site | Railpack or Dockerfile build to S3 |
+| Lambda zip package | Package build to S3, or pull from S3 |
+| Lambda container image | Railpack or Dockerfile build to ECR, or pull from an ECR image registry |
+
+Container image builds can reuse Docker layers from the destination ECR repository. Static and Lambda builds do not use registry layer cache. `nixpacks` is deprecated for pipeline CI steps.
 
 ## Build in Ravion or outside it
 
-You can build with a Ravion pipeline, or build in GitHub Actions or another CI system and hand Ravion the finished artifact:
+You can build in GitHub Actions or another CI system and hand Ravion the finished artifact:
 
 ```bash
 ravion deploy create --module-instance-id <mi-id> \
@@ -105,16 +122,8 @@ ravion deploy create --module-instance-id <mi-id> \
 There is no standalone `ravion build` command. To inspect a pipeline build, use `ravion pipeline run get <pipeline-run-id>` and `ravion logs pipeline-step <step-execution-id>`.
 
 <CardGroup cols={2}>
-  <Card title="Module builds" icon="hammer" href="/modules/build">
-    Learn how module build configuration and artifact outputs work.
-  </Card>
-  <Card title="Pipeline step types" icon="arrow-progress" href="/pipelines/step-types">
-    Compare module builds with standalone image, static, and custom CI steps.
-  </Card>
-  <Card title="Pipeline examples" icon="file-code" href="/pipelines/examples">
-    Start with complete build, test, and deploy workflows.
-  </Card>
-  <Card title="ECS web server" icon="server" href="/module-definitions/catalog/rvn-ecs-web">
-    Configure Railpack, Dockerfile, registry images, and ECS runtime settings.
-  </Card>
+  <Card title="Module builds" icon="hammer" href="/modules/build">Learn how module build configuration and artifact outputs work.</Card>
+  <Card title="Pipeline step types" icon="arrow-progress" href="/pipelines/step-types">Compare image, static, custom, and module build steps.</Card>
+  <Card title="Pipeline examples" icon="file-code" href="/pipelines/examples">Start with complete build, test, and deploy workflows.</Card>
+  <Card title="ECS web server" icon="server" href="/module-definitions/catalog/rvn-ecs-web">Configure module-provided builders and ECS runtime settings.</Card>
 </CardGroup>

@@ -5,32 +5,64 @@ description: "Deploy application code to AWS ECS services and static site hostin
 "twitter:image": "https://www.ravion.com/og/docs/use-cases/deploy-code.png"
 ---
 
-Ravion turns a built artifact into a tracked deployment. It handles the rollout in your AWS account, surfaces low-level status and health events, and gives you explicit rollback and redeploy operations when you need them.
+Author the deployment workflow in your pipeline, then let the target module carry out its configured rollout. Ravion pins the artifact, gates the release when needed, and records the deployment for inspection and recovery.
 
 ## How it works
 
-Build an artifact in a pipeline or an external CI system, then pass its reference to the module's deploy manager. Ravion records the release, monitors the rollout, and keeps a snapshot that can be used for rollback.
+There is no non-module raw deploy CI step. You write the pipeline wiring with module steps such as `deploy` and `rollback`, CI steps such as `custom`, and control-flow steps such as `approval`.
+
+## Write the deployment workflow
+
+This pipeline runs tests, waits for approval, and deploys the exact image produced by an earlier build:
 
 ```yaml pipeline.yaml
-- id: deploy_web_app
-  name: Deploy web-app
-  type: deploy
-  module_instance: << pipeline.variant.id >>.web-app
-  input:
-    image_ref: << steps.build_web_app.output.image_digest >>
+steps:
+  - id: run_tests
+    name: Run tests
+    type: custom
+    source:
+      type: git
+      repo: https://github.com/my-org/my-repo
+      branch: main
+    commands:
+      - npm ci
+      - npm test
+    infrastructure:
+      type: ec2
+      instance_size: medium
+  - id: approve_deploy
+    name: Approve deploy
+    type: approval
+  - id: deploy_web_app
+    name: Deploy web-app
+    type: deploy
+    module_instance: << pipeline.variant.id >>.web-app
+    input:
+      image_ref: << steps.build_image.output.image_digest >>
 ```
 
-For external CI, trigger the same deploy flow from the CLI:
+Use a `rollback` step when you need to recover a module to a specific previous deployment:
 
-```bash
-ravion deploy create --module-instance-id <mi-id> \
-  --description "Release v1.4.2" \
-  --inputs '{"image_ref":"<digest-pinned-image-uri>"}'
+```yaml rollback-pipeline.yaml
+inputs:
+  - id: deployment_id
+    type: string
+steps:
+  - id: approve_rollback
+    name: Approve rollback
+    type: approval
+  - id: rollback_web_app
+    name: Roll back web-app
+    type: rollback
+    module_instance: << pipeline.variant.id >>.web-app
+    deployment_id: << pipeline.input.deployment_id >>
 ```
 
-## Choose a rollout strategy
+The `deployment_id` is the previous deployment you want to roll back to. Use `ravion deploy rollback-candidates` to list valid targets.
 
-The module definition determines how the deployment runs. For `rvn-ecs-web`, the supported strategies are:
+## Configure rollout behavior on the module
+
+The pipeline step triggers the module's deploy manager. For `rvn-ecs-web`, the module configuration determines the rollout strategy, bake times, pause stages, approval gates, hooks, and health checks.
 
 | Strategy | How traffic moves |
 | --- | --- |
@@ -48,9 +80,19 @@ Other module types use their own deploy managers:
 - **Static:** Promotes a new S3 directory and can optionally invalidate CloudFront.
 - **Kubernetes:** Coming soon.
 
+## Trigger a deployment outside the pipeline
+
+Build an artifact in an external CI provider, then trigger the module deploy manager from the CLI or REST API:
+
+```bash
+ravion deploy create --module-instance-id <mi-id> \
+  --description "Release v1.4.2" \
+  --inputs '{"image_ref":"<digest-pinned-image-uri>"}'
+```
+
 ## Watch and recover
 
-Ravion surfaces deploy phases, ECS task status, target-group health, and AWS infrastructure events in the dashboard. The same deployment data is available through the API and CLI:
+Ravion surfaces deploy phases, ECS task status, target-group health, and AWS infrastructure events in the dashboard. Inspect and recover deployments from the CLI:
 
 ```bash
 ravion deploy get <deployment-id>
@@ -64,19 +106,12 @@ ravion deploy continue <deployment-id>
 
 Rollback starts a new deployment from a previous successful snapshot. Deploys are locked per module instance, so concurrent triggers queue instead of colliding.
 
-## Pick the integration that fits
-
-- Use a `deploy` pipeline step to build and release as one workflow.
-- Use an external CI provider to build artifacts, then trigger Ravion through the CLI or REST API.
-- Use pipeline variants to reuse one build-and-deploy workflow across production, staging, and other environments.
-- Trigger a deployment from the dashboard when you need a manual release.
-
 <CardGroup cols={2}>
   <Card title="Module deploys" icon="rocket" href="/modules/deploy">
     Learn how deployment events, snapshots, and recovery operations work.
   </Card>
   <Card title="ECS web server" icon="server" href="/module-definitions/catalog/rvn-ecs-web">
-    Configure ECS traffic shifting, hooks, health checks, and capacity.
+    Configure rollout strategies, hooks, health checks, and capacity.
   </Card>
   <Card title="Pipeline step types" icon="arrow-progress" href="/pipelines/step-types">
     Connect builds, deploys, rollbacks, approvals, and CI tasks.
