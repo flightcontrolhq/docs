@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer. Django's production documentation recommends a WSGI server instead of `runserver`.
 
-This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
+Ravion uses [Railpack](https://railpack.com) to build Django applications from the repository.
 
 <Prompt description="Set up this Django app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/django as the source of truth and:
@@ -27,16 +27,7 @@ This guide uses a repository Dockerfile instead of [Railpack](https://railpack.c
 
 ## Configure the deployment
 
-Replace `myproject` with the Python package that contains your `wsgi.py` module.
-
-```dockerfile
-FROM python:3.13-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-CMD ["gunicorn", "myproject.wsgi:application", "--bind", "0.0.0.0:8000"]
-```
+Railpack detects Django from its dependencies or `manage.py`. Its default start command runs `python manage.py migrate` and then Gunicorn with the detected application module. Migrations run on every boot by default, which can race when multiple ECS tasks start; move migrations to a separate release step for multi-task deployments. Set `RAILPACK_DJANGO_APP_NAME` when the WSGI module is not the detected default. Ravion injects `PORT` automatically from `container_port`.
 
 ```yaml ravion.yaml
 project:
@@ -81,9 +72,8 @@ environments:
           cluster:
             moduleGivenIdRef: cluster
           name: django-production-web
-          build_source: dockerfile
+          build_source: railpack
           source_repo: my-org/my-django-app
-          dockerfile: Dockerfile
           container_port: 8000
           fargate_size:
             vcpu: 0.5

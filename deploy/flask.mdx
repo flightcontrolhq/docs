@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy Flask with Gunicorn on ECS Fargate behind an Application Load Balancer. Flask's production documentation recommends a dedicated WSGI server instead of the built-in development server.
 
-This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
+Ravion uses [Railpack](https://railpack.com) to build Flask applications from the repository.
 
 <Prompt description="Set up this Flask app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/flask as the source of truth and:
@@ -27,16 +27,7 @@ This guide uses a repository Dockerfile instead of [Railpack](https://railpack.c
 
 ## Configure the deployment
 
-This example assumes `app.py` exports `app`.
-
-```dockerfile
-FROM python:3.13-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
-```
+Railpack detects Flask when `flask` is a dependency. It starts `gunicorn --bind 0.0.0.0:${PORT:-8000} main:app` only when `gunicorn` is also a dependency, so add Gunicorn to your requirements and use a custom start command when your module or application factory differs from `main:app`. Ravion injects `PORT` automatically from `container_port`.
 
 ```yaml ravion.yaml
 project:
@@ -70,9 +61,8 @@ environments:
           cluster:
             moduleGivenIdRef: cluster
           name: flask-production-web
-          build_source: dockerfile
+          build_source: railpack
           source_repo: my-org/my-flask-app
-          dockerfile: Dockerfile
           container_port: 8000
           fargate_size:
             vcpu: 0.5

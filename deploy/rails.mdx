@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy Rails with its bundled Puma server on ECS Fargate behind an Application Load Balancer. Rails binds to localhost by default, so the production command must bind to `0.0.0.0`.
 
-This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
+Ravion uses [Railpack](https://railpack.com) to build Rails applications from the repository.
 
 <Prompt description="Set up this Rails app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/rails as the source of truth and:
@@ -27,14 +27,7 @@ This guide uses a repository Dockerfile instead of [Railpack](https://railpack.c
 
 ## Configure the deployment
 
-```dockerfile
-FROM ruby:3.3-slim
-WORKDIR /app
-COPY Gemfile Gemfile.lock ./
-RUN bundle install
-COPY . .
-CMD ["bin/rails", "server", "-e", "production", "-b", "0.0.0.0", "-p", "3000"]
-```
+Railpack detects Rails through `Gemfile` and `config/application.rb`. It reads the Ruby version from `.ruby-version`, `Gemfile`, or mise files, installs Node when frontend tooling requires it, precompiles assets and Bootsnap, and configures common native dependencies. Set the production start command to `bin/rails server -e production -b 0.0.0.0` when your repository does not provide one. Ravion injects `PORT` automatically from `container_port`.
 
 ```yaml ravion.yaml
 project:
@@ -79,9 +72,8 @@ environments:
           cluster:
             moduleGivenIdRef: cluster
           name: rails-production-web
-          build_source: dockerfile
+          build_source: railpack
           source_repo: my-org/my-rails-app
-          dockerfile: Dockerfile
           container_port: 3000
           fargate_size:
             vcpu: 0.5

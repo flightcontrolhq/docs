@@ -12,7 +12,7 @@ import { DeployNextSteps } from "/snippets/deploy/next-steps.mdx";
 
 Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer. FastAPI's deployment documentation uses an ASGI server rather than a development server.
 
-This guide uses a repository Dockerfile instead of [Railpack](https://railpack.com) because the framework-specific image build requires explicit container instructions.
+Ravion uses [Railpack](https://railpack.com) to build FastAPI applications from the repository.
 
 <Prompt description="Set up this FastAPI app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
   Use https://www.ravion.com/docs/deploy/fastapi as the source of truth and:
@@ -27,16 +27,7 @@ This guide uses a repository Dockerfile instead of [Railpack](https://railpack.c
 
 ## Configure the deployment
 
-This example assumes `main.py` exports `app = FastAPI()`.
-
-```dockerfile
-FROM python:3.13-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
+Railpack detects FastAPI when `fastapi` is a dependency. It starts `uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}` when `uvicorn` is also installed. The default assumes `main.py` exports `app`; set a custom start command when your ASGI module uses a different path. Ravion injects `PORT` automatically from `container_port`.
 
 ```yaml ravion.yaml
 project:
@@ -70,9 +61,8 @@ environments:
           cluster:
             moduleGivenIdRef: cluster
           name: fastapi-production-web
-          build_source: dockerfile
+          build_source: railpack
           source_repo: my-org/my-fastapi-app
-          dockerfile: Dockerfile
           container_port: 8000
           fargate_size:
             vcpu: 0.5

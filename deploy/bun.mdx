@@ -16,7 +16,7 @@ Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer. Bun
   Use https://www.ravion.com/docs/deploy/bun as the source of truth and:
   1. Confirm this repository contains Bun and locate the app root in a monorepo.
   2. Inspect `package.json`, `bun.lock`, source entrypoints, and Docker files to detect the real build/start command and port; bind `Bun.serve` to `0.0.0.0` and `process.env.PORT`.
-  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` and a minimal Dockerfile when autodetection is unavailable, using real AWS and repository values.
+  3. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` using Railpack and real AWS and repository values. Leave a TODO if Railpack cannot determine the Bun entrypoint.
   4. Run `ravion project config apply <given-id> --file ravion.yaml --dry-run`, show the plan, and apply only after confirmation.
   5. Leave TODOs instead of guessing AWS account IDs, repository slugs, project IDs, entrypoints, or ports.
 </Prompt>
@@ -25,16 +25,7 @@ Deploy a Bun HTTP server on ECS Fargate behind an Application Load Balancer. Bun
 
 ## Configure the deployment
 
-[Railpack](https://railpack.com) support can vary by Bun project. This example assumes your repository has a Dockerfile that runs `bun run src/index.ts`; use `build_source: dockerfile` rather than relying on autodetection.
-
-```dockerfile
-FROM oven/bun:1
-WORKDIR /app
-COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile
-COPY . .
-CMD ["bun", "run", "src/index.ts"]
-```
+[Railpack](https://railpack.com) detects Bun from the `packageManager` field, `engines.bun`, or a `bun.lock` or `bun.lockb` file. Otherwise it uses its Node.js framework, monorepo, or SPA detection. Set the production start command to your actual Bun entrypoint when it is not inferred from the repository. Ravion injects `PORT` automatically from `container_port`.
 
 ```yaml ravion.yaml
 project:
@@ -68,16 +59,15 @@ environments:
           cluster:
             moduleGivenIdRef: cluster
           name: bun-production-web
-          build_source: dockerfile
+          build_source: railpack
           source_repo: my-org/my-bun-app
-          dockerfile: Dockerfile
           container_port: 3000
           fargate_size:
             vcpu: 0.5
             memory_gb: 1
 ```
 
-Set `port: Number(process.env.PORT) || 3000` and `hostname: "0.0.0.0"` in `Bun.serve`. The Dockerfile is responsible for the runtime start command.
+Set `port: Number(process.env.PORT) || 3000` and `hostname: "0.0.0.0"` in `Bun.serve`, and set the runtime start command to your actual Bun entrypoint.
 
 ## Apply and connect your domain
 
