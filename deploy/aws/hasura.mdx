@@ -1,0 +1,97 @@
+---
+title: "How to deploy Hasura to AWS"
+sidebarTitle: "Hasura"
+description: "Deploy Hasura to your AWS account on ECS Fargate behind an Application Load Balancer with PostgreSQL on RDS through Ravion."
+keywords: ["Hasura AWS deployment", "deploy Hasura to AWS", "Hasura hosting", "ECS Fargate", "RDS", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/hasura.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/hasura.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Run Hasura on ECS Fargate behind an Application Load Balancer and place PostgreSQL in RDS.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Hasura app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/hasura as the framework-specific source of truth.
+  3. Confirm this repository contains Hasura and locate its config root in a monorepo.
+  4. Inspect Docker files, metadata, environment templates, and scripts to detect the image/start command, port, health endpoint, and migration workflow.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`; use Secrets Manager for `HASURA_GRAPHQL_DATABASE_URL` and admin secrets rather than inventing output references.
+  6. Ask the user for AWS account IDs, image or repository values, project IDs, or database credentials before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Ravion provisions the network, compute, and database resources in your AWS account.
+
+The Hasura GraphQL Engine publishes an official `hasura/graphql-engine` image that listens on port 8080. This example deploys that prebuilt image through `build_source: image_registry`; it does not build from your repository. The `/healthz` endpoint is used for the ALB health check.
+
+```yaml ravion.yaml
+project:
+  givenId: hasura-app
+  name: Hasura app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: hasura-production
+      - givenId: database
+        name: PostgreSQL
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: hasura-production
+          db_name: hasura
+          username: hasuraadmin
+          engine_major_version: "15"
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: hasura-production
+      - givenId: web
+        name: Hasura web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: hasura-production-web
+          build_source: image_registry
+          image_repository: hasura/graphql-engine
+          container_port: 8080
+          health_check_path: /healthz
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set `HASURA_GRAPHQL_DATABASE_URL`, `HASURA_GRAPHQL_ADMIN_SECRET`, and any metadata settings through runtime variables or Secrets Manager. The module schema does not automatically map an RDS output into an ECS secret, so create that secret from the RDS outputs before applying the service.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id hasura-app --name "Hasura app"
+ravion project config apply hasura-app --file ravion.yaml --dry-run
+ravion project config apply hasura-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to configure the ALB hostname.
+
+## Next steps
+
+<DeployNextSteps />

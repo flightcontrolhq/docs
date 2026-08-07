@@ -1,0 +1,89 @@
+---
+title: "How to deploy Hono to AWS"
+sidebarTitle: "Hono"
+description: "Deploy a Hono Node.js application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Hono AWS deployment", "deploy Hono to AWS", "Hono Node.js", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/hono.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/hono.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Hono Node.js server on ECS Fargate behind an Application Load Balancer.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Hono app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/hono as the framework-specific source of truth.
+  3. Confirm this repository contains Hono and locate the app root in a monorepo.
+  4. Inspect `package.json`, the Hono Node adapter entrypoint, build scripts, and config to detect the actual build/start commands, port, and health route; bind to `0.0.0.0` and `process.env.PORT`.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, substituting real AWS, branch, repository, and runtime values.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, entrypoints, or ports before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Deploy a Hono application on ECS Fargate behind an Application Load Balancer. Use Hono's Node adapter and bind the server to the ECS-provided port.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+Use a production script such as `node dist/index.js` after compiling your TypeScript entry point to `dist/index.js`.
+
+```yaml ravion.yaml
+project:
+  givenId: hono-app
+  name: Hono app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: hono-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: hono-production
+      - givenId: web
+        name: Hono web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: hono-production-web
+          build_source: railpack
+          source_repo: my-org/my-hono-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: npm start
+          container_port: 3000
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Hono's Node server examples use port `3000`. Configure `@hono/node-server` with `port: Number(process.env.PORT) || 3000` and bind to `0.0.0.0`.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id hono-app --name "Hono app"
+ravion project config apply hono-app --file ravion.yaml --dry-run
+ravion project config apply hono-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

@@ -1,0 +1,87 @@
+---
+title: "How to deploy Flask to AWS"
+sidebarTitle: "Flask"
+description: "Deploy a Flask application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Flask AWS deployment", "deploy Flask to AWS", "Flask Gunicorn", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/flask.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/flask.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy Flask with Gunicorn on ECS Fargate behind an Application Load Balancer.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Flask app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/flask as the framework-specific source of truth.
+  3. Confirm this repository contains Flask and locate the app root in a monorepo.
+  4. Inspect Python dependency files, app modules, Docker files, and scripts to detect the real Gunicorn target, factory syntax, port, and health path; never use Flask's development server.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values. Bind Gunicorn to `0.0.0.0`.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, Python module paths, or ports before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Flask's production documentation recommends a dedicated WSGI server instead of the built-in development server.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Flask from the application dependencies.
+
+Railpack detects Flask when `flask` is a dependency. It starts `gunicorn --bind 0.0.0.0:${PORT:-8000} main:app` only when `gunicorn` is also a dependency, so add Gunicorn to your requirements and use a custom start command when your module or application factory differs from `main:app`. Ravion injects `PORT` automatically from `container_port`.
+
+```yaml ravion.yaml
+project:
+  givenId: flask-app
+  name: Flask app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: flask-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: flask-production
+      - givenId: web
+        name: Flask web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: flask-production-web
+          build_source: railpack
+          source_repo: my-org/my-flask-app
+          container_port: 8000
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Gunicorn binds to port `8000` in this example. Use your application factory import path if the app is created by a function.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id flask-app --name "Flask app"
+ravion project config apply flask-app --file ravion.yaml --dry-run
+ravion project config apply flask-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

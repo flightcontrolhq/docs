@@ -1,0 +1,66 @@
+---
+title: "How to deploy Vite to AWS"
+sidebarTitle: "Vite"
+description: "Deploy a Vite single-page application to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Vite AWS deployment", "deploy Vite to AWS", "Vite static hosting", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/vite.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/vite.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy the Vite output to S3 and deliver it through CloudFront.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Vite app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/vite as the framework-specific source of truth.
+  3. Confirm this repository contains the Vite app and locate its root in a monorepo.
+  4. Inspect `package.json`, `vite.config.*`, and router setup to detect the real build command, `dist` output, base path, and SPA fallback requirement.
+  5. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.
+  6. Ask the user for missing AWS account IDs, repository slugs, project IDs, or output paths before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Ravion uses SPA routing so client-side routes resolve to `index.html`.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+```yaml ravion.yaml
+project:
+  givenId: vite-site
+  name: Vite site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Vite site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: vite-site-production
+          build_source: railpack
+          source_repo: my-org/my-vite-app
+          railpack_build_cmd: npm run build
+```
+
+Vite runs `npm run build` and writes to `dist`. Add variables needed by the browser as `VITE_*` build variables.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id vite-site --name "Vite site"
+ravion project config apply vite-site --file ravion.yaml --dry-run
+ravion project config apply vite-site --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to attach your domain to CloudFront.
+
+## Next steps
+
+<DeployNextSteps />

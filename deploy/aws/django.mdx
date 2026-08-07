@@ -1,0 +1,98 @@
+---
+title: "How to deploy Django to AWS"
+sidebarTitle: "Django"
+description: "Deploy a Django application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Django AWS deployment", "deploy Django to AWS", "Django Gunicorn", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/django.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/django.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy Django with Gunicorn on ECS Fargate behind an Application Load Balancer.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Django app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/django as the framework-specific source of truth.
+  3. Confirm this repository contains Django and locate the project root in a monorepo.
+  4. Inspect `pyproject.toml`, `requirements.txt`, Django settings, and Docker files to detect the real WSGI/ASGI module, migrations, Gunicorn or Uvicorn command, port, and health path; never use `runserver`.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, real repository values, and a documented Secrets Manager step for `DATABASE_URL`.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, Django module paths, or database credentials before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Django's production documentation recommends a WSGI server instead of `runserver`.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects Django from the application files and dependencies.
+
+Railpack detects Django from its dependencies or `manage.py`. Its default start command runs `python manage.py migrate` and then Gunicorn with the detected application module. Migrations run on every boot by default, which can race when multiple ECS tasks start; move migrations to a separate release step for multi-task deployments. Set `RAILPACK_DJANGO_APP_NAME` when the WSGI module is not the detected default. Ravion injects `PORT` automatically from `container_port`.
+
+```yaml ravion.yaml
+project:
+  givenId: django-app
+  name: Django app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: django-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: django-production
+      - givenId: database
+        name: PostgreSQL database
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: django-production-db
+          db_name: django
+          username: django
+          engine_major_version: "15"
+      - givenId: web
+        name: Django web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: django-production-web
+          build_source: railpack
+          source_repo: my-org/my-django-app
+          container_port: 8000
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Run migrations as a deployment step, set `ALLOWED_HOSTS` and `SECRET_KEY` as runtime values, and use `DATABASE_URL` for your database connection. Populate that secret from the RDS outputs before applying the service.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id django-app --name "Django app"
+ravion project config apply django-app --file ravion.yaml --dry-run
+ravion project config apply django-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />

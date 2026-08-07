@@ -1,0 +1,66 @@
+---
+title: "How to deploy Solid to AWS"
+sidebarTitle: "Solid"
+description: "Deploy a Solid SPA to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Solid AWS deployment", "deploy Solid to AWS", "Solid SPA hosting", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/solid.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/solid.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Solid single-page application to an S3 bucket behind CloudFront.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Solid app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/solid as the framework-specific source of truth.
+  3. Confirm this repository contains Solid and locate the app root in a monorepo.
+  4. Inspect `package.json`, Vite config, and router setup to determine the real build command, `dist` output, and SPA fallback requirements.
+  5. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.
+  6. Ask the user for missing AWS account IDs, repository slugs, project IDs, or output paths before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+The S3 bucket and CloudFront distribution are provisioned in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+```yaml ravion.yaml
+project:
+  givenId: solid-site
+  name: Solid site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Solid site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: solid-site-production
+          build_source: railpack
+          source_repo: my-org/my-solid-app
+          railpack_build_cmd: npm run build
+```
+
+The Solid Vite starter uses `npm run build` and writes to `dist`. Use `VITE_*` variables for values embedded in browser code.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id solid-site --name "Solid site"
+ravion project config apply solid-site --file ravion.yaml --dry-run
+ravion project config apply solid-site --file ravion.yaml
+```
+
+Point DNS at the CloudFront hostname with [custom domains](/guides/custom-domains).
+
+## Next steps
+
+<DeployNextSteps />
