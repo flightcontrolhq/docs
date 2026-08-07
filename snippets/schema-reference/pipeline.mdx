@@ -53,6 +53,8 @@ Webhook triggers that automatically start pipeline runs on events like git push
 ### PipelineTrigger
 
 Pipeline trigger definition.
+Discriminated by the `type` field so each webhook type can enforce
+provider-specific event values.
 
 Discriminated union. The `type` field selects which schema applies.
 
@@ -73,6 +75,7 @@ Pipeline trigger for generic webhooks.
 
 <ResponseField name="enabled" type="boolean" default="true">
   Whether this trigger is active. Disabled triggers are not registered.
+  Default: true
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
@@ -89,12 +92,15 @@ Pipeline trigger for generic webhooks.
 
 <ResponseField name="concurrency" type="ConcurrencyConfig">
   Concurrency configuration for runs started by this trigger.
+  An explicit key shares its configured concurrency scope with steps and blocks.
+  Without a key, each trigger variant receives its own auto-generated scope.
 
   See: [ConcurrencyConfig](#concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,TriggerRunVariantConfig>" required>
   Maps variant IDs to run configuration — keys must match declared variant IDs.
+  At least one variant must be specified.
 
   See: [TriggerRunVariantConfig](#triggerrunvariantconfig)
 </ResponseField>
@@ -115,6 +121,7 @@ Pipeline trigger for GitHub webhooks.
 
 <ResponseField name="enabled" type="boolean" default="true">
   Whether this trigger is active. Disabled triggers are not registered.
+  Default: true
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
@@ -131,12 +138,15 @@ Pipeline trigger for GitHub webhooks.
 
 <ResponseField name="concurrency" type="ConcurrencyConfig">
   Concurrency configuration for runs started by this trigger.
+  An explicit key shares its configured concurrency scope with steps and blocks.
+  Without a key, each trigger variant receives its own auto-generated scope.
 
   See: [ConcurrencyConfig](#concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,TriggerRunVariantConfig>" required>
   Maps variant IDs to run configuration — keys must match declared variant IDs.
+  At least one variant must be specified.
 
   See: [TriggerRunVariantConfig](#triggerrunvariantconfig)
 </ResponseField>
@@ -163,6 +173,7 @@ Pipeline trigger for GitLab webhooks.
 
 <ResponseField name="enabled" type="boolean" default="true">
   Whether this trigger is active. Disabled triggers are not registered.
+  Default: true
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
@@ -179,12 +190,15 @@ Pipeline trigger for GitLab webhooks.
 
 <ResponseField name="concurrency" type="ConcurrencyConfig">
   Concurrency configuration for runs started by this trigger.
+  An explicit key shares its configured concurrency scope with steps and blocks.
+  Without a key, each trigger variant receives its own auto-generated scope.
 
   See: [ConcurrencyConfig](#concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,TriggerRunVariantConfig>" required>
   Maps variant IDs to run configuration — keys must match declared variant IDs.
+  At least one variant must be specified.
 
   See: [TriggerRunVariantConfig](#triggerrunvariantconfig)
 </ResponseField>
@@ -211,6 +225,7 @@ Pipeline trigger that starts runs on a cron schedule.
 
 <ResponseField name="enabled" type="boolean" default="true">
   Whether this trigger is active. Disabled triggers are not registered.
+  Default: true
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -221,6 +236,10 @@ Pipeline trigger that starts runs on a cron schedule.
 
 <ResponseField name="cron" type="string" required>
   Cron expression defining when the pipeline runs (UTC unless timezone is set).
+  The five fields are: minute, hour, day of month, month, and day of week.
+  Supports standard 5-field cron plus `@hourly`, `@daily`, `@midnight`,
+  `@weekly`, `@monthly`, `@yearly`, `@annually`, and `@every <duration>`
+  (e.g. `@every 30m`).
 </ResponseField>
 
 <ResponseField name="timezone" type="string">
@@ -229,12 +248,15 @@ Pipeline trigger that starts runs on a cron schedule.
 
 <ResponseField name="concurrency" type="ConcurrencyConfig">
   Concurrency configuration for runs started by this trigger.
+  An explicit key shares its configured concurrency scope with steps and blocks.
+  Without a key, each trigger variant receives its own auto-generated scope.
 
   See: [ConcurrencyConfig](#concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,TriggerRunVariantConfig>" required>
   Maps variant IDs to run configuration — keys must match declared variant IDs.
+  At least one variant must be specified.
 
   See: [TriggerRunVariantConfig](#triggerrunvariantconfig)
 </ResponseField>
@@ -244,37 +266,49 @@ Pipeline trigger that starts runs on a cron schedule.
 Concurrency configuration for controlling parallel execution
 
 <ResponseField name="key" type="string">
-  Unique identifier for the concurrency scope Triggers, steps, and blocks with the same key share a concurrency limit By default, the same key in different pip...
+  Unique identifier for the concurrency scope
+  Triggers, steps, and blocks with the same key share a concurrency limit
+  By default, the same key in different pipelines does not conflict
+  Default: auto-generated unique key for the configured trigger, step, or block
 
   _(minLen:1)_
 </ResponseField>
 
 <ResponseField name="scope" type="enum" default="pipeline">
-  Where the concurrency key is shared Organization-scoped concurrency requires an explicit key
+  Where the concurrency key is shared
+  Organization-scoped concurrency requires an explicit key
+  Default: "pipeline"
 
   Allowed values: `pipeline` | `organization`
 </ResponseField>
 
 <ResponseField name="value" type="integer" default="0">
   Maximum concurrent executions allowed (0 means unlimited, 1 means sequential)
+  Default: 0 (unlimited)
 
   _(format:int32,min:0)_
 </ResponseField>
 
 <ResponseField name="behavior" type="enum" default="queue">
   Behavior when the concurrency limit is reached
+  Default: "queue"
 
   Allowed values: `queue` | `cancel-in-progress` | `skip`
 </ResponseField>
 
 <ResponseField name="queue_size" type="integer">
-  Maximum queue size when behavior is "queue" Only applies when behavior is "queue" Unset means unlimited queue depth 0 disables queueing when behavior is "queue"
+  Maximum queue size when behavior is "queue"
+  Only applies when behavior is "queue"
+  Unset means unlimited queue depth
+  0 disables queueing when behavior is "queue"
 
   _(format:int32,min:0)_
 </ResponseField>
 
 <ResponseField name="queue_overflow_discard" type="enum" default="oldest">
-  Which items to discard when queue overflows Only applies when behavior is "queue" and queue_size &gt; 0
+  Which items to discard when queue overflows
+  Only applies when behavior is "queue" and queue_size &gt; 0
+  Default: "oldest"
 
   Allowed values: `oldest` | `newest`
 </ResponseField>
@@ -297,6 +331,7 @@ Trigger filter configuration
 
 <ResponseField name="action" type="string | string[]">
   Only trigger for specific webhook actions.
+  Ignored when the event payload does not include an action field.
 
   _(templateable)_
 </ResponseField>
@@ -309,6 +344,7 @@ Trigger filter configuration
 
 <ResponseField name="payload" type="PayloadCondition[]">
   Filter by webhook payload fields using dot-notation paths.
+  All conditions must match.
 
   See: [PayloadCondition](#payloadcondition)
 </ResponseField>
@@ -390,6 +426,7 @@ Allowed values:
 ### PayloadCondition
 
 Condition to check against a webhook payload field.
+Operators are evaluated in order and the first configured operator wins.
 
 <ResponseField name="path" type="string" required>
   Dot-notation path to the payload field
@@ -687,9 +724,10 @@ Text pipeline input definition
 ### Module.NumberValueItem
 
 A selectable option with a numeric value.
+Used in number input validation.values arrays.
 
 <ResponseField name="label" type="string">
-  Text shown in the dropdown
+  Text shown in the dropdown — defaults to value if omitted
 </ResponseField>
 
 <ResponseField name="description" type="string">
@@ -727,9 +765,10 @@ A regex pattern with an error message for validation
 ### Module.StringValueItem
 
 A selectable option with a string value.
+Used in string input validation.values arrays.
 
 <ResponseField name="label" type="string">
-  Text shown in the dropdown
+  Text shown in the dropdown — defaults to value if omitted
 </ResponseField>
 
 <ResponseField name="description" type="string">
@@ -753,6 +792,8 @@ A selectable option with a string value.
 ### Module.ShowWhen
 
 Conditional visibility mapping; array source values support contains and contains-all matching.
+Keys are property names, values are the expected values or conditions.
+The property is shown only when all conditions are met.
 
 Type: map&lt;string,[Module.ShowWhenCondition](#module-showwhencondition)&gt;
 
@@ -765,6 +806,9 @@ One of: string \| integer \| boolean \| string \| integer \| boolean[], [Module.
 ### Module.ShowWhenComparableValue
 
 Value or values to compare against in a show_when condition; arrays mean membership for scalar sources and contains-all for array sources.
+When the source value is scalar, an array condition matches any listed value.
+When the source value is an array, a scalar condition matches if the array contains that value.
+When the source value is an array, an array condition matches if the array contains all listed values.
 
 One of: string \| integer \| boolean, string \| integer \| boolean[].
 
@@ -779,6 +823,7 @@ Negated show_when condition.
 ### Module.ShowWhenValue
 
 Value that can be used in a show_when condition.
+Supports string, number, or boolean values for comparison.
 
 One of: string, integer, boolean.
 
@@ -813,12 +858,17 @@ Ordered list of steps to execute — steps run sequentially unless wrapped in a 
 ### Step
 
 Step - can be action, parallel, or group.
+This is the main recursive type for pipeline steps.
 
 One of: [ActionStep](#actionstep), [ParallelStep](#parallelstep), [GroupStep](#groupstep).
 
 ### ActionStep
 
 Union of all action step types.
+Discriminated by the `type` field on each step model.
+Generates oneOf + discriminator in OpenAPI, which hey-api converts to z.discriminatedUnion().
+Some step schemas, such as BuildLambdaCiStep, are generated as standalone
+types but intentionally excluded here until they are public pipeline steps.
 
 Discriminated union. The `type` field selects which schema applies.
 
@@ -874,6 +924,7 @@ Parallel step - executes children concurrently
 
 <ResponseField name="fail_strategy" type="enum" default="cancel-all">
   How to handle failures while branches in this parallel block are running
+  Default: "cancel-all"
 
   Allowed values: `cancel-all` | `finish-running` | `finish-all`
 </ResponseField>
@@ -899,7 +950,8 @@ Approval action step — pauses pipeline execution until a user explicitly appro
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -935,7 +987,8 @@ Build image CI action step
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -975,7 +1028,8 @@ Build image CI action step
 </ResponseField>
 
 <ResponseField name="debug" type="boolean | null">
-  Enable verbose build output for debugging build issues Accepts either a boolean literal or a full template token
+  Enable verbose build output for debugging build issues
+  Accepts either a boolean literal or a full template token
 
   _(templateable)_
 </ResponseField>
@@ -1017,7 +1071,8 @@ Build static CI action step
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -1057,7 +1112,8 @@ Build static CI action step
 </ResponseField>
 
 <ResponseField name="debug" type="boolean | null">
-  Enable verbose build output for debugging build issues Accepts either a boolean literal or a full template token
+  Enable verbose build output for debugging build issues
+  Accepts either a boolean literal or a full template token
 
   _(templateable)_
 </ResponseField>
@@ -1099,7 +1155,8 @@ General-purpose build action step — triggers a build based on the module's bui
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -1111,13 +1168,16 @@ General-purpose build action step — triggers a build based on the module's bui
 </ResponseField>
 
 <ResponseField name="module_instance" type="string" required>
-  Module instance reference — accepts the module instance row ID (e.g. `mi_…`), `environmentGivenId.moduleGivenId`, or `projectGivenId.environmentGivenId.modul...
+  Module instance reference — accepts the module instance row ID (e.g. `mi_…`),
+  `environmentGivenId.moduleGivenId`, or
+  `projectGivenId.environmentGivenId.moduleGivenId`.
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 <ResponseField name="description" type="string | null">
   Human-readable description of this deployment.
+  Defaults to the pipeline run description if omitted.
 
   _(templateable)_
 </ResponseField>
@@ -1128,6 +1188,8 @@ General-purpose build action step — triggers a build based on the module's bui
 
 <ResponseField name="input" type="map<string,any | null>">
   User-defined build parameters passed through to the module build manager.
+  These values are available to module build templates via
+  `<< build.input.<key> >>`.
 
   _(templateable)_
 </ResponseField>
@@ -1153,13 +1215,15 @@ Custom command CI action step
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
 
 <ResponseField name="setup" type="SetupAction[] | null">
   Setup actions to install tools before the commands run, in order, before any command.
+  Each entry installs a tool via the Flightcontrol actions registry (flightcontrolhq/actions).
 
   See: [SetupAction](#setupaction)
 
@@ -1227,7 +1291,8 @@ General-purpose deploy action step — triggers a deployment based on the module
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -1239,13 +1304,16 @@ General-purpose deploy action step — triggers a deployment based on the module
 </ResponseField>
 
 <ResponseField name="module_instance" type="string" required>
-  Module instance reference — accepts the module instance row ID (e.g. `mi_…`), `environmentGivenId.moduleGivenId`, or `projectGivenId.environmentGivenId.modul...
+  Module instance reference — accepts the module instance row ID (e.g. `mi_…`),
+  `environmentGivenId.moduleGivenId`, or
+  `projectGivenId.environmentGivenId.moduleGivenId`.
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 <ResponseField name="description" type="string | null">
   Human-readable description of this deployment.
+  Defaults to the pipeline run description if omitted.
 
   _(templateable)_
 </ResponseField>
@@ -1256,6 +1324,8 @@ General-purpose deploy action step — triggers a deployment based on the module
 
 <ResponseField name="input" type="map<string,any | null>">
   User-defined deploy parameters passed through to the deploy manager.
+  These values are available to module deployment templates via
+  `<< deploy.input.<key> >>`.
 
   _(templateable)_
 </ResponseField>
@@ -1281,7 +1351,8 @@ Rollback action step — reverts a module to a specific previous deployment.
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -1323,7 +1394,8 @@ Sleep action step — pauses pipeline execution for testing and debugging
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -1365,7 +1437,8 @@ Terraform apply CI action step
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -1411,7 +1484,8 @@ Terraform apply CI action step
 </ResponseField>
 
 <ResponseField name="stack_id" type="string | null">
-  Stack ID used for terraform resource/execution tracking Automatically set when triggered from a stack
+  Stack ID used for terraform resource/execution tracking
+  Automatically set when triggered from a stack
 
   _(templateable)_
 </ResponseField>
@@ -1451,7 +1525,8 @@ Terraform plan CI action step
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -1497,7 +1572,8 @@ Terraform plan CI action step
 </ResponseField>
 
 <ResponseField name="stack_id" type="string | null">
-  Stack ID used for terraform resource/execution tracking Automatically set when triggered from a stack
+  Stack ID used for terraform resource/execution tracking
+  Automatically set when triggered from a stack
 
   _(templateable)_
 </ResponseField>
@@ -1512,6 +1588,7 @@ Terraform plan CI action step
 
 <ResponseField name="terraform_variable_files" type="string[] | null">
   Terraform tfvars file paths passed to terraform plan as -var-file flags, in the configured order.
+  Paths are relative to this step's Terraform source base path.
 
   _(templateable)_
 </ResponseField>
@@ -1559,7 +1636,8 @@ Trigger pipeline action step
 </ResponseField>
 
 <ResponseField name="if" type="boolean | null">
-  Condition that must evaluate to true for this step to run Accepts either a boolean literal or a full template token that resolves to a boolean
+  Condition that must evaluate to true for this step to run
+  Accepts either a boolean literal or a full template token that resolves to a boolean
 
   _(templateable)_
 </ResponseField>
@@ -1581,7 +1659,7 @@ Trigger pipeline action step
 </ResponseField>
 
 <ResponseField name="pipeline_version_id" type="string | null">
-  Specific pipeline version to trigger
+  Specific pipeline version to trigger — defaults to the latest version if omitted
 
   _(templateable)_
 </ResponseField>
@@ -1656,6 +1734,10 @@ ECR destination for image builds
 
 Environment variable map value.
 
+Supports either:
+- a literal map of environment variables, or
+- a full template block like &lt;&lt; pipeline.input.env_variables &gt;&gt; that resolves to such a map.
+
 One of: map&lt;string,[EnvironmentVariable](#environmentvariable)&gt;, string.
 
 ### GitSource
@@ -1711,6 +1793,10 @@ Discriminated union. The `type` field selects which schema applies.
 
 Step infrastructure configuration
 
+Note: Additional validation via CEL:
+- exactly one target mode is required: execution_environment_id, or aws_account_id plus region
+- instance_size as array only valid when type == "ec2-spot"
+
 <ResponseField name="execution_environment_id" type="string | null">
   ID or given ID of a pre-configured execution environment
 
@@ -1719,6 +1805,12 @@ Step infrastructure configuration
 
 <ResponseField name="aws_account_id" type="string | null">
   AWS account reference for automatic network selection.
+
+  Accepts either the Ravion AWS account database ID (e.g.
+  `awsact_123`) or the user-provided `givenId` configured on the AWS
+  account. The resolver normalizes the value to the DB id before any
+  downstream use; the `givenId` form is an input alias only and is never
+  persisted as the canonical reference.
 
   _(templateable)_
 </ResponseField>
@@ -1791,6 +1883,8 @@ S3 destination for build artifacts
 
 <ResponseField name="directory" type="string | null">
   S3 directory override for the uploaded build output.
+  When omitted, the build step generates a flat directory from the step ID,
+  commit short SHA, and pipeline run ID.
 
   _(templateable)_
 </ResponseField>
@@ -1816,9 +1910,12 @@ Discriminated union. The `type` field selects which schema applies.
 ### SetupAction
 
 A setup action that installs a tool before the step's commands run.
+Resolved against the Flightcontrol actions registry (flightcontrolhq/actions).
 
 <ResponseField name="uses" type="string" required>
   Action reference to install a tool before running commands.
+  Shorthand ("go", "make") resolves to `flightcontrolhq/actions/<name>@main`,
+  or a full ref like `flightcontrolhq/actions/go@v1`.
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -1856,6 +1953,10 @@ Type: string
 ### TerraformVariablesValue
 
 Terraform variable map value.
+
+Supports either:
+- a literal map of terraform variables, or
+- a full template block like &lt;&lt; pipeline.input.terraform_variables &gt;&gt; that resolves to such a map.
 
 One of: map&lt;string,[TerraformVariable](#terraformvariable)&gt;, string.
 
@@ -1908,7 +2009,8 @@ Dockerfile configuration for image builds
 </ResponseField>
 
 <ResponseField name="inject_env_variables_in_dockerfile" type="boolean | null">
-  Whether to inject environment variables as Docker build args Accepts either a boolean literal or a full template token
+  Whether to inject environment variables as Docker build args
+  Accepts either a boolean literal or a full template token
 
   _(templateable)_
 </ResponseField>
@@ -2041,7 +2143,8 @@ Railpack configuration for image builds
 
 ### AwsPermissions
 
-IAM policies configuration for runner roles Used by EC2-backed steps to specify additional permissions
+IAM policies configuration for runner roles
+Used by EC2-backed steps to specify additional permissions
 
 One of: [AwsPermissionsAttach](#awspermissionsattach), [AwsPermissionsReplace](#awspermissionsreplace).
 
@@ -2115,13 +2218,15 @@ Dockerfile configuration for static builds
 </ResponseField>
 
 <ResponseField name="inject_env_variables_in_dockerfile" type="boolean | null">
-  Whether to inject environment variables as Docker build args Accepts either a boolean literal or a full template token
+  Whether to inject environment variables as Docker build args
+  Accepts either a boolean literal or a full template token
 
   _(templateable)_
 </ResponseField>
 
 <ResponseField name="output_directory" type="string" required>
-  Directory inside the built image containing the static assets to upload This path is resolved relative to source.base_path
+  Directory inside the built image containing the static assets to upload
+  This path is resolved relative to source.base_path
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -2187,7 +2292,8 @@ Nixpacks configuration for static builds
 </ResponseField>
 
 <ResponseField name="output_directory" type="string" required>
-  Directory inside the built image containing the static assets to upload This path is resolved relative to source.base_path
+  Directory inside the built image containing the static assets to upload
+  This path is resolved relative to source.base_path
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -2223,14 +2329,16 @@ Railpack configuration for static builds
 </ResponseField>
 
 <ResponseField name="output_directory" type="string" required>
-  Directory inside the built image containing the static assets to upload This path is resolved relative to source.base_path
+  Directory inside the built image containing the static assets to upload
+  This path is resolved relative to source.base_path
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 ### TerraformVariable
 
-Terraform variable — can be any JSON value (string, number, boolean, null, array, object), a Parameter Store reference, or a Secrets Manager reference
+Terraform variable — can be any JSON value (string, number, boolean, null, array, object),
+a Parameter Store reference, or a Secrets Manager reference
 
 One of: [ParameterStoreEnvVar](#parameterstoreenvvar), [SecretsManagerEnvVar](#secretsmanagerenvvar), any \| null.
 
@@ -2328,7 +2436,7 @@ Parameter Store reference with optional version metadata
 </ResponseField>
 
 <ResponseField name="version" type="string | null">
-  Parameter version number
+  Parameter version number — defaults to latest if omitted
 
   _(templateable)_
 </ResponseField>
@@ -2350,7 +2458,7 @@ Secrets Manager reference with optional JSON key and version metadata
 </ResponseField>
 
 <ResponseField name="version" type="string | null">
-  Secret version ID or stage
+  Secret version ID or stage — defaults to latest if omitted
 
   _(templateable)_
 </ResponseField>

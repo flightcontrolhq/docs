@@ -13,7 +13,7 @@ const docsJsonPath = path.join(root, "docs.json");
 // Rendering hundreds of <ResponseField> components on a single page makes the
 // page multiple megabytes of HTML, which locks up mobile browsers. Reference
 // docs above this many fields are split across several pages.
-const maxFieldsPerPage = 210;
+const maxFieldsPerPage = 220;
 
 const singlePageDocs = ["pipeline", "project-config"];
 
@@ -41,6 +41,62 @@ const splitDocs = [
     },
     standaloneSections: ["Template expressions"],
     titleOverrides: {ui: "UI"},
+    pageMetadata: {
+      build: {
+        title: "Module definition schema: Build",
+        sidebarTitle: "Build",
+        description:
+          "Define module build settings for containers, static assets, or Lambda packages, including source, builder, destinations, and pipeline behavior.",
+      },
+      deploy: {
+        title: "Module definition schema: Deploy",
+        sidebarTitle: "Deploy",
+        description:
+          "Define how a module releases application code, including deployment strategy, rollout settings, artifact inputs, health checks, and rollback behavior.",
+      },
+      "ecs-deployments": {
+        title: "Module schema: ECS deployment strategies",
+        sidebarTitle: "ECS deployments",
+        description:
+          "Configure ECS deployment strategies such as rolling, blue-green, linear, and canary releases, including traffic shifting, capacity, and pause controls.",
+      },
+      "ecs-task-definitions": {
+        title: "Module schema: ECS task definitions",
+        sidebarTitle: "ECS task definitions",
+        description:
+          "Configure ECS task definitions for containers, resources, networking, volumes, secrets, logging, health checks, and other runtime behavior.",
+      },
+      inputs: {
+        title: "Module definition schema: Inputs",
+        sidebarTitle: "Inputs",
+        description:
+          "Reference module input fields, types, defaults, validation rules, visibility, and conditional behavior used to configure module instances safely.",
+      },
+      module: {
+        title: "Module definition schema: Module",
+        sidebarTitle: "Module",
+        description:
+          "Reference the top-level module definition schema, including metadata, capabilities, build and deploy behavior, stack settings, inputs, and UI content.",
+      },
+      stack: {
+        title: "Module definition schema: Stack",
+        sidebarTitle: "Stack",
+        description:
+          "Configure Terraform or OpenTofu infrastructure managed by a module, including source, providers, backend behavior, pipelines, and outputs.",
+      },
+      "template-expressions": {
+        title: "Module schema: Template expressions",
+        sidebarTitle: "Template expressions",
+        description:
+          "Use template expressions to reference module inputs, stack outputs, environment values, and other dynamic data in module definitions.",
+      },
+      ui: {
+        title: "Module definition schema: UI and readme",
+        sidebarTitle: "UI",
+        description:
+          "Configure the module definition’s dashboard presentation, readme content, links, and input guidance so users can operate instances effectively.",
+      },
+    },
   },
 ];
 
@@ -224,6 +280,10 @@ function syncSplitDoc(config) {
   }
 
   for (const page of pages) {
+    const metadata = config.pageMetadata?.[page.slug];
+    const title = metadata?.title ?? page.title;
+    const sidebarTitle = metadata?.sidebarTitle ?? page.title;
+    const description = metadata?.description ?? config.describe(page.titles);
     const body = [...preamble, ...page.blocks].map((block) => block.text).join("\n\n");
     writeFileSync(
       path.join(partsDir, `${page.slug}.mdx`),
@@ -235,9 +295,12 @@ function syncSplitDoc(config) {
       path.join(pageDir, `${page.slug}.mdx`),
       [
         "---",
-        `title: "${page.title}"`,
-        `description: "${config.describe(page.titles)}"`,
+        `title: ${JSON.stringify(title)}`,
+        `sidebarTitle: ${JSON.stringify(sidebarTitle)}`,
+        `description: ${JSON.stringify(description)}`,
         `boost: ${config.boost}`,
+        `"og:image": "https://www.ravion.com/og/docs/${config.pageDir}/${page.slug}.png"`,
+        `"twitter:image": "https://www.ravion.com/og/docs/${config.pageDir}/${page.slug}.png"`,
         "---",
         "",
         generatedBy(config.name),

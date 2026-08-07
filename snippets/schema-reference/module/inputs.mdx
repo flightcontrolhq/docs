@@ -17,12 +17,16 @@ Input configuration defining the module's form fields
 ### InputProperty
 
 Union of all input property types.
+Discriminated by the `type` field on each property model.
+Each variant has a literal `type` property for TypeScript narrowing.
 
 One of: [StringInputProperty](#stringinputproperty), [TextInputProperty](#textinputproperty), [ObjectInputProperty](#objectinputproperty), [ObjectMapInputProperty](#objectmapinputproperty), [ObjectArrayInputProperty](#objectarrayinputproperty), [ArrayInputProperty](#arrayinputproperty), [ArrayStringInputProperty](#arraystringinputproperty), [NumberInputProperty](#numberinputproperty), [BooleanInputProperty](#booleaninputproperty), [SectionInputProperty](#sectioninputproperty), [CompoundInputProperty](#compoundinputproperty), [RefInputProperty](#refinputproperty), [GitRepoInputProperty](#gitrepoinputproperty), [KeyValueInputProperty](#keyvalueinputproperty).
 
 ### ArrayInputProperty
 
 Array editor input property.
+Allows users to enter an arbitrary JSON array with syntax highlighting and validation.
+Supports both YAML and JSON formats in the UI.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -50,8 +54,19 @@ Array editor input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -77,6 +92,7 @@ Array editor input property.
 ### ArrayStringInputProperty
 
 Array of strings input property.
+Allows users to add/remove multiple string values.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -104,8 +120,19 @@ Array of strings input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -147,6 +174,7 @@ Array of strings input property.
 ### BooleanInputProperty
 
 Boolean toggle/checkbox input property.
+Renders as a toggle switch or checkbox in the UI.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -174,8 +202,19 @@ Boolean toggle/checkbox input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -193,6 +232,10 @@ Boolean toggle/checkbox input property.
 ### CompoundInputProperty
 
 Compound select input property.
+Allows selecting from options where each option contains multiple fields.
+The `fields` array specifies which fields from the selected value to expose.
+
+Note: CEL validation ensures values is always provided for compound inputs.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -220,8 +263,19 @@ Compound select input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -263,6 +317,7 @@ Compound select input property.
 ### GitRepoInputProperty
 
 Git repository input property.
+Renders a repository selector that stores the full repo URL.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -290,8 +345,19 @@ Git repository input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -315,6 +381,8 @@ Git repository input property.
 ### KeyValueInputProperty
 
 Key-value pairs input property.
+Allows users to enter a flat map of string keys to string values.
+Renders a dynamic key-value editor with add/remove buttons.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -342,8 +410,19 @@ Key-value pairs input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -365,6 +444,9 @@ Key-value pairs input property.
 ### NumberInputProperty
 
 Numeric input property.
+Can be a free-form number field or a dropdown/select when values are provided.
+
+Note: CEL validation ensures min &lt;= max when both are specified.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -392,8 +474,19 @@ Numeric input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -470,8 +563,19 @@ Numeric input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -504,6 +608,7 @@ Numeric input property.
 
 <ResponseField name="item_description" type="string | null">
   User-facing description template shown as a secondary line for each array item.
+  Supports placeholders like &#123;field_id&#125;.
 
   _(templateable)_
 </ResponseField>
@@ -519,6 +624,8 @@ Numeric input property.
 ### ObjectInputProperty
 
 Object editor input property.
+Allows users to enter arbitrary object data with syntax highlighting and validation.
+Supports both YAML and JSON formats in the UI.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -546,8 +653,19 @@ Object editor input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -598,8 +716,19 @@ Object editor input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -645,6 +774,7 @@ Object editor input property.
 ### RefInputProperty
 
 Module reference input property.
+Allows selecting another module instance or manually entering fallback inputs.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -672,8 +802,19 @@ Module reference input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="string" required>
@@ -681,7 +822,11 @@ Module reference input property.
 </ResponseField>
 
 <ResponseField name="mapped_inputs" type="RefFallbackInputProperty[]">
-  Input definitions that copy values from the selected referenced module into this module's input values. Each mapped input is saved as a normal input on the c...
+  Input definitions that copy values from the selected referenced module into
+  this module's input values. Each mapped input is saved as a normal input on
+  the current module. When users do not select a module instance, these same
+  fields are shown for manual entry.
+  Nested module references are not allowed in mapped inputs.
 
   See: [RefFallbackInputProperty](#reffallbackinputproperty)
 </ResponseField>
@@ -693,6 +838,8 @@ Module reference input property.
 ### SectionInputProperty
 
 Visual section separator property.
+Used to separate sections in the module form.
+Does not produce any input value - purely for visual organization.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -725,6 +872,7 @@ Visual section separator property.
 ### StringInputProperty
 
 Single-line text input property.
+Can be a free-form text field or a dropdown/select when values are provided.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -752,8 +900,19 @@ Single-line text input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -799,6 +958,7 @@ Single-line text input property.
 ### TextInputProperty
 
 Multi-line text area input property.
+Used for longer text content like descriptions, commands, or configuration.
 
 <ResponseField name="id" type="string" required>
   Unique identifier for this input.
@@ -826,8 +986,19 @@ Multi-line text area input property.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -859,6 +1030,8 @@ Multi-line text area input property.
 ### ShowWhen
 
 Conditional visibility mapping; array source values support contains and contains-all matching.
+Keys are property names, values are the expected values or conditions.
+The property is shown only when all conditions are met.
 
 Type: map&lt;string,[ShowWhenCondition](#showwhencondition)&gt;
 
@@ -883,12 +1056,15 @@ A regex pattern with an error message for validation
 ### CompoundFieldValue
 
 Allowed value types within a compound value item.
+Supports primitive types plus string arrays.
 
 One of: string, number, integer, boolean, string[].
 
 ### CompoundValues
 
 Compound values - either a static array of options or a dynamic reference.
+
+Note: CEL validation ensures values is provided (compound requires values).
 
 One of: [CompoundValueItem](#compoundvalueitem)[], string.
 
@@ -915,6 +1091,7 @@ One of: [NumberValueItem](#numbervalueitem)[], string.
 ### ObjectArrayDefaultItem
 
 Default value item for structured object arrays.
+Each array element must be an object keyed by the nested item input ids.
 
 Type: map&lt;string,any \| null&gt;
 
@@ -963,6 +1140,10 @@ Configuration for the string key of an object_map entry.
 ### RefFallbackInputProperty
 
 Input properties allowed inside module reference fallback inputs.
+Nested module references are intentionally excluded to prevent references from
+recursively declaring more references through their mapped inputs.
+Keep this union in sync with InputProperty except for the ref member and the
+collection variants, which recursively use this fallback union.
 
 Discriminated union. The `type` field selects which schema applies.
 
@@ -985,6 +1166,8 @@ Discriminated union. The `type` field selects which schema applies.
 ### RefTypeDiscriminator
 
 Type discriminator for module references.
+Format: "$ref:&lt;module-type&gt;" (e.g., "$ref:ravion-aws-vpc")
+The module type is extracted by removing the "$ref:" prefix.
 
 Type: string
 
@@ -997,15 +1180,19 @@ One of: string \| integer \| boolean \| string \| integer \| boolean[], [ShowWhe
 ### DynamicValuesRef
 
 Dynamic values reference.
+References an external value source resolved at runtime. Query parameters may
+use module input templates, e.g.
+`$values:aws/ec2/instances?awsAccountId=<<module.input.aws_account_id>>&region=<<module.input.region>>`.
 
 Type: string
 
 ### StringValueItem
 
 A selectable option with a string value.
+Used in string input validation.values arrays.
 
 <ResponseField name="label" type="string">
-  Text shown in the dropdown
+  Text shown in the dropdown — defaults to value if omitted
 </ResponseField>
 
 <ResponseField name="description" type="string">
@@ -1029,9 +1216,13 @@ A selectable option with a string value.
 ### CompoundValueItem
 
 A compound value item - a record with arbitrary fields plus select metadata.
+Each key maps to a field value, and includes optional display fields.
+
+Note: The actual structure is a Record with dynamic keys for the data fields,
+plus the optional BaseSelectFields (label, description, group_label).
 
 <ResponseField name="label" type="string">
-  Text shown in the dropdown
+  Text shown in the dropdown — defaults to value if omitted
 </ResponseField>
 
 <ResponseField name="description" type="string">
@@ -1045,9 +1236,10 @@ A compound value item - a record with arbitrary fields plus select metadata.
 ### NumberValueItem
 
 A selectable option with a numeric value.
+Used in number input validation.values arrays.
 
 <ResponseField name="label" type="string">
-  Text shown in the dropdown
+  Text shown in the dropdown — defaults to value if omitted
 </ResponseField>
 
 <ResponseField name="description" type="string">
@@ -1098,8 +1290,19 @@ A selectable option with a numeric value.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -1132,6 +1335,7 @@ A selectable option with a numeric value.
 
 <ResponseField name="item_description" type="string | null">
   User-facing description template shown as a secondary line for each array item.
+  Supports placeholders like &#123;field_id&#125;.
 
   _(templateable)_
 </ResponseField>
@@ -1172,8 +1376,19 @@ A selectable option with a numeric value.
   Lock this field after first deploy — prevents changes to destructive settings
 </ResponseField>
 
+<ResponseField name="moved_from" type="string[]">
+  Input IDs from earlier module versions whose values this input now holds.
+  Upgrading an existing instance to this version does not trip the immutable
+  input check for the listed inputs or for this one, so a module version can
+  rename or merge immutable inputs without forcing a destroy and recreate.
+</ResponseField>
+
 <ResponseField name="collapsible" type="boolean">
-  Render this field as collapsible (tag when collapsed, full field when expanded) Supported for all value-producing input types.
+  Render this field as collapsible (tag when collapsed, full field when expanded)
+
+  Supported for all value-producing input types.
+  Consecutive collapsible fields are automatically grouped together.
+  Divider inputs break collapsible groups.
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -1219,6 +1434,9 @@ A selectable option with a numeric value.
 ### ShowWhenComparableValue
 
 Value or values to compare against in a show_when condition; arrays mean membership for scalar sources and contains-all for array sources.
+When the source value is scalar, an array condition matches any listed value.
+When the source value is an array, a scalar condition matches if the array contains that value.
+When the source value is an array, an array condition matches if the array contains all listed values.
 
 One of: string \| integer \| boolean, string \| integer \| boolean[].
 
@@ -1233,5 +1451,6 @@ Negated show_when condition.
 ### ShowWhenValue
 
 Value that can be used in a show_when condition.
+Supports string, number, or boolean values for comparison.
 
 One of: string, integer, boolean.

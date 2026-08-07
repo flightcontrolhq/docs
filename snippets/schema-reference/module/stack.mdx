@@ -34,6 +34,7 @@ Root stack block in module.yaml
 
 <ResponseField name="ravion_state_backend_workspace" type="string | null">
   The Ravion Cloud workspace name to use for state storage.
+  When set, the stack will use Ravion's built-in backend with this workspace name.
 
   _(templateable)_
 </ResponseField>
@@ -72,6 +73,7 @@ Pipeline configuration for a stack action
 
 <ResponseField name="triggers" type="Pipeline.PipelineTrigger[]">
   Triggers that automatically start pipeline runs on webhook events.
+  Uses the same trigger schema as pipelines.
 
   See: [Pipeline.PipelineTrigger](#pipeline-pipelinetrigger)
 </ResponseField>
@@ -95,6 +97,8 @@ Default stack pipeline run configuration
 ### Pipeline.PipelineTrigger
 
 Pipeline trigger definition.
+Discriminated by the `type` field so each webhook type can enforce
+provider-specific event values.
 
 Discriminated union. The `type` field selects which schema applies.
 
@@ -115,6 +119,7 @@ Pipeline trigger for generic webhooks.
 
 <ResponseField name="enabled" type="boolean" default="true">
   Whether this trigger is active. Disabled triggers are not registered.
+  Default: true
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
@@ -131,12 +136,15 @@ Pipeline trigger for generic webhooks.
 
 <ResponseField name="concurrency" type="Pipeline.ConcurrencyConfig">
   Concurrency configuration for runs started by this trigger.
+  An explicit key shares its configured concurrency scope with steps and blocks.
+  Without a key, each trigger variant receives its own auto-generated scope.
 
   See: [Pipeline.ConcurrencyConfig](#pipeline-concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,Pipeline.TriggerRunVariantConfig>" required>
   Maps variant IDs to run configuration — keys must match declared variant IDs.
+  At least one variant must be specified.
 
   See: [Pipeline.TriggerRunVariantConfig](#pipeline-triggerrunvariantconfig)
 </ResponseField>
@@ -157,6 +165,7 @@ Pipeline trigger for GitHub webhooks.
 
 <ResponseField name="enabled" type="boolean" default="true">
   Whether this trigger is active. Disabled triggers are not registered.
+  Default: true
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
@@ -173,12 +182,15 @@ Pipeline trigger for GitHub webhooks.
 
 <ResponseField name="concurrency" type="Pipeline.ConcurrencyConfig">
   Concurrency configuration for runs started by this trigger.
+  An explicit key shares its configured concurrency scope with steps and blocks.
+  Without a key, each trigger variant receives its own auto-generated scope.
 
   See: [Pipeline.ConcurrencyConfig](#pipeline-concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,Pipeline.TriggerRunVariantConfig>" required>
   Maps variant IDs to run configuration — keys must match declared variant IDs.
+  At least one variant must be specified.
 
   See: [Pipeline.TriggerRunVariantConfig](#pipeline-triggerrunvariantconfig)
 </ResponseField>
@@ -205,6 +217,7 @@ Pipeline trigger for GitLab webhooks.
 
 <ResponseField name="enabled" type="boolean" default="true">
   Whether this trigger is active. Disabled triggers are not registered.
+  Default: true
 </ResponseField>
 
 <ResponseField name="repo" type="string" required>
@@ -221,12 +234,15 @@ Pipeline trigger for GitLab webhooks.
 
 <ResponseField name="concurrency" type="Pipeline.ConcurrencyConfig">
   Concurrency configuration for runs started by this trigger.
+  An explicit key shares its configured concurrency scope with steps and blocks.
+  Without a key, each trigger variant receives its own auto-generated scope.
 
   See: [Pipeline.ConcurrencyConfig](#pipeline-concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,Pipeline.TriggerRunVariantConfig>" required>
   Maps variant IDs to run configuration — keys must match declared variant IDs.
+  At least one variant must be specified.
 
   See: [Pipeline.TriggerRunVariantConfig](#pipeline-triggerrunvariantconfig)
 </ResponseField>
@@ -253,6 +269,7 @@ Pipeline trigger that starts runs on a cron schedule.
 
 <ResponseField name="enabled" type="boolean" default="true">
   Whether this trigger is active. Disabled triggers are not registered.
+  Default: true
 </ResponseField>
 
 <ResponseField name="type" type="enum" required>
@@ -263,6 +280,10 @@ Pipeline trigger that starts runs on a cron schedule.
 
 <ResponseField name="cron" type="string" required>
   Cron expression defining when the pipeline runs (UTC unless timezone is set).
+  The five fields are: minute, hour, day of month, month, and day of week.
+  Supports standard 5-field cron plus `@hourly`, `@daily`, `@midnight`,
+  `@weekly`, `@monthly`, `@yearly`, `@annually`, and `@every <duration>`
+  (e.g. `@every 30m`).
 </ResponseField>
 
 <ResponseField name="timezone" type="string">
@@ -271,12 +292,15 @@ Pipeline trigger that starts runs on a cron schedule.
 
 <ResponseField name="concurrency" type="Pipeline.ConcurrencyConfig">
   Concurrency configuration for runs started by this trigger.
+  An explicit key shares its configured concurrency scope with steps and blocks.
+  Without a key, each trigger variant receives its own auto-generated scope.
 
   See: [Pipeline.ConcurrencyConfig](#pipeline-concurrencyconfig)
 </ResponseField>
 
 <ResponseField name="run" type="map<string,Pipeline.TriggerRunVariantConfig>" required>
   Maps variant IDs to run configuration — keys must match declared variant IDs.
+  At least one variant must be specified.
 
   See: [Pipeline.TriggerRunVariantConfig](#pipeline-triggerrunvariantconfig)
 </ResponseField>
@@ -286,37 +310,49 @@ Pipeline trigger that starts runs on a cron schedule.
 Concurrency configuration for controlling parallel execution
 
 <ResponseField name="key" type="string">
-  Unique identifier for the concurrency scope Triggers, steps, and blocks with the same key share a concurrency limit By default, the same key in different pip...
+  Unique identifier for the concurrency scope
+  Triggers, steps, and blocks with the same key share a concurrency limit
+  By default, the same key in different pipelines does not conflict
+  Default: auto-generated unique key for the configured trigger, step, or block
 
   _(minLen:1)_
 </ResponseField>
 
 <ResponseField name="scope" type="enum" default="pipeline">
-  Where the concurrency key is shared Organization-scoped concurrency requires an explicit key
+  Where the concurrency key is shared
+  Organization-scoped concurrency requires an explicit key
+  Default: "pipeline"
 
   Allowed values: `pipeline` | `organization`
 </ResponseField>
 
 <ResponseField name="value" type="integer" default="0">
   Maximum concurrent executions allowed (0 means unlimited, 1 means sequential)
+  Default: 0 (unlimited)
 
   _(format:int32,min:0)_
 </ResponseField>
 
 <ResponseField name="behavior" type="enum" default="queue">
   Behavior when the concurrency limit is reached
+  Default: "queue"
 
   Allowed values: `queue` | `cancel-in-progress` | `skip`
 </ResponseField>
 
 <ResponseField name="queue_size" type="integer">
-  Maximum queue size when behavior is "queue" Only applies when behavior is "queue" Unset means unlimited queue depth 0 disables queueing when behavior is "queue"
+  Maximum queue size when behavior is "queue"
+  Only applies when behavior is "queue"
+  Unset means unlimited queue depth
+  0 disables queueing when behavior is "queue"
 
   _(format:int32,min:0)_
 </ResponseField>
 
 <ResponseField name="queue_overflow_discard" type="enum" default="oldest">
-  Which items to discard when queue overflows Only applies when behavior is "queue" and queue_size &gt; 0
+  Which items to discard when queue overflows
+  Only applies when behavior is "queue" and queue_size &gt; 0
+  Default: "oldest"
 
   Allowed values: `oldest` | `newest`
 </ResponseField>
@@ -339,6 +375,7 @@ Trigger filter configuration
 
 <ResponseField name="action" type="string | string[]">
   Only trigger for specific webhook actions.
+  Ignored when the event payload does not include an action field.
 
   _(templateable)_
 </ResponseField>
@@ -351,6 +388,7 @@ Trigger filter configuration
 
 <ResponseField name="payload" type="Pipeline.PayloadCondition[]">
   Filter by webhook payload fields using dot-notation paths.
+  All conditions must match.
 
   See: [Pipeline.PayloadCondition](#pipeline-payloadcondition)
 </ResponseField>
@@ -432,6 +470,7 @@ Allowed values:
 ### Pipeline.PayloadCondition
 
 Condition to check against a webhook payload field.
+Operators are evaluated in order and the first configured operator wins.
 
 <ResponseField name="path" type="string" required>
   Dot-notation path to the payload field
