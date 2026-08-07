@@ -53,6 +53,7 @@ config
 configs
 cutover
 cutovers
+Datadog
 declaratively
 deploy's
 devs
@@ -63,6 +64,7 @@ domain_name
 env
 environment_variables
 Fargate
+Firehose
 Flightcontrol
 givenId
 host_header_values
@@ -99,12 +101,14 @@ repos
 rollout
 rollouts
 routing_policy
-runbooks
+runbooks?
 scaffolded
 semver
 serverless
 set_identifier
 signup
+slowquery
+Splunk
 stdin
 subnet
 subnets

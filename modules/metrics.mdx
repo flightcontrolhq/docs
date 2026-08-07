@@ -6,7 +6,47 @@ description: "View CloudWatch metrics for a Ravion module, including CPU, memory
 "twitter:image": "https://www.ravion.com/og/docs/modules/metrics.png"
 ---
 
-When supported, a module will display metric charts that are queried live from your AWS account. We cache requests for a short time to minimize your CloudWatch costs.
+Modules with the metrics capability display charts on their page in the dashboard, so you can check a service's health without leaving Ravion or building CloudWatch dashboards by hand.
 
-_This page is a work in progress_
-{/* TODO: Expand this page. */}
+Metrics are **queried live from CloudWatch in your AWS account** — Ravion never ingests or stores your metric data. Responses are cached for a short time to minimize your CloudWatch API costs.
+
+## What each module shows
+
+The module's definition determines which charts appear, so every instance of a module gets a relevant dashboard with zero setup. Some examples from the [standard library](/module-definitions/standard-library):
+
+| Module                                                                | Charts                                                                                                              |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| [`rvn-ecs-web`](/module-definitions/catalog/rvn-ecs-web)              | ECS service and load balancer metrics such as CPU, memory, request volume, response time, and target health.        |
+| [`rvn-ecs-nlb`](/module-definitions/catalog/rvn-ecs-nlb)              | Common ECS service metrics plus Network Load Balancer target group health for the first listener.                   |
+| [`rvn-ec2-service`](/module-definitions/catalog/rvn-ec2-service)      | Desired and in-service instance counts; web services add request count, response time, 4xx/5xx, and host health.    |
+| [`rvn-rds`](/module-definitions/catalog/rvn-rds)                      | CPU, free storage, connections, read IOPS, and write IOPS.                                                          |
+| [`rvn-elasticache`](/module-definitions/catalog/rvn-elasticache)      | Cache metrics for provisioned Redis or Valkey, Memcached, and serverless caches.                                    |
+| [`rvn-aws-static`](/module-definitions/catalog/rvn-aws-static)        | CloudFront requests, total error rate, 4xx and 5xx error rates, and bytes downloaded and uploaded.                  |
+| [`rvn-ecs-cluster`](/module-definitions/catalog/rvn-ecs-cluster)      | Container Insights cluster, service, and task metrics, plus EC2 instance metrics when EC2 capacity exists.          |
+
+Each module's [catalog page](/module-definitions/catalog) documents its charts precisely, usually in an _Observability_ section.
+
+Charts are for at-a-glance health. For alerting, several modules — such as `rvn-rds` and `rvn-elasticache` — can also create **CloudWatch alarms** through their inputs; see the module's catalog page.
+
+## Querying metrics from the CLI
+
+The [`ravion metrics cloudwatch`](/cli/reference/metrics) command queries any CloudWatch metric through Ravion's credential resolution — the same mechanism the dashboard charts use — so scripts and agents don't need their own AWS credentials:
+
+```bash
+ravion metrics cloudwatch \
+  --aws-account-id <awsact-id> \
+  --region us-east-1 \
+  --metric-namespace AWS/ECS \
+  --metric-name CPUUtilization \
+  --dimensions ClusterName=my-cluster --dimensions ServiceName=my-service \
+  --statistic Average --period 300 \
+  --start-time 2026-08-07T00:00:00Z --end-time 2026-08-07T12:00:00Z
+```
+
+It isn't limited to the metrics a module's dashboard shows — any namespace, metric, and dimension set in the account works.
+
+## For module authors
+
+Declare charts in the `ui.metrics` array of your module definition. Each entry has a stable `id`, a display `name`, a chart `type` (`line` or `bar`), and a CloudWatch `source` — namespace, metric name, statistic, dimensions, region, and AWS account. Every field is templateable, so sources typically reference stack outputs like the ECS service name or target group. The aggregation period is chosen by the requester, not the definition.
+
+See [UIMetric](/module-definitions/definition-schema/ui#uimetric) in the definition schema.
