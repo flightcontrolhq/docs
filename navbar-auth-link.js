@@ -8,6 +8,7 @@ function updateNavbarLinks() {
   const isLoggedIn = hasCookie("rps");
   const label = isLoggedIn ? "Dashboard" : "Start free trial";
   const href = isLoggedIn ? "https://app.ravion.com" : "https://app.ravion.com/signup";
+  const ravionOrigin = "https://www.ravion.com";
 
   document.documentElement.dataset.ravionAuthState = isLoggedIn ? "logged-in" : "logged-out";
 
@@ -25,8 +26,10 @@ function updateNavbarLinks() {
   });
 
   const logoLink = document.querySelector(".nav-logo")?.closest("a");
-  const logoHref = isLoggedIn ? "https://www.ravion.com/home" : "https://www.ravion.com";
-  if (logoLink?.getAttribute("href") !== logoHref) logoLink.href = logoHref;
+  if (isLoggedIn) {
+    const logoHref = ravionOrigin + "/home";
+    if (logoLink?.getAttribute("href") !== logoHref) logoLink.href = logoHref;
+  }
 }
 
 updateNavbarLinks();
