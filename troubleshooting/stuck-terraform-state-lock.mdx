@@ -78,7 +78,7 @@ Open the stack and review its runs. Wait for a running operation to finish, or c
 
 ## Runs that never complete
 
-Every run reaches a final state, including runs that fail. A run that stays in progress and does not respond to cancellation indicates a problem beyond the stack itself. This is not expected behaviour — [contact support](/contact-support) when you encounter it.
+Every run reaches a final state, including runs that fail. A run that stays in progress and does not respond to cancellation indicates a problem beyond the stack itself. This is not expected behavior — [contact support](/contact-support) when you encounter it.
 
 Such a run keeps hold of the lock, and a standard unlock stays rejected. `--force` releases the lock regardless of run status:
 
