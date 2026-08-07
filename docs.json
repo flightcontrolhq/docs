@@ -39,18 +39,6 @@
             ]
           },
           {
-            "group": "Use cases",
-            "pages": [
-              "use-cases/provision-infrastructure",
-              "use-cases/build-code",
-              "use-cases/deploy-code",
-              "use-cases/metrics-and-logs",
-              "use-cases/preview-environments",
-              "use-cases/developer-self-service",
-              "use-cases/agent-self-service"
-            ]
-          },
-          {
             "group": "Concepts",
             "pages": [
               "concepts/core-concepts",

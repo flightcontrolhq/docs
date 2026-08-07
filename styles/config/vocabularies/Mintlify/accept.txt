@@ -67,5 +67,3 @@ walkthrough
 walkthrough's
 weighted_routing_policy_weight
 zsh
-
-Dockerfile
