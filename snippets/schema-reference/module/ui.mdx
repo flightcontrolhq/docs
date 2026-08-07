@@ -17,6 +17,7 @@ UI configuration for links, logs, and metrics on the module dashboard
 ### ModuleUI
 
 UI configuration for the module.
+Defines links and metrics to display in the module's dashboard.
 
 <ResponseField name="links" type="UILink[] | null">
   Links to display, such as service URLs, documentation, etc.
@@ -35,7 +36,8 @@ UI configuration for the module.
 </ResponseField>
 
 <ResponseField name="logs" type="UILog[] | null">
-  Log sources displayed on the module's Logs tab. Each entry is a CloudWatch log group the module emits to.
+  Log sources displayed on the module's Logs tab. Each entry is a
+  CloudWatch log group the module emits to.
 
   See: [UILog](#uilog)
 
@@ -45,6 +47,7 @@ UI configuration for the module.
 ### UILink
 
 A link displayed in the module UI.
+Used to provide quick access to external resources like consoles, documentation, etc.
 
 <ResponseField name="name" type="string" required>
   Display name for the link
@@ -60,7 +63,9 @@ A link displayed in the module UI.
 
 ### UILog
 
-A log source displayed in the module UI's Logs tab. Every field is templateable so module authors can pass an entire log definition (or individual fields) fr...
+A log source displayed in the module UI's Logs tab. Every field is
+templateable so module authors can pass an entire log definition (or
+individual fields) from stack outputs.
 
 <ResponseField name="id" type="string" required>
   Stable identifier for the log source, used as the React key / scope id.
@@ -85,9 +90,14 @@ A log source displayed in the module UI's Logs tab. Every field is templateable 
 ### UIMetric
 
 A metric displayed in the module UI.
+Used to show CloudWatch metrics or other time-series data. Every field is
+templateable so module authors can pass an entire metric definition as a
+stack output (e.g. `<< stack.output.cpu_metric >>`) or template individual
+fields piecemeal.
 
 <ResponseField name="id" type="string" required>
-  Stable identifier for the metric, used as the React key on the dashboard and in the metric query cache key. Must be unique within a module's UI.
+  Stable identifier for the metric, used as the React key on the dashboard
+  and in the metric query cache key. Must be unique within a module's UI.
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -107,7 +117,11 @@ A metric displayed in the module UI.
 </ResponseField>
 
 <ResponseField name="source" type="MetricSource" required>
-  Data source for the metric. Discriminated union — the only `type` currently supported is `cloudwatch`. The aggregation period is chosen by the requester (fro...
+  Data source for the metric. Discriminated union — the only `type`
+  currently supported is `cloudwatch`. The aggregation period is chosen
+  by the requester (frontend) based on the selected time range, not by
+  the module definition. The display unit is auto-detected server-side
+  from the namespace + metric name; module authors no longer specify it.
 
   See: [MetricSource](#metricsource)
 
@@ -117,6 +131,8 @@ A metric displayed in the module UI.
 ### LogSource
 
 A CloudWatch Logs source for a module log stream. Mirrors
+CloudWatchMetricSource: every field is templateable so module authors can
+wire concrete values from stack outputs.
 
 <ResponseField name="type" type="enum" required>
   Allowed values: `cloudwatch`
@@ -146,7 +162,11 @@ A CloudWatch Logs source for a module log stream. Mirrors
 
 ### MetricSource
 
-CloudWatch-backed metric source. Module authors fill this in with literal values or templated references (e.g. `&lt;&lt; stack.output.\* &gt;&gt;`). The server uses `aws_...
+CloudWatch-backed metric source. Module authors fill this in with literal
+values or templated references (e.g. `<< stack.output.* >>`). The server
+uses `aws_account_id` to look up credentials and `region` to scope the
+CloudWatch call — no ARN parsing required. Every field is templateable
+so the entire source can be wired from a stack output map.
 
 <ResponseField name="type" type="enum" required>
   Source type discriminator
@@ -157,7 +177,13 @@ CloudWatch-backed metric source. Module authors fill this in with literal values
 </ResponseField>
 
 <ResponseField name="aws_account_id" type="string" required>
-  Ravion AWS account reference used to resolve credentials for the CloudWatch call. Accepts either the Flightcontrol AWS account database ID (e.g. `awsact_123`...
+  Ravion AWS account reference used to resolve credentials for the
+  CloudWatch call. Accepts either the Flightcontrol AWS account database
+  ID (e.g. `awsact_123`) or the user-provided `givenId` configured on the
+  AWS account. The resolver normalizes the value to the DB id before any
+  downstream use; the `givenId` form is an input alias only and is never
+  persisted as the canonical reference. The 12-digit AWS account number is
+  rejected because the same number can map to multiple connected accounts.
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -187,7 +213,8 @@ CloudWatch-backed metric source. Module authors fill this in with literal values
 </ResponseField>
 
 <ResponseField name="dimensions" type="map<string,string>" required>
-  Dimensions used to scope the metric. Required — no longer derived from any ARN since the source no longer carries one.
+  Dimensions used to scope the metric. Required — no longer derived from
+  any ARN since the source no longer carries one.
 
   _(templateable)_
 </ResponseField>
@@ -204,6 +231,8 @@ Allowed values:
 ### CloudWatchLogSource
 
 A CloudWatch Logs source for a module log stream. Mirrors
+CloudWatchMetricSource: every field is templateable so module authors can
+wire concrete values from stack outputs.
 
 <ResponseField name="type" type="enum" required>
   Allowed values: `cloudwatch`
@@ -233,7 +262,11 @@ A CloudWatch Logs source for a module log stream. Mirrors
 
 ### CloudWatchMetricSource
 
-CloudWatch-backed metric source. Module authors fill this in with literal values or templated references (e.g. `&lt;&lt; stack.output.\* &gt;&gt;`). The server uses `aws_...
+CloudWatch-backed metric source. Module authors fill this in with literal
+values or templated references (e.g. `<< stack.output.* >>`). The server
+uses `aws_account_id` to look up credentials and `region` to scope the
+CloudWatch call — no ARN parsing required. Every field is templateable
+so the entire source can be wired from a stack output map.
 
 <ResponseField name="type" type="enum" required>
   Source type discriminator
@@ -244,7 +277,13 @@ CloudWatch-backed metric source. Module authors fill this in with literal values
 </ResponseField>
 
 <ResponseField name="aws_account_id" type="string" required>
-  Ravion AWS account reference used to resolve credentials for the CloudWatch call. Accepts either the Flightcontrol AWS account database ID (e.g. `awsact_123`...
+  Ravion AWS account reference used to resolve credentials for the
+  CloudWatch call. Accepts either the Flightcontrol AWS account database
+  ID (e.g. `awsact_123`) or the user-provided `givenId` configured on the
+  AWS account. The resolver normalizes the value to the DB id before any
+  downstream use; the `givenId` form is an input alias only and is never
+  persisted as the canonical reference. The 12-digit AWS account number is
+  rejected because the same number can map to multiple connected accounts.
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -274,7 +313,8 @@ CloudWatch-backed metric source. Module authors fill this in with literal values
 </ResponseField>
 
 <ResponseField name="dimensions" type="map<string,string>" required>
-  Dimensions used to scope the metric. Required — no longer derived from any ARN since the source no longer carries one.
+  Dimensions used to scope the metric. Required — no longer derived from
+  any ARN since the source no longer carries one.
 
   _(templateable)_
 </ResponseField>
@@ -282,3 +322,4 @@ CloudWatch-backed metric source. Module authors fill this in with literal values
 ## Readme
 
 Human-readable module documentation in Markdown.
+Supports multiline content.
