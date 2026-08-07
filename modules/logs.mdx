@@ -6,10 +6,51 @@ description: "Stream and query CloudWatch logs for a Ravion module, including fi
 "twitter:image": "https://www.ravion.com/og/docs/modules/logs.png"
 ---
 
-When supported, a module will have a Logs tab. Logs are queried live from your AWS account.
+Modules that emit logs have a **Logs tab** on their page in the dashboard. Logs are **queried live from CloudWatch in your AWS account** — Ravion never ingests or stores your log data.
 
-You can sort, filter, and select custom time ranges.
+From the Logs tab you can sort, filter, and select custom time ranges.
 
-_This page is a work in progress_
+## Log sources
 
-{/* TODO: Expand this page. */}
+Each entry in the Logs tab is a **log source**: a CloudWatch log group the module writes to, declared in the module's [definition](/modules/overview). A module can have several sources — for example, [`rvn-aurora`](/module-definitions/catalog/rvn-aurora) shows one per enabled CloudWatch log export type (`postgresql`, or `audit`, `error`, `general`, and `slowquery` for MySQL).
+
+Where standard-library modules send their logs:
+
+| Module                                                           | Log group                                                                                                     |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| ECS services ([`rvn-ecs-web`](/module-definitions/catalog/rvn-ecs-web) and friends) | App container stdout/stderr via the `awslogs` driver to the service's log group.                              |
+| [`rvn-ec2-service`](/module-definitions/catalog/rvn-ec2-service) | `/ravion/ec2/<service-name>`, with a distinct stream per deployment and instance. Deploy-script output is copied into the same instance stream. |
+| [`rvn-lambda`](/module-definitions/catalog/rvn-lambda)           | `/aws/lambda/<function-name>`, created by the module by default.                                              |
+
+Log **retention** is controlled by the module where applicable — for example, `rvn-lambda` has a log retention days input.
+
+## Shipping logs elsewhere
+
+The Logs tab doesn't replace a dedicated log platform — it has no full-text indexing or long-term analytics. ECS modules support **FireLens log routing** to send app logs to destinations such as Datadog, Splunk, Firehose, OpenSearch, or S3 through a Fluent Bit sidecar. Keep the CloudWatch output enabled alongside external destinations so the Logs tab and Ravion runtime logs continue to work.
+
+## Querying logs from the CLI
+
+The [`ravion logs cloudwatch`](/cli/reference/logs) command queries any CloudWatch log group through Ravion's credential resolution — the same mechanism the dashboard uses — so scripts and agents don't need their own AWS credentials:
+
+```bash
+ravion logs cloudwatch \
+  --aws-account-id <awsact-id> \
+  --region us-east-1 \
+  --log-group-name /ravion/ec2/my-service \
+  --start-time 2026-08-07T00:00:00Z \
+  --filter-pattern "ERROR" \
+  --tail
+```
+
+`--tail` switches to live tail mode after fetching historical logs.
+
+<Note>
+  **Build and pipeline logs are separate.** A build is a pipeline step, not a module log source — use
+  [`ravion logs pipeline-step <step-execution-id>`](/cli/reference/logs) to stream those.
+</Note>
+
+## For module authors
+
+Declare log sources in the `ui.logs` array of your module definition. Each entry has a stable `id`, a display `name`, and a CloudWatch `source` — AWS account, region, log group, and an optional log stream prefix and filter pattern. Every field is templateable, so sources typically reference stack outputs like the created log group name.
+
+See [UILog](/module-definitions/definition-schema/ui#uilog) in the definition schema.
