@@ -1,0 +1,101 @@
+---
+title: "How to deploy Strapi to AWS"
+sidebarTitle: "Strapi"
+description: "Deploy Strapi to your AWS account on ECS Fargate behind an Application Load Balancer with an RDS database through Ravion."
+keywords: ["Strapi AWS deployment", "deploy Strapi to AWS", "Strapi hosting", "ECS Fargate", "RDS", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/strapi.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/strapi.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Run Strapi on ECS Fargate behind an Application Load Balancer and keep its relational database in Amazon RDS.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Strapi app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/strapi as the framework-specific source of truth.
+  3. Confirm this repository contains Strapi and locate its app root in a monorepo.
+  4. Inspect `package.json`, `config/database.*`, server config, Docker files, and scripts to detect the real build/start commands, port, health endpoint, and upload storage needs.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` + `rvn-rds`, using Secrets Manager for database credentials rather than inventing RDS references.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, ports, or database credentials before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Ravion provisions the network, ECS service, and RDS database in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+Strapi builds with `npm run build` and starts with `npm run start`. The example includes PostgreSQL RDS. After the first apply, put the RDS endpoint and credentials into the service's runtime variables or a Secrets Manager secret.
+
+```yaml ravion.yaml
+project:
+  givenId: strapi-app
+  name: Strapi app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: strapi-production
+      - givenId: database
+        name: PostgreSQL
+        type: rvn-rds
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: strapi-production
+          db_name: strapi
+          username: strapiadmin
+          engine_major_version: "15"
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: strapi-production
+      - givenId: web
+        name: Strapi web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: strapi-production-web
+          build_source: railpack
+          source_repo: my-org/my-strapi-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: npm run start
+          container_port: 1337
+          health_check_path: /_health
+          fargate_size:
+            vcpu: 1
+            memory_gb: 2
+```
+
+Use a Secrets Manager secret for `DATABASE_CLIENT`, `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD`. The current module schema accepts runtime `secrets`, but does not expose a typed RDS output-to-secret wiring field; create the secret from the RDS outputs before applying the service.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id strapi-app --name "Strapi app"
+ravion project config apply strapi-app --file ravion.yaml --dry-run
+ravion project config apply strapi-app --file ravion.yaml
+```
+
+Use [custom domains](/guides/custom-domains) for the ALB hostname and certificate.
+
+## Next steps
+
+<DeployNextSteps />

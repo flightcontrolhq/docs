@@ -13,6 +13,7 @@
 ### EcsTaskDefinition
 
 AWS ECS task definition — models the RegisterTaskDefinition API input.
+All string fields are templateable for &lt;&lt; module.input.\* &gt;&gt; and &lt;&lt; deploy.input.\* &gt;&gt; expressions.
 
 <ResponseField name="family" type="string" required>
   Task definition family name
@@ -29,7 +30,8 @@ AWS ECS task definition — models the RegisterTaskDefinition API input.
 </ResponseField>
 
 <ResponseField name="cpu" type="string | null">
-  Task-level CPU units (required for Fargate) Valid values: "256", "512", "1024", "2048", "4096" etc.
+  Task-level CPU units (required for Fargate)
+  Valid values: "256", "512", "1024", "2048", "4096" etc.
 
   _(templateable)_
 </ResponseField>
@@ -133,6 +135,7 @@ AWS ECS task definition — models the RegisterTaskDefinition API input.
 ### EcsContainerDefinition
 
 ECS container definition — models a single container within a task.
+All string fields are templateable.
 
 <ResponseField name="name" type="string" required>
   Container name — must be unique within the task
@@ -490,14 +493,18 @@ GPU or other resource requirement
 
 AWS-managed Fargate ephemeral EBS volume configuration.
 
+https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskManagedEBSVolumeConfiguration.html
+
 <ResponseField name="role_arn" type="string" required>
-  IAM role ARN AWS uses to provision the EBS volume on the customer's behalf. Required.
+  IAM role ARN AWS uses to provision the EBS volume on the
+  customer's behalf. Required.
 
   _(templateable)_
 </ResponseField>
 
 <ResponseField name="volume_type" type="string | null">
-  EBS volume type (`gp3`, `gp2`, `io2`, `io1`, `sc1`, `st1`, `standard`).
+  EBS volume type (`gp3`, `gp2`, `io2`, `io1`, `sc1`, `st1`,
+  `standard`).
 
   _(templateable)_
 </ResponseField>
@@ -527,7 +534,8 @@ AWS-managed Fargate ephemeral EBS volume configuration.
 </ResponseField>
 
 <ResponseField name="filesystem_type" type="string | null">
-  Filesystem type to format the volume with (`ext3`, `ext4`, `xfs`, `ntfs`). Defaults per OS family.
+  Filesystem type to format the volume with (`ext3`, `ext4`,
+  `xfs`, `ntfs`). Defaults per OS family.
 
   _(templateable)_
 </ResponseField>
@@ -553,7 +561,8 @@ AWS-managed Fargate ephemeral EBS volume configuration.
 </ResponseField>
 
 <ResponseField name="termination_policy" type="EcsTaskManagedEBSVolumeTerminationPolicy">
-  Termination policy — controls whether the volume is deleted when the task stops.
+  Termination policy — controls whether the volume is deleted
+  when the task stops.
 
   See: [EcsTaskManagedEBSVolumeTerminationPolicy](#ecstaskmanagedebsvolumeterminationpolicy)
 
@@ -561,7 +570,8 @@ AWS-managed Fargate ephemeral EBS volume configuration.
 </ResponseField>
 
 <ResponseField name="volume_initialization_rate" type="integer | null">
-  Initialization rate (MiB/s) for snapshot-restored volumes — controls how fast blocks are pre-warmed.
+  Initialization rate (MiB/s) for snapshot-restored volumes —
+  controls how fast blocks are pre-warmed.
 
   _(format:int32; templateable)_
 </ResponseField>
@@ -864,8 +874,11 @@ EFS volume configuration for ECS tasks
 
 Tag specification for an ECS-managed EBS volume.
 
+https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_EBSTagSpecification.html
+
 <ResponseField name="resource_type" type="enum" required>
-  Resource type the tags apply to. Currently only `volume` is supported.
+  Resource type the tags apply to. Currently only `volume`
+  is supported.
 
   Allowed values: `volume`
 
@@ -873,7 +886,8 @@ Tag specification for an ECS-managed EBS volume.
 </ResponseField>
 
 <ResponseField name="propagate_tags" type="enum | null">
-  Where the tags come from — explicit list, propagated from the task definition, or none.
+  Where the tags come from — explicit list, propagated from the
+  task definition, or none.
 
   Allowed values: `TASK_DEFINITION` | `SERVICE` | `NONE`
 
@@ -891,6 +905,8 @@ Tag specification for an ECS-managed EBS volume.
 ### EcsTaskManagedEBSVolumeTerminationPolicy
 
 Termination policy for an ECS-managed EBS volume.
+
+https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskManagedEBSVolumeTerminationPolicy.html
 
 <ResponseField name="delete_on_termination" type="boolean" required>
   Whether to delete the volume when the task stops.

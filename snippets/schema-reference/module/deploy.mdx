@@ -44,19 +44,26 @@ AWS static site deployment configuration
 </ResponseField>
 
 <ResponseField name="timeout" type="integer">
-  Maximum total wall-clock budget (in seconds) for a single deploy, measured from the moment the workflow starts (including time spent waiting for the deployme...
+  Maximum total wall-clock budget (in seconds) for a single deploy, measured
+  from the moment the workflow starts (including time spent waiting for the
+  deployment-manager lock). Matches the semantics of pipeline step `timeout`.
+  When omitted the deploy has no explicit wall-clock limit beyond the
+  workflow-level activity timeouts on each phase.
+  Default: unset (no wall-clock cap).
 
   _(format:int32,min:60)_
 </ResponseField>
 
 <ResponseField name="inputs" type="InputProperty[]" required>
   Deployment-specific inputs shown in the deploy modal.
+  Same types as module inputs — reuses the InputProperty union.
 
   See: [InputProperty](/module-definitions/definition-schema/inputs#inputproperty)
 </ResponseField>
 
 <ResponseField name="definition" type="AwsStaticDeploymentDefinition" required>
-  Per-deploy definition. Templateable — supports both module.input and deploy.input references inside string fields.
+  Per-deploy definition. Templateable — supports both module.input and
+  deploy.input references inside string fields.
 
   See: [AwsStaticDeploymentDefinition](#awsstaticdeploymentdefinition)
 
@@ -65,7 +72,11 @@ AWS static site deployment configuration
 
 ### Ec2ModuleDeployment
 
-AWS EC2 deployment configuration. In-place only: instances are never replaced; the module-provided SSM document performs the whole per-instance deploy and it...
+AWS EC2 deployment configuration. In-place only: instances are never
+replaced; the module-provided SSM document performs the whole
+per-instance deploy and its exit status is the per-instance verdict.
+Traffic-shift strategies are deliberately out of scope — rolling is the
+only supported deployment strategy.
 
 <ResponseField name="type" type="enum" required>
   Deployment type discriminator
@@ -87,12 +98,15 @@ AWS EC2 deployment configuration. In-place only: instances are never replaced; t
 
 <ResponseField name="concurrency" type="EcsDeployConcurrency">
   Concurrency policy — controls how simultaneous deploy requests are handled.
+  Omit to use defaults: queue_size=1, queue_overflow=oldest.
 
   See: [EcsDeployConcurrency](/module-definitions/definition-schema/ecs-deployments#ecsdeployconcurrency)
 </ResponseField>
 
 <ResponseField name="strategy" type="Ec2DeploymentStrategyConfig">
-  Rolling in-place deployment strategy. Its rollout controls map to SSM SendCommand MaxConcurrency / MaxErrors.
+  Rolling in-place deployment strategy. Its rollout controls map to SSM
+  SendCommand MaxConcurrency / MaxErrors.
+  Omit for the safe default: one instance at a time, stop on first failure.
 
   See: [Ec2DeploymentStrategyConfig](#ec2deploymentstrategyconfig)
 
@@ -100,19 +114,25 @@ AWS EC2 deployment configuration. In-place only: instances are never replaced; t
 </ResponseField>
 
 <ResponseField name="timeout" type="integer">
-  Maximum total wall-clock budget (in seconds) for a single deploy, measured from the moment the workflow starts (including time spent waiting for the deployme...
+  Maximum total wall-clock budget (in seconds) for a single deploy,
+  measured from the moment the workflow starts (including time spent
+  waiting for the deployment-manager lock). Matches the semantics of
+  pipeline step `timeout`.
+  Default: unset (no wall-clock cap).
 
   _(format:int32,min:60)_
 </ResponseField>
 
 <ResponseField name="inputs" type="InputProperty[]" required>
   Deployment-specific inputs shown in the deploy modal.
+  Same types as module inputs — reuses the InputProperty union.
 
   See: [InputProperty](/module-definitions/definition-schema/inputs#inputproperty)
 </ResponseField>
 
 <ResponseField name="definition" type="Ec2DeploymentDefinition" required>
-  Per-deploy definition. Templateable — supports both module.input and deploy.input references inside string fields.
+  Per-deploy definition. Templateable — supports both module.input and
+  deploy.input references inside string fields.
 
   See: [Ec2DeploymentDefinition](#ec2deploymentdefinition)
 
@@ -121,7 +141,9 @@ AWS EC2 deployment configuration. In-place only: instances are never replaced; t
 
 ### LambdaModuleDeployment
 
-AWS Lambda deployment configuration. v1 supports UpdateFunctionCode + PublishVersion + UpdateAlias. Pre/post deploy hooks and weighted- routing alias shifts...
+AWS Lambda deployment configuration. v1 supports UpdateFunctionCode
++ PublishVersion + UpdateAlias. Pre/post deploy hooks and weighted-
+routing alias shifts are deliberately out of scope for v1.
 
 <ResponseField name="type" type="enum" required>
   Deployment type discriminator
@@ -136,19 +158,25 @@ AWS Lambda deployment configuration. v1 supports UpdateFunctionCode + PublishVer
 </ResponseField>
 
 <ResponseField name="timeout" type="integer">
-  Maximum total wall-clock budget (in seconds) for a single deploy, measured from the moment the workflow starts (including time spent waiting for the deployme...
+  Maximum total wall-clock budget (in seconds) for a single deploy,
+  measured from the moment the workflow starts (including time spent
+  waiting for the deployment-manager lock). Matches the semantics of
+  pipeline step `timeout`.
+  Default: unset (no wall-clock cap).
 
   _(format:int32,min:60)_
 </ResponseField>
 
 <ResponseField name="inputs" type="InputProperty[]" required>
   Deployment-specific inputs shown in the deploy modal.
+  Same types as module inputs — reuses the InputProperty union.
 
   See: [InputProperty](/module-definitions/definition-schema/inputs#inputproperty)
 </ResponseField>
 
 <ResponseField name="definition" type="LambdaDeploymentDefinition" required>
-  Per-deploy definition. Templateable — supports both module.input and deploy.input references inside string fields.
+  Per-deploy definition. Templateable — supports both module.input
+  and deploy.input references inside string fields.
 
   See: [LambdaDeploymentDefinition](#lambdadeploymentdefinition)
 
@@ -156,7 +184,14 @@ AWS Lambda deployment configuration. v1 supports UpdateFunctionCode + PublishVer
 </ResponseField>
 
 <ResponseField name="function_configuration" type="LambdaFunctionConfiguration">
-  Per-deploy function-configuration overrides applied via `UpdateFunctionConfiguration` before the new code is published.
+  Per-deploy function-configuration overrides applied via
+  `UpdateFunctionConfiguration` before the new code is published.
+  Every field is optional — omitted fields are left untouched on
+  AWS (partial update semantic). Omitting the entire block skips
+  the UpdateFunctionConfiguration phase.
+
+  Templateable — every string/scalar leaf supports module.input and
+  deploy.input references.
 
   See: [LambdaFunctionConfiguration](#lambdafunctionconfiguration)
 
@@ -165,22 +200,32 @@ AWS Lambda deployment configuration. v1 supports UpdateFunctionCode + PublishVer
 
 ### AwsStaticDeploymentDefinition
 
-Per-deploy definition for AWS static deployments. The deploy manager promotes the resolved `s3_directory` to the `active` KVS key and (optionally) issues a b...
+Per-deploy definition for AWS static deployments. The deploy manager promotes
+the resolved `s3_directory` to the `active` KVS key and (optionally) issues a
+background CloudFront cache invalidation across all distributions.
 
 <ResponseField name="s3_directory" type="string" required>
   S3 directory (version prefix) to promote to active.
+  Templateable — typically references a deploy input that holds the version
+  built by the upstream pipeline step.
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 <ResponseField name="cloudfront_invalidation_paths" type="string[] | null">
-  CloudFront cache invalidation paths to issue across every distribution after the KVS write succeeds. Runs in the background — the deploy is marked complete o...
+  CloudFront cache invalidation paths to issue across every distribution
+  after the KVS write succeeds. Runs in the background — the deploy is
+  marked complete on KVS write, not on invalidation completion.
+  Empty list disables invalidation entirely (preferred for KVS-versioned
+  setups where each version flip is automatically a fresh cache key).
 
   _(templateable)_
 </ResponseField>
 
 <ResponseField name="keep_latest_successful_deploy_count" type="integer | null">
-  Number of latest successful deploys to keep in S3. Older S3 directories are pruned in the background after a successful deploy. Omit or set to 0 to disable p...
+  Number of latest successful deploys to keep in S3. Older S3 directories
+  are pruned in the background after a successful deploy. Omit or set to 0
+  to disable pruning entirely.
 
   _(format:int32,min:0; templateable)_
 </ResponseField>
@@ -188,15 +233,22 @@ Per-deploy definition for AWS static deployments. The deploy manager promotes th
 ### AwsStaticDeploymentInfrastructure
 
 Infrastructure resources required for AWS static site deployment.
+Not provisioned by the deploy manager — must already exist (typically created
+by the `hosting/static_site` Terraform module). The KeyValueStore is shared
+by all distributions of the module; the CloudFront viewer-request function
+reads it on every request to resolve the active S3 directory.
 
 <ResponseField name="cloudfront_keyvaluestore_arn" type="string" required>
   CloudFront KeyValueStore ARN that holds the active version pointer.
+  The deploy step writes `key="active", value=<s3_directory>` to this store
+  via PutKey with optimistic ETag concurrency.
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 <ResponseField name="cloudfront_distribution_arns" type="string[]" required>
   CloudFront distribution ARNs that share this origin/KVS.
+  Used for optional cache invalidation after the version flip.
 
   _(minItems:1; templateable)_
 </ResponseField>
@@ -209,6 +261,7 @@ Infrastructure resources required for AWS static site deployment.
 
 <ResponseField name="s3_bucket" type="string" required>
   S3 bucket name that hosts the versioned build directories.
+  Build artifacts live at `s3://<s3_bucket>/<s3_directory>/...`.
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -226,10 +279,20 @@ Discriminated union. The `runtime` field selects which schema applies.
 
 ### Ec2DeploymentInfrastructure
 
-Infrastructure resources required for an AWS EC2 deployment. Not provisioned by the deploy manager — must already exist (created by the `compute/ec2_service`...
+Infrastructure resources required for an AWS EC2 deployment. Not provisioned
+by the deploy manager — must already exist (created by the
+`compute/ec2_service` Terraform module). The deploy manager runs the
+module-provided SSM command document against the Auto Scaling Group's
+in-service instances; all deploy mechanics (env rebuild, target-group
+drain/re-register, container/artifact swap, local health gate) live inside
+the document.
 
 <ResponseField name="autoscaling_group_name" type="string" required>
-  Name of the Auto Scaling Group whose in-service instances the deploy targets. For container deploys the module's SSM deploy document is derived from this nam...
+  Name of the Auto Scaling Group whose in-service instances the deploy
+  targets. For container deploys the module's SSM deploy document is
+  derived from this name by convention (`<name>-deploy`) — the
+  Terraform module names both from the same input, so the document is
+  not part of this contract.
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -241,29 +304,40 @@ Infrastructure resources required for an AWS EC2 deployment. Not provisioned by 
 </ResponseField>
 
 <ResponseField name="aws_account_id" type="string" required>
-  Ravion AWS account ID (`awsact_…`, as selected from `$values:ravion/aws_accounts`) that owns the Auto Scaling Group — not the raw AWS account number. Unlike...
+  Ravion AWS account ID (`awsact_…`, as selected from
+  `$values:ravion/aws_accounts`) that owns the Auto Scaling Group — not
+  the raw AWS account number. Unlike the ECS / Lambda / Static deploy
+  types, no EC2 infrastructure field is an ARN the account could be
+  parsed from, so it is declared explicitly.
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 <ResponseField name="log_group_name" type="string | null">
-  CloudWatch log group receiving application stdout and stderr from the EC2 instances. The deploy manager combines this with the deployment and instance IDs to...
+  CloudWatch log group receiving application stdout and stderr from the
+  EC2 instances. The deploy manager combines this with the deployment and
+  instance IDs to query one exact stream per instance.
 
   _(templateable)_
 </ResponseField>
 
 <ResponseField name="target_group_arn" type="string | null">
-  ARN of the service target group when the service is attached to a load balancer. Informational for the deploy manager (the SSM document owns drain/re-registe...
+  ARN of the service target group when the service is attached to a load
+  balancer. Informational for the deploy manager (the SSM document owns
+  drain/re-register); omitted for worker-mode services.
 
   _(templateable)_
 </ResponseField>
 
 ### Ec2DeploymentStrategyConfig
 
-Rolling in-place deployment strategy for EC2 instances. The rollout controls map 1:1 to SSM SendCommand's MaxConcurrency / MaxErrors semantics — values are a...
+Rolling in-place deployment strategy for EC2 instances. The rollout controls
+map 1:1 to SSM SendCommand's MaxConcurrency / MaxErrors semantics — values
+are absolute counts ("1", "5") or percentages ("25%").
 
 <ResponseField name="type" type="enum" required>
-  Deployment strategy. EC2 deployments currently support rolling in-place updates only.
+  Deployment strategy. EC2 deployments currently support rolling in-place
+  updates only.
 
   Allowed values: `rolling`
 
@@ -271,13 +345,18 @@ Rolling in-place deployment strategy for EC2 instances. The rollout controls map
 </ResponseField>
 
 <ResponseField name="concurrency_max" type="string | null">
-  How many instances run the deploy document at once. SSM SendCommand MaxConcurrency semantics.
+  How many instances run the deploy document at once. SSM SendCommand
+  MaxConcurrency semantics.
+  Default: "1" — one instance at a time, so a load-balanced service keeps
+  serving from the untouched instances during the rollout.
 
   _(templateable)_
 </ResponseField>
 
 <ResponseField name="errors_max" type="string | null">
-  How many per-instance failures are tolerated before SSM stops sending the document to further instances. SSM SendCommand MaxErrors semantics.
+  How many per-instance failures are tolerated before SSM stops sending
+  the document to further instances. SSM SendCommand MaxErrors semantics.
+  Default: "0" — the first failed instance halts the rollout.
 
   _(templateable)_
 </ResponseField>
@@ -296,6 +375,10 @@ Discriminated union. The `package_type` field selects which schema applies.
 ### LambdaDeploymentInfrastructure
 
 Infrastructure resources required for AWS Lambda deployment.
+Not provisioned by the deploy manager — must already exist (typically
+created by the `compute/lambda` Terraform module). The alias is
+expected to already exist on the function; the deploy step only
+flips it onto a freshly-published version.
 
 <ResponseField name="function_arn" type="string" required>
   Full ARN of the Lambda function the deploy targets.
@@ -304,26 +387,41 @@ Infrastructure resources required for AWS Lambda deployment.
 </ResponseField>
 
 <ResponseField name="region" type="string" required>
-  AWS region of the function. Mirrors `aws_static_module_deployment`'s `s3_region` — needed because Lambda's regional endpoint is the only thing the workflow c...
+  AWS region of the function. Mirrors `aws_static_module_deployment`'s
+  `s3_region` — needed because Lambda's regional endpoint is the only
+  thing the workflow can reach the function through.
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 <ResponseField name="alias_name" type="string | null">
   Alias the deploy flips after publishing the new function version.
+  Default: `live`. The alias must already exist on the function — the
+  deploy step calls UpdateAlias, never CreateAlias.
 
   _(templateable)_
 </ResponseField>
 
 <ResponseField name="s3_artifact_bucket" type="string | null">
-  S3 bucket the build step uploaded the zip artifact into. Optional — captured into the deploy snapshot for audit even when the deploy itself targets an Image-...
+  S3 bucket the build step uploaded the zip artifact into. Optional —
+  captured into the deploy snapshot for audit even when the deploy
+  itself targets an Image-packaged function.
 
   _(templateable)_
 </ResponseField>
 
 ### LambdaFunctionConfiguration
 
-AWS Lambda function configuration — every field optional, applied as a partial update via `UpdateFunctionConfiguration`. Fields the user omits are left untou...
+AWS Lambda function configuration — every field optional, applied as
+a partial update via `UpdateFunctionConfiguration`. Fields the user
+omits are left untouched on AWS; an empty block (or omitting the
+`function_configuration` key entirely) skips the
+UpdateFunctionConfiguration phase altogether.
+
+All scalar/string fields are templateable for &lt;&lt; module.input.\* &gt;&gt;
+and &lt;&lt; deploy.input.\* &gt;&gt; expressions.
+
+https://docs.aws.amazon.com/lambda/latest/api/API_UpdateFunctionConfiguration.html
 
 <ResponseField name="role" type="string | null">
   IAM execution role ARN.
@@ -376,7 +474,8 @@ AWS Lambda function configuration — every field optional, applied as a partial
 </ResponseField>
 
 <ResponseField name="vpc_config" type="LambdaVpcConfig">
-  VPC configuration. Setting empty arrays disconnects the function from the VPC.
+  VPC configuration. Setting empty arrays disconnects the function
+  from the VPC.
 
   See: [LambdaVpcConfig](#lambdavpcconfig)
 
@@ -385,6 +484,7 @@ AWS Lambda function configuration — every field optional, applied as a partial
 
 <ResponseField name="layers" type="string[] | null">
   Lambda layer ARNs (versioned, e.g.
+  `arn:aws:lambda:us-east-1:123456789012:layer:foo:3`).
 
   _(templateable)_
 </ResponseField>
@@ -428,7 +528,8 @@ AWS Lambda function configuration — every field optional, applied as a partial
 </ResponseField>
 
 <ResponseField name="snap_start" type="LambdaSnapStart">
-  SnapStart configuration. Java-only on AWS today, but the field is forwarded as-is to Lambda.
+  SnapStart configuration. Java-only on AWS today, but the field is
+  forwarded as-is to Lambda.
 
   See: [LambdaSnapStart](#lambdasnapstart)
 
@@ -453,7 +554,9 @@ AWS Lambda function configuration — every field optional, applied as a partial
 
 ### Ec2ContainerDeploymentDefinition
 
-Container-runtime EC2 deploy definition. The image must already exist (pushed by the upstream build step's `ecr` destination, or supplied by the user for pre...
+Container-runtime EC2 deploy definition. The image must already exist
+(pushed by the upstream build step's `ecr` destination, or supplied by
+the user for prebuilt/disabled builds).
 
 <ResponseField name="runtime" type="enum" required>
   Definition type discriminator.
@@ -464,14 +567,20 @@ Container-runtime EC2 deploy definition. The image must already exist (pushed by
 </ResponseField>
 
 <ResponseField name="image_uri" type="string" required>
-  Full image URI to deploy. Prefer a digest-qualified URI for reproducibility. Templateable — typically combines the repository URL with a deploy input or refe...
+  Full image URI to deploy. Prefer a digest-qualified URI for
+  reproducibility. Templateable — typically combines the repository URL
+  with a deploy input or references a deploy input containing the full URI.
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 ### Ec2ManualDeploymentDefinition
 
-Manual-runtime EC2 deploy definition. The deploy manager sends these shell commands to every in-service instance through the module-provided deploy document,...
+Manual-runtime EC2 deploy definition. The deploy manager sends these
+shell commands to every in-service instance through the
+module-provided deploy document, which refreshes and loads the app
+env file (plain values and secrets) before running them — no build
+artifact is involved.
 
 <ResponseField name="runtime" type="enum" required>
   Definition type discriminator.
@@ -482,20 +591,26 @@ Manual-runtime EC2 deploy definition. The deploy manager sends these shell comma
 </ResponseField>
 
 <ResponseField name="commands" type="string[]" required>
-  Shell commands run in order on each instance, as root. A non-zero exit fails the deploy on that instance.
+  Shell commands run in order on each instance, as root. A non-zero
+  exit fails the deploy on that instance.
+  Templateable — typically references a module input.
 
   _(minItems:1; templateable)_
 </ResponseField>
 
 <ResponseField name="start_command" type="string | null">
-  Long-running foreground command started after the release commands succeed. The deploy manager forwards it to the module-provided deploy document so it is ca...
+  Long-running foreground command started after the release commands
+  succeed. The deploy manager forwards it to the module-provided deploy
+  document so it is captured with the release instead of the stack.
 
   _(templateable)_
 </ResponseField>
 
 ### LambdaImageDefinition
 
-Image-packaged Lambda deploy definition. The image must already exist in ECR (typically pushed by the upstream build step's `ecr` destination).
+Image-packaged Lambda deploy definition. The image must already
+exist in ECR (typically pushed by the upstream build step's
+`ecr` destination).
 
 <ResponseField name="package_type" type="enum" required>
   Definition type discriminator.
@@ -506,14 +621,19 @@ Image-packaged Lambda deploy definition. The image must already exist in ECR (ty
 </ResponseField>
 
 <ResponseField name="image_uri" type="string" required>
-  Full ECR image URI. Prefer `&lt;repo&gt;@sha256:&lt;digest&gt;` form for reproducibility — Lambda resolves a mutable tag at deploy time and silently pins it, but the dep...
+  Full ECR image URI. Prefer `<repo>@sha256:<digest>` form for
+  reproducibility — Lambda resolves a mutable tag at deploy time and
+  silently pins it, but the deploy snapshot records the resolved
+  digest only when one was provided.
 
   _(minLen:1; templateable)_
 </ResponseField>
 
 ### LambdaZipDefinition
 
-Zip-packaged Lambda deploy definition. The code object must already exist in S3 (typically uploaded by the upstream build step's `s3-zip` destination).
+Zip-packaged Lambda deploy definition. The code object must already
+exist in S3 (typically uploaded by the upstream build step's
+`s3-zip` destination).
 
 <ResponseField name="package_type" type="enum" required>
   Definition type discriminator.
@@ -525,6 +645,8 @@ Zip-packaged Lambda deploy definition. The code object must already exist in S3 
 
 <ResponseField name="s3_key" type="string" required>
   S3 key the build step uploaded into.
+  Templateable — typically references a deploy input that holds the
+  key written by the upstream build step.
 
   _(minLen:1; templateable)_
 </ResponseField>
@@ -541,10 +663,12 @@ Dead-letter destination for async invocations.
 
 ### LambdaEnvironment
 
-Lambda function environment block. Mirrors AWS Lambda's `Environment` shape — a single `variables` map of string → string.
+Lambda function environment block. Mirrors AWS Lambda's
+`Environment` shape — a single `variables` map of string → string.
 
 <ResponseField name="variables" type="map<string,string> | null">
-  Environment variables applied to the function. Replaces the existing variable set on AWS — the API doesn't merge.
+  Environment variables applied to the function. Replaces the
+  existing variable set on AWS — the API doesn't merge.
 
   _(templateable)_
 </ResponseField>
@@ -636,7 +760,8 @@ Function logging configuration (CloudWatch destination + log levels).
 SnapStart configuration.
 
 <ResponseField name="apply_on" type="enum" required>
-  When to take the snapshot. `None` disables SnapStart; `PublishedVersions` snapshots each `PublishVersion` call.
+  When to take the snapshot. `None` disables SnapStart;
+  `PublishedVersions` snapshots each `PublishVersion` call.
 
   Allowed values: `None` | `PublishedVersions`
 
@@ -648,7 +773,8 @@ SnapStart configuration.
 AWS X-Ray tracing configuration.
 
 <ResponseField name="mode" type="enum" required>
-  Active samples + traces requests; PassThrough only propagates an upstream sampling decision.
+  Active samples + traces requests; PassThrough only propagates an
+  upstream sampling decision.
 
   Allowed values: `Active` | `PassThrough`
 

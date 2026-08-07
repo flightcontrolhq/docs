@@ -1,11 +1,26 @@
 ---
-title: "Module links"
+title: "Link modules to external systems"
 sidebarTitle: "Links"
 description: "Add custom HTTP links to each Ravion module for quick access to dashboards, runbooks, cloud consoles, and other systems from the module page in the dashboard."
 "og:image": "https://www.ravion.com/og/docs/modules/links.png"
 "twitter:image": "https://www.ravion.com/og/docs/modules/links.png"
 ---
 
-_This page is a work in progress_
+Modules can display custom HTTP links on their page in the dashboard — one-click access to the things you reach for while operating a service: the live service URL, the AWS console, an external monitoring dashboard, a runbook, or anything else with a URL.
 
-{/* TODO: Expand this page. */}
+## Where links come from
+
+Links are declared in the module's [definition](/modules/overview), so every instance of a module gets them automatically. Each link has two fields:
+
+| Field  | Description                                                                                                                    |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `name` | Display name shown in the dashboard.                                                                                           |
+| `href` | The URL. Accepts template expressions like `<< output.xxx >>`, so it can reference values that only exist after the stack applies. |
+
+Because `href` is templateable, links resolve **per module instance**. A link built from a stack output — a load balancer DNS name, a CloudFront domain, a function URL — points at that instance's own resource, so the staging instance links to staging and the production instance links to production.
+
+For example, [`rvn-aws-static`](/module-definitions/catalog/rvn-aws-static) links to the site's primary domain: the first domain alias when aliases are configured, otherwise the default `cloudfront.net` domain.
+
+## For module authors
+
+Declare links in the `ui.links` array of your module definition. See [UILink](/module-definitions/definition-schema/ui#uilink) in the definition schema and [template expressions](/module-definitions/definition-schema/template-expressions) for the values you can interpolate into `href`.

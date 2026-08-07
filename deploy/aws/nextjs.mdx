@@ -1,0 +1,118 @@
+---
+title: "How to deploy Next.js to AWS"
+sidebarTitle: "Next.js"
+description: "Deploy a Next.js SSR application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["Next.js AWS deployment", "deploy Next.js to AWS", "Next.js SSR", "ECS Fargate", "Application Load Balancer", "static export"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/nextjs.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/nextjs.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Next.js application on ECS Fargate behind an Application Load Balancer, or serve a static export from S3 and CloudFront.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Next.js app for Ravion SSR or static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/nextjs as the framework-specific source of truth.
+  3. Confirm this repository contains Next.js and locate the app root in a monorepo.
+  4. Inspect `package.json`, `next.config.*`, and App or Pages Router files to detect the real build command, SSR versus export mode, `.next/standalone/server.js` or `out` output, port, and runtime variables.
+  5. Generate `ravion.yaml` with the matching static or ECS module set. For SSR use standalone output, bind to `0.0.0.0`, and pass `PORT`; substitute real AWS, branch, repository, and runtime values.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, output modes, or ports before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Deploy a Next.js App Router or Pages Router application on ECS Fargate behind an Application Load Balancer. Ravion provisions the network and compute resources in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+Set `output: "standalone"` in `next.config.js` or `next.config.mjs`. Next.js writes a self-contained server to `.next/standalone/server.js`. Copy `public` and `.next/static` into the standalone image as described in the Next.js deployment documentation.
+
+```yaml ravion.yaml
+project:
+  givenId: nextjs-app
+  name: Next.js app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: nextjs-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: nextjs-production
+      - givenId: web
+        name: Next.js web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: nextjs-production-web
+          build_source: railpack
+          source_repo: my-org/my-nextjs-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: node .next/standalone/server.js
+          container_port: 3000
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set `HOSTNAME=0.0.0.0` and use the ECS-provided `PORT` value in the server environment. The default Next.js server port is `3000`.
+
+## Static export
+
+For a fully static site, set `output: "export"` instead. Next.js writes the export to `out`, which you can serve from S3 and CloudFront.
+
+```yaml ravion.yaml
+project:
+  givenId: nextjs-static
+  name: Next.js static site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Next.js site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: nextjs-static-production
+          routing: filesystem
+          build_source: railpack
+          source_repo: my-org/my-nextjs-site
+          output_directory: out
+          railpack_build_cmd: npm run build
+```
+
+Static export does not run Next.js server features such as API routes, middleware, or server actions. Use public `NEXT_PUBLIC_*` values for browser configuration.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id nextjs-app --name "Next.js app"
+ravion project config apply nextjs-app --file ravion.yaml --dry-run
+ravion project config apply nextjs-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your Application Load Balancer hostname. For static export, connect the CloudFront hostname instead.
+
+## Next steps
+
+<DeployNextSteps />

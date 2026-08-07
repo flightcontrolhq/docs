@@ -39,18 +39,6 @@
             ]
           },
           {
-            "group": "Use cases",
-            "pages": [
-              "use-cases/provision-infrastructure",
-              "use-cases/build-code",
-              "use-cases/deploy-code",
-              "use-cases/metrics-and-logs",
-              "use-cases/preview-environments",
-              "use-cases/developer-self-service",
-              "use-cases/agent-self-service"
-            ]
-          },
-          {
             "group": "Concepts",
             "pages": [
               "concepts/core-concepts",
@@ -128,7 +116,8 @@
           {
             "group": "Guides",
             "pages": [
-              "guides/custom-domains"
+              "guides/custom-domains",
+              "guides/managing-secrets"
             ]
           },
           {
@@ -156,6 +145,44 @@
                   "module-definitions/definition-schema/template-expressions"
                 ]
               }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Deploy to AWS",
+        "groups": [
+          {
+            "group": "Frameworks",
+            "root": "deploy/aws",
+            "pages": [
+              "deploy/aws/angular",
+              "deploy/aws/astro",
+              "deploy/aws/backstage",
+              "deploy/aws/bun",
+              "deploy/aws/django",
+              "deploy/aws/docusaurus",
+              "deploy/aws/fastapi",
+              "deploy/aws/flask",
+              "deploy/aws/gatsby",
+              "deploy/aws/hasura",
+              "deploy/aws/hono",
+              "deploy/aws/laravel",
+              "deploy/aws/nestjs",
+              "deploy/aws/nextjs",
+              "deploy/aws/node-express",
+              "deploy/aws/nuxt",
+              "deploy/aws/rails",
+              "deploy/aws/react",
+              "deploy/aws/redwood",
+              "deploy/aws/remix",
+              "deploy/aws/solid",
+              "deploy/aws/strapi",
+              "deploy/aws/sveltekit",
+              "deploy/aws/tanstack-start",
+              "deploy/aws/vike",
+              "deploy/aws/vite",
+              "deploy/aws/vue"
             ]
           }
         ]

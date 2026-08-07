@@ -1,0 +1,127 @@
+---
+title: "How to deploy Astro to AWS"
+sidebarTitle: "Astro"
+description: "Deploy an Astro static site to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Astro AWS deployment", "deploy Astro to AWS", "Astro static hosting", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/astro.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/astro.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy your Astro static build to an S3 bucket behind CloudFront.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Astro app for Ravion static or SSR hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/astro as the framework-specific source of truth.
+  3. Confirm this repository contains the Astro app and locate its root in any monorepo.
+  4. Inspect `package.json` and `astro.config.*` to detect the real build command, adapter, output mode, server entry, and port. Preserve `PUBLIC_` for browser-visible variables.
+  5. Generate `ravion.yaml` using the static `rvn-aws-static` modules or SSR `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web` modules, with real repo and AWS values substituted. Bind SSR to `0.0.0.0`.
+  6. Ask the user for missing AWS account IDs, repository slugs, database credentials, or adapter output before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+The bucket and distribution stay in your AWS account, and Ravion versions each deployment.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+For a static Astro site, `astro build` writes to `dist`. Set `routing` to `filesystem` so generated paths resolve to their files.
+
+```yaml ravion.yaml
+project:
+  givenId: astro-site
+  name: Astro site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Astro site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: astro-site-production
+          routing: filesystem
+          build_source: railpack
+          source_repo: my-org/my-astro-site
+          railpack_build_cmd: npm run build
+```
+
+## Apply the config
+
+<Steps>
+  <Step title="Create the project">
+    ```bash
+    ravion project create --given-id astro-site --name "Astro site"
+    ```
+  </Step>
+  <Step title="Preview and apply">
+    ```bash
+    ravion project config apply astro-site --file ravion.yaml --dry-run
+    ravion project config apply astro-site --file ravion.yaml
+    ```
+  </Step>
+</Steps>
+
+Astro variables prefixed with `PUBLIC_` are exposed to browser code. Add them to `build_environment_variables` when they are required at build time. Keep server-only values out of a static build.
+
+## Custom domain
+
+Use the CloudFront distribution hostname from the module outputs, then follow [custom domains](/guides/custom-domains) to add an ACM certificate and DNS record.
+
+## Astro SSR on ECS
+
+For on-demand rendering, install `@astrojs/node`, set `output: "server"`, and configure standalone mode. Astro writes the server entry to `dist/server/entry.mjs`; run it with Node on port `4321`.
+
+```yaml ravion.yaml
+project:
+  givenId: astro-ssr
+  name: Astro SSR app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: astro-ssr-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: astro-ssr-production
+      - givenId: web
+        name: Astro SSR web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: astro-ssr-production-web
+          build_source: railpack
+          source_repo: my-org/my-astro-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: node ./dist/server/entry.mjs
+          container_port: 4321
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set `HOST=0.0.0.0` and `PORT=4321` in the runtime environment. Use the ECS service's Application Load Balancer hostname for your custom domain.
+
+## Next steps
+
+<DeployNextSteps />

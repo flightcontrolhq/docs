@@ -1,0 +1,90 @@
+---
+title: "How to deploy Node.js and Express to AWS"
+sidebarTitle: "Node.js / Express"
+description: "Deploy a Node.js or Express server to your AWS account on ECS Fargate behind an Application Load Balancer with Ravion."
+keywords: ["Node.js AWS deployment", "Express AWS deployment", "deploy Express to AWS", "ECS Fargate", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/node-express.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/node-express.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Node.js or Express server on ECS Fargate behind an Application Load Balancer.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Node.js or Express app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/node-express as the framework-specific source of truth.
+  3. Confirm this repository contains the Node.js or Express app and locate its root in a monorepo.
+  4. Inspect `package.json`, the server entrypoint, TypeScript or bundler config, and scripts to detect the real build/start commands, port, and health route.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS, branch, repository, and runtime values. Bind the server to `0.0.0.0` and `process.env.PORT`.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, entrypoints, or ports before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Deploy a Node.js or Express server to ECS Fargate behind an Application Load Balancer. Ravion provisions the network and compute resources in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+Your `npm run build` command may compile TypeScript to `dist`. Set `railpack_start_cmd` to the production command in your `package.json`; this example uses `npm start`.
+
+```yaml ravion.yaml
+project:
+  givenId: node-app
+  name: Node app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: node-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: node-production
+      - givenId: web
+        name: Node web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: node-production-web
+          build_source: railpack
+          source_repo: my-org/my-node-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: npm start
+          container_port: 3000
+          health_check_path: /health
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+The ECS module adds `PORT` automatically. Bind Express to `process.env.PORT` and `0.0.0.0`. Put plain runtime settings in `environment_variables` and sensitive values in `secrets`.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id node-app --name "Node app"
+ravion project config apply node-app --file ravion.yaml --dry-run
+ravion project config apply node-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to configure DNS and TLS.
+
+## Next steps
+
+<DeployNextSteps />

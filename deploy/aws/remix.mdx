@@ -1,0 +1,89 @@
+---
+title: "How to deploy Remix to AWS"
+sidebarTitle: "Remix"
+description: "Deploy a Remix application to your AWS account on ECS Fargate behind an Application Load Balancer with Ravion."
+keywords: ["Remix AWS deployment", "deploy Remix to AWS", "Remix hosting", "ECS Fargate", "ALB"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/remix.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/remix.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Run Remix on ECS Fargate behind an Application Load Balancer.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Remix app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/remix as the framework-specific source of truth.
+  3. Confirm this repository contains Remix and locate the app root in a monorepo.
+  4. Inspect `package.json`, `vite.config.*`, Remix config, and scripts to detect the actual server and client build outputs, start command, port, and health path.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, binding the server to `0.0.0.0` and `process.env.PORT`, with real AWS and repository values.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, output paths, or ports before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+Ravion provisions the VPC, cluster, service, and ALB in your AWS account.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+For the current Remix Vite workflow, `npm run build` creates `build/server/index.js` and `build/client`. Start the server with `npm start` or your adapter's documented start command.
+
+```yaml ravion.yaml
+project:
+  givenId: remix-app
+  name: Remix app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: remix-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: remix-production
+      - givenId: web
+        name: Remix web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: remix-production-web
+          build_source: railpack
+          source_repo: my-org/my-remix-app
+          railpack_build_cmd: npm run build
+          railpack_start_cmd: npm start
+          container_port: 3000
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+Set runtime configuration in `environment_variables` and keep secrets in `secrets`. Use the port supplied by ECS through `PORT`.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id remix-app --name "Remix app"
+ravion project config apply remix-app --file ravion.yaml --dry-run
+ravion project config apply remix-app --file ravion.yaml
+```
+
+Use [custom domains](/guides/custom-domains) to attach your hostname.
+
+## Next steps
+
+<DeployNextSteps />

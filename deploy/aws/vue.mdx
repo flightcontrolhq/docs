@@ -1,0 +1,66 @@
+---
+title: "How to deploy Vue to AWS"
+sidebarTitle: "Vue"
+description: "Deploy a Vue application to your AWS account with S3 and CloudFront through Ravion."
+keywords: ["Vue AWS deployment", "deploy Vue to AWS", "Vue static hosting", "Vite", "S3", "CloudFront"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/vue.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/vue.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy a Vue application built with Vite to S3 and deliver it through CloudFront.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this Vue app for Ravion static hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/vue as the framework-specific source of truth.
+  3. Confirm this repository contains Vue and locate its app root in a monorepo.
+  4. Inspect `package.json`, Vite or Vue CLI config, and router setup to detect the actual build command, `dist` output, base path, and SPA fallback requirement.
+  5. Generate `ravion.yaml` with `rvn-aws-static`, SPA routing, and real AWS account, region, branch, repository, and output values.
+  6. Ask the user for missing AWS account IDs, repository slugs, project IDs, or output paths before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+The default production output directory is `dist`.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile.
+
+```yaml ravion.yaml
+project:
+  givenId: vue-site
+  name: Vue site
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: static-site
+        name: Vue site
+        type: rvn-aws-static
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: vue-site-production
+          build_source: railpack
+          source_repo: my-org/my-vue-app
+          railpack_build_cmd: npm run build
+```
+
+Run `npm run build`, which invokes Vite and writes to `dist`. Use `VITE_*` variables for values embedded into browser code.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id vue-site --name "Vue site"
+ravion project config apply vue-site --file ravion.yaml --dry-run
+ravion project config apply vue-site --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to CloudFront.
+
+## Next steps
+
+<DeployNextSteps />

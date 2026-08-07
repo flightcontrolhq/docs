@@ -1,0 +1,87 @@
+---
+title: "How to deploy FastAPI to AWS"
+sidebarTitle: "FastAPI"
+description: "Deploy a FastAPI application to your AWS account on ECS Fargate behind an Application Load Balancer through Ravion."
+keywords: ["FastAPI AWS deployment", "deploy FastAPI to AWS", "FastAPI Uvicorn", "ECS Fargate", "Application Load Balancer"]
+"og:image": "https://www.ravion.com/og/docs/deploy/aws/fastapi.png"
+"twitter:image": "https://www.ravion.com/og/docs/deploy/aws/fastapi.png"
+---
+import DeployPrerequisites from "/snippets/deploy/prerequisites.mdx";
+import DeployNextSteps from "/snippets/deploy/next-steps.mdx";
+
+Deploy FastAPI with Uvicorn on ECS Fargate behind an Application Load Balancer.
+
+<DeployPrerequisites />
+
+<Prompt description="Set up this FastAPI app for Ravion ECS hosting." icon="sparkles" actions={["copy", "cursor"]}>
+  1. Before any other action, read and follow [https://www.ravion.com/docs/start-here#agent-workflow](https://www.ravion.com/docs/start-here#agent-workflow) as the mandatory agent workflow.
+  2. Use https://www.ravion.com/docs/deploy/aws/fastapi as the framework-specific source of truth.
+  3. Confirm this repository contains FastAPI and locate the app root in a monorepo.
+  4. Inspect Python dependency files, the ASGI entrypoint, Docker files, and scripts to detect the real Uvicorn command, port, workers, and health path; bind to `0.0.0.0`.
+  5. Generate `ravion.yaml` with `rvn-aws-network` + `rvn-ecs-cluster` + `rvn-ecs-web`, using real AWS account, region, repository, branch, and runtime values.
+  6. Ask the user for AWS account IDs, repository slugs, project IDs, Python module paths, or ports before proceeding; do not guess.
+</Prompt>
+
+## Configure the deployment
+
+FastAPI's deployment documentation uses an ASGI server rather than a development server.
+
+This example uses [Railpack](https://railpack.com) for the build. Use `build_source: dockerfile` instead when you need a custom Dockerfile. Railpack detects FastAPI from the application dependencies.
+
+Railpack detects FastAPI when `fastapi` is a dependency. It starts `uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}` when `uvicorn` is also installed. The default assumes `main.py` exports `app`; set a custom start command when your ASGI module uses a different path. Ravion injects `PORT` automatically from `container_port`.
+
+```yaml ravion.yaml
+project:
+  givenId: fastapi-app
+  name: FastAPI app
+environments:
+  - givenId: production
+    name: Production
+    moduleInstances:
+      - givenId: network
+        name: Network
+        type: rvn-aws-network
+        version: 1.0.0
+        input:
+          aws_account_id: ravion-prod
+          aws_region: us-east-1
+          name: fastapi-production
+      - givenId: cluster
+        name: ECS cluster
+        type: rvn-ecs-cluster
+        version: 1.0.0
+        input:
+          network:
+            moduleGivenIdRef: network
+          name: fastapi-production
+      - givenId: web
+        name: FastAPI web service
+        type: rvn-ecs-web
+        version: 1.0.0
+        input:
+          cluster:
+            moduleGivenIdRef: cluster
+          name: fastapi-production-web
+          build_source: railpack
+          source_repo: my-org/my-fastapi-app
+          container_port: 8000
+          fargate_size:
+            vcpu: 0.5
+            memory_gb: 1
+```
+
+The default example uses port `8000`. Add `--workers` after validating your memory budget, and use `DATABASE_URL` for database-backed applications.
+
+## Apply and connect your domain
+
+```bash
+ravion project create --given-id fastapi-app --name "FastAPI app"
+ravion project config apply fastapi-app --file ravion.yaml --dry-run
+ravion project config apply fastapi-app --file ravion.yaml
+```
+
+Follow [custom domains](/guides/custom-domains) to connect your domain to the Application Load Balancer.
+
+## Next steps
+
+<DeployNextSteps />
