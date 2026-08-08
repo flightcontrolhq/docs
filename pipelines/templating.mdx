@@ -94,6 +94,8 @@ References the outputs and inputs of other steps. The step ID must exist in the 
 
 Available outputs depend on the step type. For example, [`build` steps](/pipelines/config-reference#buildstep) output `build_ref`, `image_uri`, `image_digest`, and `status`, while [`deploy` steps](/pipelines/config-reference#deploystep) output `deployment_id`, `status`, and `success`. CI steps additionally output `exit_code`, `success`, and `duration_ms`.
 
+[`custom` steps](/pipelines/step-types#publishing-outputs) can also publish their own outputs: declare names in the step's `outputs` list and have commands append `name=value` lines to the file at `$RAVION_OUTPUT`. Each declared name is then readable as `<< steps.{id}.output.{name} >>`.
+
 ### trigger.payload
 
 Only available inside a trigger's `run` block, to map event data into pipeline inputs:

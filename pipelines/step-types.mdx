@@ -146,6 +146,40 @@ Runs arbitrary shell commands on provisioned compute — tests, linters, migrati
 
 See [CustomCommandCiStep schema](/pipelines/config-reference#customcommandcistep).
 
+#### Publishing outputs
+
+A `custom` step can publish string values for later steps to consume. Declare the output names in the step's `outputs` list, then have your commands append `name=value` lines to the file at `$RAVION_OUTPUT`:
+
+```yaml
+- id: run_tests
+  name: Run tests
+  type: custom
+  source:
+    type: git
+    repo: https://github.com/my-org/my-repo
+    branch: main
+  commands:
+    - npm ci
+    - npm test
+    - echo "app_version=$(node -p "require('./package.json').version")" >> "$RAVION_OUTPUT"
+  outputs:
+    - app_version
+  infrastructure:
+    type: ec2
+    instance_size: medium
+```
+
+Later steps read the value with a [template expression](/pipelines/templating):
+
+```yaml
+- id: deploy_web_app
+  type: deploy
+  module_instance: << pipeline.variant.id >>.web-app
+  description: Deploy version << steps.run_tests.output.app_version >>
+```
+
+Only names declared in `outputs` are published — lines written to `$RAVION_OUTPUT` for undeclared names are ignored. Each name must be a valid shell variable name, and values are always strings.
+
 ### terraform:plan
 
 Generates a Terraform or OpenTofu plan and uploads the plan file to S3 for a later apply. Set `plan_type` to `destroy` to plan a teardown. Supply input variables with `terraform_variables` or `terraform_variable_files`.
