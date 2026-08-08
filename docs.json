@@ -95,6 +95,7 @@
                   "module-definitions/catalog/rvn-elasticache",
                   "module-definitions/catalog/rvn-lambda",
                   "module-definitions/catalog/rvn-rds",
+                  "module-definitions/catalog/rvn-rds-proxy",
                   "module-definitions/catalog/rvn-route53",
                   "module-definitions/catalog/rvn-s3",
                   "module-definitions/catalog/rvn-stack"

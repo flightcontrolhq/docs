@@ -23,9 +23,10 @@ flowchart BT
   rvn_elasticache["rvn-elasticache"] --> rvn_aws_network
   rvn_lambda["rvn-lambda"] -.-> rvn_aws_network
   rvn_rds["rvn-rds"] --> rvn_aws_network
+  rvn_rds_proxy["rvn-rds-proxy"] --> rvn_aws_network
 
   class rvn_aws_network current
-  class rvn_aurora,rvn_aws_alb,rvn_ec2_service,rvn_ecs_cluster,rvn_efs,rvn_elasticache,rvn_lambda,rvn_rds consumer
+  class rvn_aurora,rvn_aws_alb,rvn_ec2_service,rvn_ecs_cluster,rvn_efs,rvn_elasticache,rvn_lambda,rvn_rds,rvn_rds_proxy consumer
 
   classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
   classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
@@ -40,6 +41,7 @@ flowchart BT
   click rvn_elasticache "/module-definitions/catalog/rvn-elasticache" "Open rvn-elasticache docs"
   click rvn_lambda "/module-definitions/catalog/rvn-lambda" "Open rvn-lambda docs"
   click rvn_rds "/module-definitions/catalog/rvn-rds" "Open rvn-rds docs"
+  click rvn_rds_proxy "/module-definitions/catalog/rvn-rds-proxy" "Open rvn-rds-proxy docs"
 ```
 
 _Every dependency input can be specified manually to reference existing external infrastructure rather than a Ravion module._
