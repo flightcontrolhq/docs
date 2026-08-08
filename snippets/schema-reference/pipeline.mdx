@@ -1262,6 +1262,15 @@ Custom command CI action step
   _(templateable)_
 </ResponseField>
 
+<ResponseField name="outputs" type="string[]">
+  Names of the string outputs this step publishes, readable by later steps as
+  &lt;&lt; steps.&lt;id&gt;.output.&lt;name&gt; &gt;&gt;. Commands publish values by appending
+  "name=value" lines to the file at $RAVION_OUTPUT; values for names that are
+  not declared here are ignored.
+
+  _(minItems:1)_
+</ResponseField>
+
 <ResponseField name="infrastructure" type="StepInfrastructure" required>
   Execution environment configuration — required because custom commands run on provisioned compute
 
@@ -1925,6 +1934,13 @@ Resolved against the Flightcontrol actions registry (ravionhq/actions).
 
   _(templateable)_
 </ResponseField>
+
+### StepOutputName
+
+Name of an output a step publishes. Must be usable both as a shell variable
+name and as a &lt;&lt; steps.&lt;id&gt;.output.&lt;name&gt; &gt;&gt; field.
+
+Type: string
 
 ### TerraformTool
 
