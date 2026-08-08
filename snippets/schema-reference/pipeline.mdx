@@ -1223,7 +1223,7 @@ Custom command CI action step
 
 <ResponseField name="setup" type="SetupAction[] | null">
   Setup actions to install tools before the commands run, in order, before any command.
-  Each entry installs a tool via the Flightcontrol actions registry (flightcontrolhq/actions).
+  Each entry installs a tool via the Flightcontrol actions registry (ravionhq/actions).
 
   See: [SetupAction](#setupaction)
 
@@ -1910,12 +1910,12 @@ Discriminated union. The `type` field selects which schema applies.
 ### SetupAction
 
 A setup action that installs a tool before the step's commands run.
-Resolved against the Flightcontrol actions registry (flightcontrolhq/actions).
+Resolved against the Flightcontrol actions registry (ravionhq/actions).
 
 <ResponseField name="uses" type="string" required>
   Action reference to install a tool before running commands.
-  Shorthand ("go", "make") resolves to `flightcontrolhq/actions/<name>@main`,
-  or a full ref like `flightcontrolhq/actions/go@v1`.
+  Shorthand ("go", "make") resolves to `ravionhq/actions/<name>@main`,
+  or a full ref like `ravionhq/actions/go@v1`.
 
   _(minLen:1; templateable)_
 </ResponseField>
