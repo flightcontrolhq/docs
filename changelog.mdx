@@ -31,17 +31,16 @@ rss: true
 
 ## Platform
 ### Features
-- **Custom step outputs:** Custom pipeline steps can publish declared string outputs for later steps to use.
+- **Custom step outputs:** Custom pipeline steps can publish declared string outputs for later steps to use. [Learn more](https://www.ravion.com/docs/pipelines/step-types#publishing-outputs).
 - **Email verification:** Password signups now verify an email address before creating a session.
 ### Improvements
 - Pending Terraform approvals no longer hold the shared stack lock or wait behind plans that have already been superseded.
 - Metric charts now show run status markers, support shared time ranges, and link directly to individual runs.
 - Timestamps across calendars, charts, logs, and timelines now use the viewer's timezone.
-- Creating a module instance now identifies the selected module and opens its form at the top.
-- Cleared module defaults now remain cleared instead of being restored automatically.
 - Deployment resource logs now support resource-specific queries and incremental history loading.
 - Pipeline graphs now keep steps aligned after grouped sections and route group boundaries cleanly.
 ### Fixes
+- Cleared module defaults now remain cleared instead of being restored automatically.
 - Redeploying an image with multiple tags no longer reports the image as missing.
 - Output-only Terraform changes now remain eligible for apply instead of being treated as no-ops.
 - ECS deployments no longer fail or revert when AWS reports a stale deployment during rollout.
