@@ -21,6 +21,62 @@ rss: true
 {/* ravion-changelog:july-27-2026 */}
 
 {/* ravion-changelog:august-3-2026 */}
+{/* ravion-changelog:august-10-2026 */}
+<Update
+  label="August 10, 2026"
+  rss={{
+    title: "New module capabilities, stack lock controls, custom step outputs, and clearer deployment and chart behavior",
+  }}
+>
+
+## Platform
+### Features
+- **Custom step outputs:** Custom pipeline steps can publish declared string outputs for later steps to use. [Learn more](https://www.ravion.com/docs/pipelines/step-types#publishing-outputs).
+- **Email verification:** Password signups now verify an email address before creating a session.
+### Improvements
+- Pending Terraform approvals no longer hold the shared stack lock or wait behind plans that have already been superseded.
+- Metric charts now show run status markers, support shared time ranges, and link directly to individual runs.
+- Timestamps across calendars, charts, logs, and timelines now use the viewer's timezone.
+- Deployment resource logs now support resource-specific queries and incremental history loading.
+- Pipeline graphs now keep steps aligned after grouped sections and route group boundaries cleanly.
+### Fixes
+- Cleared module defaults now remain cleared instead of being restored automatically.
+- Redeploying an image with multiple tags no longer reports the image as missing.
+- Output-only Terraform changes now remain eligible for apply instead of being treated as no-ops.
+- ECS deployments no longer fail or revert when AWS reports a stale deployment during rollout.
+- Deployment links now remain valid when an environment identifier is available only through the module instance.
+- Deployment detail panels now keep unavailable task-definition messages aligned with their row labels.
+## AWS account IAM policy 1.0.42 → 1.0.44
+- **Managed policy capacity:** AWS account permissions are split across managed policies so future permission updates have room to grow without changing effective permissions.
+- **Account connectivity:** During this update, Ravion may briefly lose connectivity to your AWS account.
+
+Update your AWS account connection in organization settings.
+
+## Modules
+### New modules
+- **[RDS Proxy](https://www.ravion.com/docs/module-definitions/catalog/rvn-rds-proxy)** 0.1.0: Provision an RDS Proxy for connection pooling in front of an RDS database or Aurora cluster.
+### [Aurora Database](https://www.ravion.com/docs/module-definitions/catalog/rvn-aurora) [0.1.1](https://github.com/ravionhq/modules/releases/tag/rvn-aurora%400.1.1) → [1.2.0](https://github.com/ravionhq/modules/releases/tag/rvn-aurora%401.2.0)
+- Add guarded password management controls for safe cluster imports.
+- Add optional RDS Proxy connection pooling.
+### [ECS Cluster](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-cluster) [0.5.0](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-cluster%400.5.0) → [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-cluster%401.0.1)
+- Add security-group inputs for ALB ingress rules that reference source security groups.
+### [ECS Web Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-web) [0.8.4](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-web%400.8.4) → [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-web%401.0.1)
+- ALB metric charts now include the required load balancer dimension.
+- Assign ALB listener rule priorities at apply time when no explicit priority is set.
+### [RDS Database](https://www.ravion.com/docs/module-definitions/catalog/rvn-rds) [0.4.3](https://github.com/ravionhq/modules/releases/tag/rvn-rds%400.4.3) → [1.2.0](https://github.com/ravionhq/modules/releases/tag/rvn-rds%401.2.0)
+- Add guarded password management controls for safe database imports.
+- Add optional RDS Proxy connection pooling.
+### [Route 53 DNS](https://www.ravion.com/docs/module-definitions/catalog/rvn-route53) [0.2.1](https://github.com/ravionhq/modules/releases/tag/rvn-route53%400.2.1) → [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-route53%401.0.1)
+- Split TXT and SPF record values longer than 255 characters automatically and validate Route 53 record limits before apply.
+## CLI [0.2.23](https://github.com/ravionhq/cli/releases/tag/v0.2.23) → [0.2.31](https://github.com/ravionhq/cli/releases/tag/v0.2.31)
+### Features
+- **Terraform resource errors:** `ravion logs` now reports the error code, operation, HTTP status, request ID, and the relevant configuration context in plain text.
+- **Deployment resource log scope:** CloudWatch Logs Insights queries can target the log streams belonging to one deployment resource.
+- **Documentation access:** CLI help now includes a link to the full Ravion documentation and MCP server.
+- **Stack lock controls:** Inspect stack locks and release abandoned locks with `ravion stack get-lock` and `ravion stack unlock`.
+
+</Update>
+
 <Update
   label="August 3, 2026"
   rss={{
