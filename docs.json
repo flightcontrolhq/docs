@@ -310,7 +310,8 @@
     },
     "posthog": {
       "apiKey": "phc_knvqBBWDUykLHBQFmz9spqtcuvWnkupHeVcxqFF2K977",
-      "apiHost": "https://api.ravion.com/i"
+      "apiHost": "https://api.ravion.com/i",
+      "sessionRecording": false
     }
   },
   "contextual": {
