@@ -57,7 +57,7 @@ Copy the prompt below into your coding agent to add and configure the GitHub act
 
 4. Add every file anchor once to `on.pull_request.paths`. Keep the `&ravion_paths` anchor on that list and `paths: *ravion_paths` under `on.push`, so both events use the same filters without repeating any path string.
 
-5. Write the latest Ravion CLI tag, with its leading `v`, to `.github/ravion-cli-version` (a single line, such as `v0.2.23`). Find it from the latest release at https://github.com/flightcontrolhq/cli/releases/latest, which redirects to the newest tag. It must be `v0.2.23` or newer, because the apply job passes `--description`. The workflow's monthly `update-cli` job keeps this file current afterwards, so do not inline the version in the workflow.
+5. Write the latest Ravion CLI tag, with its leading `v`, to `.github/ravion-cli-version` (a single line, such as `v0.2.23`). Find it from the latest release at https://github.com/ravionhq/cli/releases/latest, which redirects to the newest tag. It must be `v0.2.23` or newer, because the apply job passes `--description`. The workflow's monthly `update-cli` job keeps this file current afterwards, so do not inline the version in the workflow.
 
 6. Set `on.push.branches` to the repository's default branch. Match the runner to the repo by checking the other workflows under `.github/workflows/`. If they run on a custom or self-hosted runner (a `runs-on` value other than the GitHub-hosted `ubuntu-latest`/`ubuntu-*` labels — for example a self-hosted label or a runner group), set `runs-on` to that same runner for both jobs. Otherwise keep `ubuntu-latest`.
 
@@ -185,7 +185,7 @@ jobs:
         if: steps.list.outputs.resources != '[]'
         run: |
           version=$(cat "$RAVION_CLI_VERSION_FILE")
-          curl -fsSL "https://github.com/flightcontrolhq/cli/releases/download/${version}/install.sh" | sh
+          curl -fsSL "https://github.com/ravionhq/cli/releases/download/${version}/install.sh" | sh
 
       - name: Build plan comment
         if: steps.list.outputs.resources != '[]'
@@ -276,7 +276,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           current=$(cat "$RAVION_CLI_VERSION_FILE")
-          latest=$(gh release view --repo flightcontrolhq/cli --json tagName --jq .tagName)
+          latest=$(gh release view --repo ravionhq/cli --json tagName --jq .tagName)
           if [ "$current" = "$latest" ]; then
             echo "Already on the latest Ravion CLI ($current)"
             exit 0
@@ -299,7 +299,7 @@ jobs:
             --base "${{ github.ref_name }}" \
             --head "$branch" \
             --title "ci(ravion): update the Ravion CLI used by the GitHub Action to $latest" \
-            --body "Updates the Ravion CLI used by the Ravion config workflow from \`$current\` to [\`$latest\`](https://github.com/flightcontrolhq/cli/releases/tag/$latest)."
+            --body "Updates the Ravion CLI used by the Ravion config workflow from \`$current\` to [\`$latest\`](https://github.com/ravionhq/cli/releases/tag/$latest)."
 
   apply:
     if: github.event_name == 'push'
