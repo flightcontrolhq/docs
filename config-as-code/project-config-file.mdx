@@ -117,13 +117,26 @@ Store the config file in your repository and manage it with the CLI.
   <Step title="Review and approve the stack run">
     Applying a config change starts a [stack change pipeline run](/modules/stack#stacks-change-through-pipelines) when the affected module has a Terraform stack. The stack run creates a Terraform plan and waits for manual approval before applying, unless you pass `--autoapprove` to an apply command that supports it.
 
-    After the stack run starts, inspect the run and its Terraform results with these commands:
+    The apply prints a `pipelineRunId` for every stack run it starts. Follow a run with `wait --watch` instead of polling `pipeline run get`:
 
     ```bash
-    ravion pipeline run get <pipeline-run-id>
+    # Stream progress until the run finishes
+    ravion pipeline run wait <pipeline-run-id> --watch --timeout 30m
+
+    # Then inspect Terraform results
     ravion pipeline run get-plan <pipeline-run-id>
     ravion pipeline run get-apply <pipeline-run-id>
     ravion logs pipeline-step <step-execution-id>
+    ```
+
+    When the run needs a manual approval, wait for the approval gate, review the plan, approve, then wait for the apply:
+
+    ```bash
+    ravion pipeline run wait <pipeline-run-id> --until PENDING_APPROVAL --watch
+
+    ravion pipeline run get-plan <pipeline-run-id>
+    ravion pipeline run approve <pipeline-run-id>
+    ravion pipeline run wait <pipeline-run-id> --watch
     ```
 
   </Step>
@@ -171,6 +184,14 @@ ravion project config apply <project-id> --file ravion.yaml --dry-run
 ravion project config apply <project-id> --file ravion.yaml
 ```
 
+6. After applying config, use `ravion pipeline run wait <id> --watch` instead of repeatedly polling `pipeline run get`. The apply output lists a `pipelineRunId` for every stack run it starts, followed by the exact wait command to run:
+
+```bash
+ravion pipeline run wait <pipeline-run-id> --watch --timeout 30m
+```
+
+7. Follow application deployments the same way, with `ravion deploy wait <deployment-id> --watch` instead of polling `deploy get`.
+
 ### Helpful hints
 
 - Pull the latest live config anytime with `ravion project config pull <project-id> --file ravion.yaml`.
@@ -191,6 +212,7 @@ ravion project config apply <project-id> --file ravion.yaml
 - Copy module inputs from unrelated files or examples.
 - Invent fields that are not present in the CLI schema output.
 - Apply changes without a successful dry run first.
+- Poll `ravion pipeline run get` or `ravion deploy get` in a loop. Use the matching `wait --watch` command instead.
 
 ## Schema reference
 
