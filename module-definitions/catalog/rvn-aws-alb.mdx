@@ -15,19 +15,21 @@ keywords: ["rvn-aws-alb", "AWS Application Load Balancer"]
 
 ```mermaid
 flowchart BT
-  rvn_ec2_service["rvn-ec2-service"] -.-> rvn_aws_alb["<strong>AWS Application Load Balancer</strong>"]
+  rvn_cloudfront["rvn-cloudfront"] -.-> rvn_aws_alb["<strong>AWS Application Load Balancer</strong>"]
+  rvn_ec2_service["rvn-ec2-service"] -.-> rvn_aws_alb
   rvn_aws_alb --> rvn_aws_network["rvn-aws-network"]
   rvn_aws_alb -.-> rvn_acm_certificate["rvn-acm-certificate"]
 
   class rvn_aws_alb current
   class rvn_aws_network,rvn_acm_certificate dependency
-  class rvn_ec2_service consumer
+  class rvn_cloudfront,rvn_ec2_service consumer
 
   classDef current fill:#C4B5FD,stroke:#8B5CF6,color:#3B0764
   classDef dependency fill:#FAF8FF,stroke:#DDD6FE,color:#6D28D9
   classDef consumer fill:#F3F4F6,stroke:#9CA3AF,color:#4B5563
   classDef upstream fill:#F8FAFC,stroke:#CBD5E1,color:#94A3B8
 
+  click rvn_cloudfront "/module-definitions/catalog/rvn-cloudfront" "Open rvn-cloudfront docs"
   click rvn_ec2_service "/module-definitions/catalog/rvn-ec2-service" "Open rvn-ec2-service docs"
   click rvn_aws_network "/module-definitions/catalog/rvn-aws-network" "Open rvn-aws-network docs"
   click rvn_acm_certificate "/module-definitions/catalog/rvn-acm-certificate" "Open rvn-acm-certificate docs"
