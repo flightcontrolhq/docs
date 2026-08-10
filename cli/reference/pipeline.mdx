@@ -169,20 +169,10 @@ ravion pipeline run create [flags]
 
 #### `ravion pipeline run get`
 
-Read a single pipeline run.
-
-This returns one snapshot. To follow a run to completion, use
-`ravion pipeline run wait &lt;id&gt; --watch` instead of calling this command in a loop.
+Get PipelineRun by id
 
 ```bash
 ravion pipeline run get <id> [flags]
-```
-
-**Examples:**
-
-```bash
-ravion pipeline run get prun_123
-ravion pipeline run wait prun_123 --watch
 ```
 
 **Flags:**
@@ -193,20 +183,10 @@ ravion pipeline run wait prun_123 --watch
 
 #### `ravion pipeline run get-apply`
 
-Read applied Terraform resource results for a pipeline run.
-
-Terraform results appear once the run reaches the matching step, so follow the run with
-`ravion pipeline run wait &lt;id&gt; --watch` first instead of polling `ravion pipeline run get`.
+Read applied Terraform resource results for a pipeline run
 
 ```bash
 ravion pipeline run get-apply <id> [flags]
-```
-
-**Examples:**
-
-```bash
-ravion pipeline run wait prun_123 --watch
-ravion pipeline run get-apply prun_123
 ```
 
 **Flags:**
@@ -220,20 +200,10 @@ ravion pipeline run get-apply prun_123
 
 #### `ravion pipeline run get-plan`
 
-Read planned Terraform resource changes for a pipeline run.
-
-Terraform results appear once the run reaches the matching step, so follow the run with
-`ravion pipeline run wait &lt;id&gt; --watch` first instead of polling `ravion pipeline run get`.
+Read planned Terraform resource changes for a pipeline run
 
 ```bash
 ravion pipeline run get-plan <id> [flags]
-```
-
-**Examples:**
-
-```bash
-ravion pipeline run wait prun_123 --until PENDING_APPROVAL --watch
-ravion pipeline run get-plan prun_123
 ```
 
 **Flags:**
@@ -307,21 +277,10 @@ ravion pipeline run terraform-resources <id> [flags]
 
 #### `ravion pipeline run wait`
 
-Wait for a pipeline run to finish, or to reach the status given by --until.
-
-Use this instead of polling `ravion pipeline run get` in a loop. With --watch the command
-prints run and step status changes as they happen, then exits when the run is done.
+Wait for a pipeline run status
 
 ```bash
 ravion pipeline run wait <id> [flags]
-```
-
-**Examples:**
-
-```bash
-ravion pipeline run wait prun_123 --watch
-ravion pipeline run wait prun_123 --watch --timeout 30m
-ravion pipeline run wait prun_123 --until PENDING_APPROVAL --watch
 ```
 
 **Flags:**
