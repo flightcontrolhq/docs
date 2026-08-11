@@ -1,27 +1,27 @@
 ---
 title: "What happens after a configuration change?"
-description: "Understand which Ravion phases a module configuration change requires."
+description: "Understand which Ravion actions a module configuration change requires."
 "og:image": "https://www.ravion.com/og/docs/config-as-code/configuration-changes.png"
 "twitter:image": "https://www.ravion.com/og/docs/config-as-code/configuration-changes.png"
 ---
 
-When you change a module input, Ravion identifies the operational phases
-required for the change to take effect. Saving the configuration does not
-necessarily run every required phase.
+When you change a module input, Ravion identifies the actions required for the
+change to take effect. Saving the configuration does not necessarily run every
+required action.
 
 For background on managing a project configuration file, see [Project config
 file](/config-as-code/project-config-file).
 
-## The phases
+## The actions
 
-| Phase | What it does |
+| Action | What it does |
 | --- | --- |
 | **Stack update** | Runs the module's stack pipeline to create or update infrastructure. |
-| **Rebuild** | Creates a new application image or other build artifact. |
+| **Build** | Creates a new application image or other build artifact. |
 | **Deploy** | Releases the new configuration or artifact to the running module. |
 
-The phases are separate. A stack update changes infrastructure, but does not
-release a new application artifact. A rebuild creates an artifact, but does not
+The actions are separate. A stack update changes infrastructure, but does not
+release a new application artifact. A build creates an artifact, but does not
 make it the active release until a deploy promotes it.
 
 See [Build](/modules/build) and [Deploy](/modules/deploy) for more about those
@@ -29,14 +29,14 @@ pipeline steps.
 
 ## Examples
 
-The required phases depend on the module definition and the input you change.
+The required actions depend on the module definition and the input you change.
 These examples use inputs from Ravion's standard module definitions:
 
-| Module input | Required phases | Why |
+| Module input | Required actions | Why |
 | --- | --- | --- |
 | `rvn-ecs-web` `desired_count` | Stack update | The desired service capacity is infrastructure configuration. |
 | `rvn-ec2-service` `environment_variables` or `secrets` | Stack update and deploy | The stack carries the runtime configuration, and the deploy renders it into the app environment on running instances. |
-| `rvn-aws-static` `build_environment_variables` | Rebuild and deploy | The build uploads a versioned static directory, and the deploy promotes that directory to production. |
+| `rvn-aws-static` `build_environment_variables` | Build and deploy | The build uploads a versioned static directory, and the deploy promotes that directory to production. |
 
 The per-input `applied_by` field records this lifecycle metadata in a module
 definition. Ravion's compiler derives it from how the module's stack, build, and
@@ -48,16 +48,16 @@ hand. See the [module definition schema reference](/module-definitions/definitio
 ### Dashboard
 
 When you save a module configuration, the confirmation dialog shows which
-phases the change requires and what the selected save option will do.
+actions the change requires and what the selected save option will do.
 
 Saving the configuration records the new values. It does not automatically
-rebuild an artifact or deploy it unless you choose an option that performs
-those operations. If a later phase is required, run that phase after the
-configuration save completes.
+build an artifact or deploy it unless you choose an option that performs those
+operations. If another action is required, run it after the configuration save
+completes.
 
 ### CLI
 
-The `ravion project config apply` command shows the required phases in the
+The `ravion project config apply` command shows the required actions in the
 `REQUIRES` column. In an interactive terminal, it also displays the planned
 changes and asks you to confirm them:
 
@@ -81,16 +81,16 @@ ravion project config apply <project-id> \
   --yes
 ```
 
-The `REQUIRES` column uses **stack update**, **rebuild**, and **deploy** so you
+The `REQUIRES` column uses **stack update**, **build**, and **deploy** so you
 can see which work remains after the configuration apply.
 
 ## Older module definitions
 
 <Warning>
   Module definitions published before lifecycle metadata was introduced do not
-  provide enough information to determine every required phase.
+  provide enough information to determine every required action.
 </Warning>
 
-If Ravion reports unknown phase metadata, assume the change requires a stack
-update and a deploy. Run the stack update, rebuild if the module needs a new
+If Ravion reports unknown action metadata, assume the change requires a stack
+update and a deploy. Run the stack update, build if the module needs a new
 artifact, and then deploy the resulting configuration or artifact.
