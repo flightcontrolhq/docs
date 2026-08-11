@@ -117,19 +117,9 @@ Store the config file in your repository and manage it with the CLI.
   <Step title="Review and approve the stack run">
     Applying a config change starts a [stack change pipeline run](/modules/stack#stacks-change-through-pipelines) when the affected module has a Terraform stack. The stack run creates a Terraform plan and waits for manual approval before applying, unless you pass `--autoapprove` to an apply command that supports it.
 
-    The apply prints a `pipelineRunId` for every stack run it starts. Follow a run with `wait --watch` instead of polling `pipeline run get`:
+    The apply prints a `PIPELINE_RUN_ID` for every stack run it starts, plus the wait command for those runs. Follow a run with `wait --watch` instead of polling `pipeline run get`.
 
-    ```bash
-    # Stream progress until the run finishes
-    ravion pipeline run wait <pipeline-run-id> --watch --timeout 30m
-
-    # Then inspect Terraform results
-    ravion pipeline run get-plan <pipeline-run-id>
-    ravion pipeline run get-apply <pipeline-run-id>
-    ravion logs pipeline-step <step-execution-id>
-    ```
-
-    When the run needs a manual approval, wait for the approval gate, review the plan, approve, then wait for the apply:
+    Without `--autoapprove`, each run stops at its approval gate, so wait for that gate, review the plan, approve, then wait for the apply:
 
     ```bash
     ravion pipeline run wait <pipeline-run-id> --until PENDING_APPROVAL --watch
@@ -137,6 +127,16 @@ Store the config file in your repository and manage it with the CLI.
     ravion pipeline run get-plan <pipeline-run-id>
     ravion pipeline run approve <pipeline-run-id>
     ravion pipeline run wait <pipeline-run-id> --watch
+    ```
+
+    With `--autoapprove`, wait for the run to finish, then inspect the Terraform results:
+
+    ```bash
+    ravion pipeline run wait <pipeline-run-id> --watch --timeout 30m
+
+    ravion pipeline run get-plan <pipeline-run-id>
+    ravion pipeline run get-apply <pipeline-run-id>
+    ravion logs pipeline-step <step-execution-id>
     ```
 
   </Step>
@@ -184,9 +184,13 @@ ravion project config apply <project-id> --file ravion.yaml --dry-run
 ravion project config apply <project-id> --file ravion.yaml
 ```
 
-6. After applying config, use `ravion pipeline run wait <id> --watch` instead of repeatedly polling `pipeline run get`. The apply output lists a `pipelineRunId` for every stack run it starts, followed by the exact wait command to run:
+6. After applying config, use `ravion pipeline run wait <id> --watch` instead of repeatedly polling `pipeline run get`. The apply output lists a `PIPELINE_RUN_ID` for every stack run it starts, followed by the exact wait command to run:
 
 ```bash
+# Runs stop for approval unless the apply passed --autoapprove
+ravion pipeline run wait <pipeline-run-id> --until PENDING_APPROVAL --watch
+
+# Autoapproved runs go straight through
 ravion pipeline run wait <pipeline-run-id> --watch --timeout 30m
 ```
 
