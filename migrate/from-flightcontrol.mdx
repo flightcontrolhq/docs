@@ -147,8 +147,6 @@ There is no one-click or automatic migration from Flightcontrol to Ravion. You r
     Give your agent the [Docs MCP server](/mcp/overview), then paste your existing Flightcontrol config (for example `flightcontrol.json`) into the chat and ask the agent to produce a `ravion.yaml` draft.
 
     Point the agent at [Start here (human + agent)](/start-here) and this page so it has the mapping table above and the [project config file workflow](/config-as-code/project-config-file#agent-tips).
-
-    Verify the draft against the mapping table before applying anything. `rvn-ecs-web` and `rvn-ecs-worker` both require an `rvn-ecs-cluster`, and `rvn-cloudfront` is now opt-in per service instead of always-on.
   </Step>
 
   <Step title="Decide provision vs. import for each service">
@@ -163,11 +161,19 @@ There is no one-click or automatic migration from Flightcontrol to Ravion. You r
   <Step title="Cut traffic over one service at a time">
     Deploy the service in Ravion, verify it's healthy, then update DNS to point at the Ravion load balancer or CloudFront distribution. Leave the Flightcontrol service running until you've confirmed the cutover.
 
-    **Do not redeploy in Flightcontrol during migration.** New deploys go through Ravion from this point on. The Flightcontrol service keeps serving old traffic until DNS moves and you delete it.
+    **Stop deploying anything you imported into Ravion through Flightcontrol.** Once a resource is imported, Ravion manages it, and deploying it again from Flightcontrol means two platforms changing the same resource.
+
+    Services you provisioned new in Ravion, like ECS services and static sites, are separate infrastructure. You can keep deploying their Flightcontrol counterparts as usual until DNS moves.
   </Step>
 
   <Step title="Delete the migrated Flightcontrol services">
-    Once each service is fully cut over, remove it from Flightcontrol so you're not paying for duplicate infrastructure. Stateful resources you imported into Ravion are already shared and don't need to be recreated.
+    Once each service is fully cut over, remove it from Flightcontrol so you're not paying for duplicate infrastructure.
+
+    <Warning>
+      **Never delete a service in Flightcontrol that you imported into Ravion.** Deleting it in Flightcontrol destroys the underlying AWS resources that Ravion now manages, including databases and buckets.
+
+      Contact support instead and we'll remove the service from your Flightcontrol account without destroying anything. Self-serve delete-without-destroy is in the works.
+    </Warning>
   </Step>
 </Steps>
 
