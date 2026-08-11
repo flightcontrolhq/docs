@@ -284,6 +284,36 @@
       }
     ]
   },
+  "redirects": [
+    {
+      "source": "/use-cases/agent-self-service",
+      "destination": "/mcp/overview"
+    },
+    {
+      "source": "/use-cases/build-code",
+      "destination": "/modules/build"
+    },
+    {
+      "source": "/use-cases/deploy-code",
+      "destination": "/modules/deploy"
+    },
+    {
+      "source": "/use-cases/developer-self-service",
+      "destination": "/how-ravion-works"
+    },
+    {
+      "source": "/use-cases/metrics-and-logs",
+      "destination": "/modules/metrics"
+    },
+    {
+      "source": "/use-cases/preview-environments",
+      "destination": "/concepts/projects-and-environments"
+    },
+    {
+      "source": "/use-cases/provision-infrastructure",
+      "destination": "/concepts/infrastructure-as-code"
+    }
+  ],
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
