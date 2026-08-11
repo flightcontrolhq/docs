@@ -38,8 +38,10 @@ These examples use inputs from Ravion's standard module definitions:
 | `rvn-ec2-service` `environment_variables` or `secrets` | Stack update and deploy | The stack carries the runtime configuration, and the deploy renders it into the app environment on running instances. |
 | `rvn-aws-static` `build_environment_variables` | Rebuild and deploy | The build uploads a versioned static directory, and the deploy promotes that directory to production. |
 
-The per-input `applies_on` field records this lifecycle metadata in a module
-definition. See the [module definition schema reference](/module-definitions/definition-schema/inputs).
+The per-input `applied_by` field records this lifecycle metadata in a module
+definition. Ravion's compiler derives it from how the module's stack, build, and
+deploy configuration reference each input, so definition authors do not set it by
+hand. See the [module definition schema reference](/module-definitions/definition-schema/inputs).
 
 ## Check what a change requires
 
