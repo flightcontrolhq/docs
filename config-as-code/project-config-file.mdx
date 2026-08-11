@@ -119,6 +119,8 @@ Store the config file in your repository and manage it with the CLI.
 
     The apply prints a `PIPELINE_RUN_ID` for every stack run it starts, plus the wait command for those runs. Follow a run with `wait --watch` instead of polling `pipeline run get`.
 
+    The runs are listed in dependency order, so you can work through them one at a time: a run only starts once the runs it depends on succeed.
+
     Without `--autoapprove`, each run stops at its approval gate, so wait for that gate, review the plan, approve, then wait for the apply:
 
     ```bash
@@ -184,7 +186,7 @@ ravion project config apply <project-id> --file ravion.yaml --dry-run
 ravion project config apply <project-id> --file ravion.yaml
 ```
 
-6. After applying config, use `ravion pipeline run wait <id> --watch` instead of repeatedly polling `pipeline run get`. The apply output lists a `PIPELINE_RUN_ID` for every stack run it starts, followed by the exact wait command to run:
+6. After applying config, use `ravion pipeline run wait <id> --watch` instead of repeatedly polling `pipeline run get`. The apply output lists a `PIPELINE_RUN_ID` for every stack run it starts, followed by the exact wait command to run. Work through the commands in the printed order, which is dependency order:
 
 ```bash
 # Runs stop for approval unless the apply passed --autoapprove
