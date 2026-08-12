@@ -182,3 +182,32 @@ ravion deploy rollback-candidates <id> [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
+### `ravion deploy wait`
+
+Wait for a deployment to finish, or to reach the status given by --until.
+
+Use this instead of polling `ravion deploy get` in a loop. With --watch the command prints
+status changes as they happen, then exits when the deployment is done. The command exits
+non-zero when the deployment fails, is cancelled, or is rolled back.
+
+```bash
+ravion deploy wait <id> [flags]
+```
+
+**Examples:**
+
+```bash
+ravion deploy wait dep_123 --watch
+ravion deploy wait dep_123 --watch --timeout 30m
+ravion deploy wait dep_123 --until IN_PROGRESS --watch
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `--timeout <duration>` |  | maximum time to wait; zero waits indefinitely |
+| `--until <string>` |  | return when this status is reached, for example IN_PROGRESS |
+| `--watch` |  | print deployment status changes while waiting |
+
