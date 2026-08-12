@@ -100,7 +100,8 @@ Both `tag` and `digest` are optional, accept template tokens, and resolve agains
 A build is a pipeline step execution — there's no separate build entity or command. Find it in the pipeline run:
 
 ```bash
-ravion pipeline run get <pipeline-run-id>
+# Stream the run until it finishes, then read the step logs
+ravion pipeline run wait <pipeline-run-id> --watch --timeout 30m
 ravion logs pipeline-step <step-execution-id>
 ```
 
