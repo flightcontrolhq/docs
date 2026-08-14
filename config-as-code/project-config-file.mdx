@@ -67,24 +67,24 @@ environments:
 Store the config file in your repository and manage it with the CLI.
 
 <Steps>
-  <Step title="Create the project, if needed">
+  <Step title="Create or select the project">
+
+    For a new project, create the project and write its draft config file:
 
     ```bash
-    ravion project create --given-id <project-id> --name "My project"
+    ravion project create --given-id <project-id> --name "My project" --file ravion.yaml
     ```
 
-  </Step>
-  <Step title="Pull the current config">
-    Write the live project config to a file.
+    For an existing project, write its live config to a file:
 
     ```bash
-    ravion project config pull <project-id> --file project.yaml
+    ravion project config pull <project-id> --file ravion.yaml
     ```
 
 <Note>
-  Pulling a `.yaml`, `.jsonc`, or `.cue` file adds an AI skill header, inline field comments, and
-  quick links to the generated file. Plain `.json` does not support comments, so it omits these
-  annotations.
+  Creating or pulling a `.yaml`, `.jsonc`, or `.cue` file adds an AI skill header, inline field
+  comments, and quick links to the generated file. Plain `.json` does not support comments, so it
+  omits these annotations.
 </Note>
 
   </Step>
@@ -98,7 +98,7 @@ Store the config file in your repository and manage it with the CLI.
     Validate the file and print the planned changes without applying them.
 
     ```bash
-    ravion project config apply <project-id> --file project.yaml --dry-run
+    ravion project config apply <project-id> --file ravion.yaml --dry-run
     ```
 
   </Step>
@@ -106,7 +106,7 @@ Store the config file in your repository and manage it with the CLI.
     Apply the config to update the stored config and run the Terraform plan if needed.
 
     ```bash
-    ravion project config apply <project-id> --file project.yaml
+    ravion project config apply <project-id> --file ravion.yaml
     ```
 
     Add `--autoapprove` to approve supported stack change pipeline runs without a manual gate.
@@ -153,6 +153,10 @@ Store the config file in your repository and manage it with the CLI.
 ## Agent tips
 
 Use these rules when an agent edits a project config file.
+
+Never hand-write a `ravion.yaml` from memory. Generate it with `ravion project create --file`
+for a new project or `ravion project config pull --file` for an existing project so it carries the
+current header, comments, and links, then edit it.
 
 ### Required workflow
 
