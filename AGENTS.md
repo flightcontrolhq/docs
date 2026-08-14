@@ -29,5 +29,7 @@
 
 ## Content boundaries
 
-{/* Define what should and shouldn't be documented */}
-{/* Example: Don't document internal admin features */}
+- Reference docs are generated from the `ravionhq/flightcontrol` monorepo and must never be hand-edited.
+- Generated paths include `cli/reference/*.mdx`, `cli/overview.mdx`, schema-reference snippets, `module-definitions/definition-schema/` pages, and generated module catalog pages.
+- Change the source in `flightcontrol` and regenerate using the README's **Regenerating reference docs** instructions.
+- CLI page `description` frontmatter comes from the `seoDescriptions` map in `packages/cli/internal/cmdgen/mintlify-docs/main.go`.

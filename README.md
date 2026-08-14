@@ -75,8 +75,8 @@ pnpm sync:cli-reference
 Every page's `og:image`/`twitter:image` frontmatter points at the Ravion OG renderer
 (`https://www.ravion.com/og/docs/<page-path>.png`), which draws the same banner used
 for the marketing site and the blog and reads the page title from the page's Mintlify
-Markdown export. Generated pages do not carry those tags, so after regenerating any
-reference docs run:
+Markdown export. The CLI generator emits those tags itself. After regenerating schema
+reference or module catalog pages, run:
 
 ```bash
 pnpm sync:og-images
