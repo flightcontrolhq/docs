@@ -340,6 +340,9 @@
     "fathom": {
       "siteId": "GMFTPQUB"
     },
+    "ga4": {
+      "measurementId": "G-9F3ZH30W5Y"
+    },
     "posthog": {
       "apiKey": "phc_knvqBBWDUykLHBQFmz9spqtcuvWnkupHeVcxqFF2K977",
       "apiHost": "https://api.ravion.com/i"
