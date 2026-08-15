@@ -98,7 +98,7 @@ steps:
       ref: << pipeline.input.ref >>
       base_path: << pipeline.input.base_path >>
     commands:
-      - pip3 install --quiet checkov
+      - pip3 install --quiet checkov==3.3.11
       - checkov --directory . --framework terraform --compact
     infrastructure:
       type: ec2
@@ -114,8 +114,9 @@ steps:
 
 Reusing the `pipeline.input.*` values means the step checks out the same commit and runs in the same account and region as the plan. See [Templating](/pipelines/templating) for the available expressions and [step types](/pipelines/step-types) for every `custom` step field.
 
-Two options worth knowing:
+Three things worth knowing:
 
+- **Pin the tool version.** Installing the latest release on every run lets a new release change your policy results, or a registry outage block stack changes, with no config change on your side.
 - **Skip the check when nothing changed.** `if: << steps.plan.output.has_changes >>` keeps no-op runs fast.
 - **Gate on the plan's blast radius.** The plan step publishes change counts, so you can require a second approval only when resources would be destroyed:
 
@@ -185,7 +186,7 @@ ravion default-value delete <default-value-id>   # falls back to the broader sco
   A module definition can pin an explicit pipeline through `stack.pipelines.change.pipeline_id` or
   `stack.pipelines.destroy.pipeline_id`, which wins over the resolved default. The standard library
   modules set these to `<< defaults.change_pipeline_id >>` and `<< defaults.destroy_pipeline_id >>`,
-  so defaults apply — but a definition that hardcodes a pipeline ID ignores them. See the [module
+  so defaults apply — but a definition that sets a literal pipeline ID ignores them. See the [module
   definition schema](/module-definitions/definition-schema).
 </Note>
 
