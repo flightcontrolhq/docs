@@ -22,6 +22,81 @@ rss: true
 
 {/* ravion-changelog:august-3-2026 */}
 {/* ravion-changelog:august-10-2026 */}
+{/* ravion-changelog:august-17-2026 */}
+<Update
+  label="August 17, 2026"
+  rss={{
+    title: "Inspect live stack state, wait for deployments, and configure more module capabilities",
+  }}
+>
+
+## Platform
+### Features
+- **Current stack state:** View live infrastructure, outputs, and workspace information from a persistent current-state view. [Learn more](https://www.ravion.com/docs/modules/stack)
+- **1-click shell into app commands:** Copy AWS CLI commands for interactive ECS and EC2 sessions from resource details.
+### Improvements
+- Deployment resource drawers can expand to the full page width.
+- Stack view dividers can be dragged across a wider range.
+- Deployment definition diffs now work consistently across ECS, EC2, Lambda, and static deployments.
+- Planned Terraform resources are visually distinct from applied resources and show their run state.
+- Terraform resource tables now show failed and changed resources before unchanged resources.
+- List-valued stack outputs now show one value per row with individual copy actions.
+- Log controls move into a compact menu on narrow screens.
+- Module catalog and configuration pages load version lists without fetching full configuration data.
+### Fixes
+- Missing projects, environments, pipelines, modules, deployments, and resources now show a clear not-found page with a way back.
+- Declared custom-step outputs are preserved, and missing declared output references now fail the run instead of silently becoming empty values.
+- Finished pipeline runs now show unreached steps as skipped, and parallel steps without an explicit strategy let remaining branches finish.
+- Project configuration now resolves AWS account given IDs in nested inputs.
+- Pipeline runs now accept repository URLs without a scheme when starting runner work.
+- Stack configuration diffs now show “No configuration changes” instead of a blank pane when no fields can be displayed.
+- AWS default-VPC errors now explain the fallback and how to resolve the missing default VPC.
+- Deployment failure reasons now remain available as structured, user-facing errors.
+- Pipeline runs now recover more reliably after worker restarts and long-running lock contention.
+- Terraform reports still complete after a failed or canceled run, including when all resources were destroyed.
+- EC2 builds retry Git installation and fail early with a clear infrastructure error when installation cannot complete.
+- EC2 builds no longer fail on certain temporary-file permissions that differ between build environments.
+- Changes to a concurrency limit now take effect for the next run without requiring a new concurrency key.
+
+## AWS account IAM policy 1.0.44 → 1.0.45
+- **Managed certificates:** Request, describe, and delete ACM certificates and attach or detach ALB listener certificates for Ravion-managed domains.
+
+Update your AWS account connection in organization settings.
+
+## Modules
+### [CloudFront CDN](https://www.ravion.com/docs/module-definitions/catalog/rvn-cloudfront) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-cloudfront%401.0.1) → [1.3.0](https://github.com/ravionhq/modules/releases/tag/rvn-cloudfront%401.3.0)
+- Add standalone ALB origins, including optional private VPC origins.
+- CloudFront cache policy changes and module-managed feature changes no longer fail because of in-use errors.
+### [EC2 Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ec2-service) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-ec2-service%401.0.1) → [1.4.1](https://github.com/ravionhq/modules/releases/tag/rvn-ec2-service%401.4.1)
+- Show an Endpoint link when HTTP traffic is enabled.
+- Mount the host Docker socket for container workloads when configured.
+- Configure extra Builder IAM policies or replace the default build policies for each build.
+- Rotate on-instance application logs with configurable Supervisor limits.
+- Document how to choose an instance type so services can use the newest generation available in their region.
+### [ECS Network Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-nlb) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-nlb%401.0.1) → [1.1.0](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-nlb%401.1.0)
+- Configure extra Builder IAM policies or replace the default build policies for each build.
+### [ECS Web Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-web) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-web%401.0.1) → [1.1.0](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-web%401.1.0)
+- Configure extra Builder IAM policies or replace the default build policies for each build.
+### [ECS Worker](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-worker) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-worker%401.0.1) → [1.1.0](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-worker%401.1.0)
+- Configure extra Builder IAM policies or replace the default build policies for each build.
+### [Lambda Function](https://www.ravion.com/docs/module-definitions/catalog/rvn-lambda) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-lambda%401.0.1) → [1.1.0](https://github.com/ravionhq/modules/releases/tag/rvn-lambda%401.1.0)
+- Configure extra Builder IAM policies or replace the default build policies for each build.
+### [Route 53 DNS](https://www.ravion.com/docs/module-definitions/catalog/rvn-route53) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-route53%401.0.1) → [1.0.3](https://github.com/ravionhq/modules/releases/tag/rvn-route53%401.0.3)
+- Quoted values in structured DNS records are now accepted.
+- Long TXT and SPF records are encoded correctly for the AWS provider.
+### [Static Hosting](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-static) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-aws-static%401.0.1) → [1.1.1](https://github.com/ravionhq/modules/releases/tag/rvn-aws-static%401.1.1)
+- Configure extra Builder IAM policies or replace the default build policies for each build.
+- CloudFront cache policy changes and module-managed feature changes no longer fail because of in-use errors.
+
+## CLI [0.2.31](https://github.com/ravionhq/cli/releases/tag/v0.2.31) → [1.0.0](https://github.com/ravionhq/cli/releases/tag/v1.0.0)
+### Features
+- **Managed certificates and domains:** Use generated CLI API support for managed certificates, module domains, and DNS checks. [Certificate commands](https://www.ravion.com/docs/cli/reference/certificate)
+- **Deployment waiting:** Run `ravion deploy wait` with watch, timeout, until, and JSON output options. [Deploy commands](https://www.ravion.com/docs/cli/reference/deploy)
+- **Project configuration apply:** See the pipeline run IDs started for each module and the matching wait commands.
+- **Project file output:** Use `ravion project create --file` to write a generated project configuration draft. [Project commands](https://www.ravion.com/docs/cli/reference/project)
+
+</Update>
+
 <Update
   label="August 10, 2026"
   rss={{
