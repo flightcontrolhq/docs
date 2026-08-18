@@ -64,7 +64,7 @@ export function navigationPagePaths(navigation) {
     }
     if (!value || typeof value !== "object") return;
     for (const [key, child] of Object.entries(value)) {
-      visit(child, key === "pages");
+      visit(child, key === "pages" || key === "root");
     }
   }
 
