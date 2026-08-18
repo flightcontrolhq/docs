@@ -81,6 +81,8 @@ After the human setup is complete, give the agent this checklist.
 
     Follow the required workflow in [Project config file](/config-as-code/project-config-file#agent-tips). Check schemas before editing, preserve existing IDs and versions, preview every change with a dry run, and apply only after the dry run is correct and approved.
 
+    When the apply only creates new infrastructure, pass `--autoapprove` so the stack runs it starts apply without waiting at an approval gate. Omit it when the change modifies, replaces, or removes existing infrastructure.
+
   </Step>
 
   <Step title="Set up build and deploy pipelines using pipeline config file">
