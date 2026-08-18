@@ -30,7 +30,7 @@ export function frontmatter(source) {
   return values;
 }
 
-function pageFiles(directory = root) {
+export function pageFiles(directory = root) {
   const entries = readdirSync(directory, {withFileTypes: true});
   const files = [];
   for (const entry of entries) {
@@ -50,7 +50,7 @@ function pagePath(file) {
   return path.relative(root, file).replace(/\.mdx$/, "");
 }
 
-function navigationPagePaths(navigation) {
+export function navigationPagePaths(navigation) {
   const pages = new Set();
 
   function visit(value, insidePages = false) {
@@ -124,7 +124,7 @@ export function checkCanonicalNoindex(pages, navigationPages) {
   return violations;
 }
 
-function readRepositoryPages() {
+export function readRepositoryPages() {
   return pageFiles().map((file) => ({
     pagePath: pagePath(file),
     frontmatter: frontmatter(readFileSync(file, "utf8")) ?? {},
