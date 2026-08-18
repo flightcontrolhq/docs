@@ -53,7 +53,7 @@ Notes:
 - Static and Lambda deploys follow the same build → deploy shape with module-specific inputs; check `/pipelines/step-types` and `/pipelines/examples`.
 - Ravion pipelines are optional: existing GitHub Actions/CircleCI can build and then call `ravion deploy create --module-instance-id <id>`.
 
-Cite `/config-as-code/pipeline-config-file`, `/pipelines/overview`, `/pipelines/variants`.
+Cite `/config-as-code/pipeline-config-file`, `/concepts/pipelines`, `/pipelines/variants`.
 
 ## Step 4: CLI setup steps
 

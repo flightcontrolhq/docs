@@ -67,7 +67,7 @@
           {
             "group": "Modules",
             "pages": [
-              "modules/overview",
+              "concepts/modules",
               "modules/stack",
               "modules/build",
               "modules/deploy",
@@ -106,7 +106,7 @@
           {
             "group": "Pipelines",
             "pages": [
-              "pipelines/overview",
+              "concepts/pipelines",
               "pipelines/examples",
               "pipelines/config-reference",
               "pipelines/step-types",
@@ -285,6 +285,16 @@
     ]
   },
   "redirects": [
+    {
+      "source": "/modules/overview",
+      "destination": "/concepts/modules",
+      "permanent": true
+    },
+    {
+      "source": "/pipelines/overview",
+      "destination": "/concepts/pipelines",
+      "permanent": true
+    },
     {
       "source": "/use-cases/agent-self-service",
       "destination": "/mcp/overview"

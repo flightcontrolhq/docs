@@ -3,7 +3,6 @@ import path from "node:path";
 import {fileURLToPath} from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const docsOrigin = "https://www.ravion.com/docs";
 const skippedDirectories = new Set(["node_modules", "snippets", "drafts", ".git", ".github"]);
 
 export function frontmatter(source) {
@@ -72,11 +71,68 @@ export function navigationPagePaths(navigation) {
   return pages;
 }
 
-export function checkCanonicalNoindex(pages, navigationPages) {
+function redirectPath(value) {
+  return value.replace(/^\/+/, "").replace(/\/+$/, "");
+}
+
+function isStaticRedirect(redirect) {
+  return (
+    typeof redirect?.source === "string" &&
+    typeof redirect?.destination === "string" &&
+    !redirect.source.includes("*") &&
+    !redirect.source.includes(":") &&
+    !redirect.destination.includes("*") &&
+    !redirect.destination.includes(":")
+  );
+}
+
+function checkRedirects(pages, navigationPages, redirects) {
   const pageByPath = new Map(pages.map((page) => [page.pagePath, page]));
   const violations = [];
 
+  for (const redirect of redirects) {
+    if (!isStaticRedirect(redirect)) continue;
+
+    const source = redirectPath(redirect.source);
+    const destination = redirectPath(redirect.destination);
+    if (pageByPath.has(source)) {
+      violations.push(`${redirect.source}: redirect source has a live MDX page`);
+    }
+
+    const target = pageByPath.get(destination);
+    if (!target) {
+      violations.push(
+        `${redirect.source}: redirect destination ${redirect.destination} does not resolve to an MDX page`,
+      );
+      continue;
+    }
+    if (!navigationPages.has(destination)) {
+      violations.push(
+        `${redirect.source}: redirect destination ${redirect.destination} is not in docs.json navigation`,
+      );
+    }
+    if (target.frontmatter.noindex === true || target.frontmatter.hidden === true) {
+      violations.push(
+        `${redirect.source}: redirect destination ${redirect.destination} must be indexable and visible`,
+      );
+    }
+  }
+
+  return violations;
+}
+
+function checkCanonicalMetadata(pages) {
+  const violations = [];
+
   for (const page of pages) {
+    if (page.frontmatter.noindex === true) {
+      if (page.frontmatter.canonical !== undefined) {
+        violations.push(`${page.pagePath}: noindex pages must not define a canonical URL`);
+      } else {
+        violations.push(`${page.pagePath}: noindex is not allowed`);
+      }
+    }
+
     const canonical = page.frontmatter.canonical;
     if (canonical === undefined) continue;
     if (typeof canonical !== "string") {
@@ -102,26 +158,19 @@ export function checkCanonicalNoindex(pages, navigationPages) {
     }
 
     const canonicalPath = canonicalUrl.pathname.slice("/docs/".length);
-    if (canonicalPath === page.pagePath) continue;
-
-    if (page.frontmatter.noindex !== true) {
-      violations.push(`${page.pagePath}: canonical alias must set noindex: true`);
-    }
-
-    const target = pageByPath.get(canonicalPath);
-    if (!target) {
-      violations.push(`${page.pagePath}: canonical target ${canonicalPath} does not resolve to an MDX page`);
-      continue;
-    }
-    if (!navigationPages.has(canonicalPath)) {
-      violations.push(`${page.pagePath}: canonical target ${canonicalPath} is not in docs.json navigation`);
-    }
-    if (target.frontmatter.noindex === true || target.frontmatter.hidden === true) {
-      violations.push(`${page.pagePath}: canonical target ${canonicalPath} must be indexable and visible`);
+    if (canonicalPath !== page.pagePath) {
+      violations.push(`${page.pagePath}: cross-page canonical URLs are not allowed`);
     }
   }
 
   return violations;
+}
+
+export function checkDocsSeoInvariants({pages, navigationPages, redirects = []}) {
+  return [
+    ...checkRedirects(pages, navigationPages, redirects),
+    ...checkCanonicalMetadata(pages),
+  ];
 }
 
 export function readRepositoryPages() {
@@ -134,12 +183,16 @@ export function readRepositoryPages() {
 function main() {
   const pages = readRepositoryPages();
   const docsConfig = JSON.parse(readFileSync(path.join(root, "docs.json"), "utf8"));
-  const violations = checkCanonicalNoindex(pages, navigationPagePaths(docsConfig.navigation));
+  const violations = checkDocsSeoInvariants({
+    pages,
+    navigationPages: navigationPagePaths(docsConfig.navigation),
+    redirects: docsConfig.redirects ?? [],
+  });
   if (violations.length > 0) {
-    console.error(`canonical/noindex check failed:\n${violations.map((violation) => `  ${violation}`).join("\n")}`);
+    console.error(`docs SEO invariant check failed:\n${violations.map((violation) => `  ${violation}`).join("\n")}`);
     process.exit(1);
   }
-  console.log("canonical/noindex: every canonical alias is valid, indexable, and navigated");
+  console.log("docs SEO invariants: redirects and canonical aliases are valid");
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
