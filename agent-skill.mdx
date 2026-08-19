@@ -46,6 +46,8 @@ Deploy this project with Ravion: https://www.ravion.com/SKILL.md
 - CI integration for config changes
 - Filing bugs from the terminal, plus feedback whenever Ravion was confusing, harder than it should be, or missing something the agent needed
 
+`SKILL.md` stays short so it costs the agent almost nothing to keep loaded. It carries the resource model, the deploy path, and the rules, then links to reference files at `https://www.ravion.com/skills/use-ravion/` — `setup.md`, `project-config.md`, `pipelines.md`, and `operations.md` — that the agent reads only when the task needs them. Installed copies ship those files next to `SKILL.md`.
+
 The skill also tells the agent to install the [Ravion Docs MCP server](/mcp/overview) itself, so it can search current documentation while it works. The tools only appear after you restart the agent, so install it up front if you prefer:
 
 ```bash
