@@ -1,7 +1,7 @@
 ---
 title: "Start here (human + agent)"
 sidebarTitle: "Start here"
-description: "Set up Ravion for an AI agent: connect human-owned accounts and point the agent to the authoritative config, pipeline, and CI workflows."
+description: "Set up Ravion for an AI agent: connect human-owned accounts, then point the agent at the Ravion agent skill for the authoritative config, pipeline, and CI workflows."
 "og:image": "https://www.ravion.com/og/docs/start-here.png"
 "twitter:image": "https://www.ravion.com/og/docs/start-here.png"
 ---
@@ -25,6 +25,16 @@ Complete these steps before asking an agent to create or change infrastructure.
     Open [Git connections](https://app.ravion.com/org/settings/git-connections?modal=addConnection) and connect the Git repository(s) Ravion should use for app or Terraform source code.
 
     Can be skipped if you just want Ravion to deploy images from an image registry.
+
+  </Step>
+
+  <Step title="Install the Ravion agent skill">
+
+    ```bash
+    npx skills add https://www.ravion.com/SKILL.md
+    ```
+
+    The skill teaches your agent the workflows below. See [Ravion agent skill](/agent-skill).
 
   </Step>
 
@@ -66,60 +76,28 @@ Complete these steps before asking an agent to create or change infrastructure.
 
 </Steps>
 
-## Agent workflow
+## Ask your agent
 
-After the human setup is complete, give the agent this checklist.
+The [Ravion agent skill](/agent-skill) carries the agent workflow: reading core concepts, generating and applying a project config file, dry runs and approvals, pipelines, deploys, and CI. Once it is installed, describe what you want:
 
-<Steps>
-  <Step title="Read the core concepts page">
-    Read [Core concepts](/concepts/core-concepts) (through the Docs MCP server or directly) before making changes to understand how modules, stacks, deploys, and pipelines relate.
+```
+Deploy this project to AWS with Ravion.
+```
 
-  </Step>
+Agents that can fetch URLs but don't support skills work too:
 
-  <Step title="Use the project config file flow to create and manage modules">
-    Use project config to set up or change things in Ravion, including environments, module instances, and references between modules.
+```
+Deploy this project with Ravion: https://www.ravion.com/SKILL.md
+```
 
-    Follow the required workflow in [Project config file](/config-as-code/project-config-file#agent-tips). Check schemas before editing, preserve existing IDs and versions, preview every change with a dry run, and apply only after the dry run is correct and approved.
-
-    When the apply only creates new infrastructure, pass `--autoapprove` so the stack runs it starts apply without waiting at an approval gate. Omit it when the change modifies, replaces, or removes existing infrastructure.
-
-  </Step>
-
-  <Step title="Set up build and deploy pipelines using pipeline config file">
-    After modules are created, use pipeline config to define build and deploy pipelines for modules that are deployable.
-
-    Follow [Pipeline config file](/config-as-code/pipeline-config-file). Pull the live config, edit the file, and apply through the documented config file flow.
-
-  </Step>
-
-  <Step title="Set up CI for applying config changes">
-    Configure CI to plan Ravion configuration changes on every pull request and apply them after merge.
-
-    Follow [CI integration](/config-as-code/ci-integration). Use a service-account API key, store it as `RAVION_API_KEY`, and keep project and pipeline resource IDs in the workflow configuration.
-
-  </Step>
-
-  <Step title="Report bugs and feedback as you go">
-    When a command fails unexpectedly or Ravion behaves differently than documented, file it:
-
-    ```bash
-    ravion report bug "<what happened and what you expected>" --command "<the command that failed>"
-    ```
-
-    When something is confusing, harder than it should be, or missing, say so:
-
-    ```bash
-    ravion report feedback "<what was confusing or missing>"
-    ```
-
-    Be thorough: include the exact error text and the IDs of the resources involved. Both commands are non-interactive and exit `0` on success, so they are safe to run unattended. See [Report bugs and feedback](/report-bugs-and-feedback).
-
-  </Step>
-</Steps>
+The agent asks you for the values only you can decide, such as the AWS account, region, and domain, and pauses for your approval before any change that modifies, replaces, or removes existing infrastructure.
 
 ## Useful references
 
 <CardGroup cols={2}>
+  <Card title="Ravion agent skill" icon="sparkles" href="/agent-skill">
+    Install the skill that teaches agents how to use Ravion.
+  </Card>
   <Card title="Project config file" icon="file-code" href="/config-as-code/project-config-file">
     Define environments and module instances from one file.
   </Card>

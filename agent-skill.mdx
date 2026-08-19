@@ -1,0 +1,56 @@
+---
+title: "Ravion agent skill"
+sidebarTitle: "Agent skill"
+description: "Install the use-ravion agent skill so Claude Code, Cursor, Codex, and other AI coding agents deploy and operate AWS infrastructure with Ravion correctly."
+"og:image": "https://www.ravion.com/og/docs/agent-skill.png"
+"twitter:image": "https://www.ravion.com/og/docs/agent-skill.png"
+---
+
+The `use-ravion` skill teaches AI coding agents how to use Ravion: how to set up projects and modules through a project config file, how to review and approve stack runs, how to build and deploy code through pipelines, and how to inspect logs, metrics, and Terraform plans.
+
+It follows the [Agent Skills](https://agentskills.io) format, so any agent that supports skills can load it. Ravion hosts the canonical copy at [`https://www.ravion.com/SKILL.md`](https://www.ravion.com/SKILL.md).
+
+## Install the skill
+
+Install it into every supported agent in the current project:
+
+```bash
+npx skills add https://www.ravion.com/SKILL.md
+```
+
+Agents that support skill discovery find it through [`https://www.ravion.com/.well-known/agent-skills/index.json`](https://www.ravion.com/.well-known/agent-skills/index.json).
+
+In Claude Code, you can install the Ravion plugin instead, which bundles the skill with the [Ravion Docs MCP server](/mcp/overview):
+
+```
+/plugin marketplace add ravionhq/skills
+/plugin install ravion@ravion-skills
+```
+
+## Use it without installing
+
+Agents can also read the skill on demand. Paste this into any agent that can fetch URLs:
+
+```
+Deploy this project with Ravion: https://www.ravion.com/SKILL.md
+```
+
+## What the skill covers
+
+- Signing in, connecting an AWS account and Git repository, and installing the CLI
+- Generating and applying a `ravion.yaml` project config file, including schema and module lookups
+- Dry runs, approval gates, and when `--autoapprove` is safe
+- Build and deploy pipelines, and waiting for a deploy to finish before reporting success
+- Logs, metrics, stack state, Terraform plans, and rollbacks
+- CI integration for config changes
+- Filing bugs and feedback from the terminal
+
+Pair the skill with the [Ravion Docs MCP server](/mcp/overview) so the agent can search current documentation while it works:
+
+```bash
+npx add-mcp https://www.ravion.com/docs/mcp --name ravion-docs
+```
+
+## Contribute
+
+The skill is developed in the open at [ravionhq/skills](https://github.com/ravionhq/skills). Open an issue or pull request there when the skill leads an agent astray, or run `ravion report feedback "<what was confusing or missing>"`.
