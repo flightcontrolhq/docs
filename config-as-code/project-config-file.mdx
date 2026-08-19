@@ -109,7 +109,13 @@ Store the config file in your repository and manage it with the CLI.
     ravion project config apply <project-id> --file ravion.yaml
     ```
 
-    Add `--autoapprove` to approve supported stack change pipeline runs without a manual gate.
+    When the apply only creates new infrastructure, add `--autoapprove` so supported stack change pipeline runs apply without stopping at a manual gate:
+
+    ```bash
+    ravion project config apply <project-id> --file ravion.yaml --autoapprove
+    ```
+
+    Omit `--autoapprove` when the apply modifies, replaces, or removes existing infrastructure, so you can review each Terraform plan first.
 
     Add `--description` to set the description on every stack run the apply creates, for example `--description "https://github.com/acme/app/pull/12"` to link the runs to the pull request that changed the config. Without it, runs keep Ravion's generated description.
 
@@ -184,7 +190,13 @@ ravion module schema <module-type> [version]
 ravion project config apply <project-id> --file ravion.yaml --dry-run
 ```
 
-5. Apply only after the dry run is correct and approved:
+5. Apply only after the dry run is correct and approved. When the change only creates new infrastructure, pass `--autoapprove` so the stack runs go straight through instead of waiting at an approval gate:
+
+```bash
+ravion project config apply <project-id> --file ravion.yaml --autoapprove
+```
+
+Drop `--autoapprove` when the change touches existing infrastructure:
 
 ```bash
 ravion project config apply <project-id> --file ravion.yaml
@@ -205,7 +217,7 @@ ravion pipeline run wait <pipeline-run-id> --watch --timeout 30m
 ### Helpful hints
 
 - Pull the latest live config anytime with `ravion project config pull <project-id> --file ravion.yaml`.
-- Use `--autoapprove` only for supported stack changes that do not need a manual approval gate.
+- Use `--autoapprove` when creating new environments and module instances. Omit it when a change modifies, replaces, or removes existing infrastructure so a human reviews the Terraform plan.
 - To iterate on one target, pass `--environment-id`, `--environment-given-id`, `--module-instance-id`, or `--module-given-id`.
 - If a schema check, dry run, or apply fails unexpectedly, file it with `ravion report bug "<what happened>" --command "<the command that failed>"`. Include the exact error text and the project, environment, and module instance IDs involved. See [Report bugs and feedback](/report-bugs-and-feedback).
 
