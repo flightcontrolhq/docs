@@ -32,7 +32,6 @@
             "pages": [
               "index",
               "start-here",
-              "agent-skill",
               "how-ravion-works",
               "philosophy",
               "report-bugs-and-feedback",
@@ -126,6 +125,12 @@
             "group": "Troubleshooting",
             "pages": [
               "troubleshooting/stuck-terraform-state-lock"
+            ]
+          },
+          {
+            "group": "Agent setup",
+            "pages": [
+              "agent-skill"
             ]
           },
           {

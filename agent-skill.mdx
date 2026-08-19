@@ -1,54 +1,56 @@
 ---
 title: "Ravion agent skill"
 sidebarTitle: "Agent skill"
-description: "Install the use-ravion agent skill so Claude Code, Cursor, Codex, and other AI coding agents deploy and operate AWS infrastructure with Ravion correctly."
+description: "Install paths for the use-ravion agent skill, which teaches Claude Code, Cursor, Codex, and other AI coding agents how to deploy and operate AWS infrastructure with Ravion."
 "og:image": "https://www.ravion.com/og/docs/agent-skill.png"
 "twitter:image": "https://www.ravion.com/og/docs/agent-skill.png"
 ---
 
-The `use-ravion` skill teaches AI coding agents how to use Ravion: how to set up projects and modules through a project config file, how to review and approve stack runs, how to build and deploy code through pipelines, and how to inspect logs, metrics, and Terraform plans.
+The `use-ravion` skill teaches AI coding agents how to use Ravion: installing the CLI, signing in, connecting an AWS account, generating and applying a project config file, running dry runs and approvals, shipping code through pipelines, and reading logs, metrics, and Terraform plans. [Start here](/start-here) covers the workflow; this page covers the install paths.
 
-It follows the [Agent Skills](https://agentskills.io) format, so any agent that supports skills can load it. The skill lives in the public [ravionhq/skills](https://github.com/ravionhq/skills) repository, and Ravion mirrors it at [`https://www.ravion.com/SKILL.md`](https://www.ravion.com/SKILL.md) for agents that only take a URL.
+The skill lives in the public [ravionhq/skills](https://github.com/ravionhq/skills) repository and follows the [Agent Skills](https://agentskills.io) format.
 
-## Install the skill
+## Install paths
 
-Install it into every supported agent in the current project:
+Pick whichever your agent supports.
 
-```bash
-npx skills add ravionhq/skills
-```
+<Tabs>
+  <Tab title="Any agent">
+    Installs into every supported agent configured in the current project:
 
-This installs the pinned version from the repository, including the reference files the skill links to. Agents that support skill discovery also find it through [`https://www.ravion.com/.well-known/agent-skills/index.json`](https://www.ravion.com/.well-known/agent-skills/index.json).
+    ```bash
+    npx skills add ravionhq/skills
+    ```
 
-In Claude Code, you can install the Ravion plugin instead, which bundles the skill with the [Ravion Docs MCP server](/mcp/overview):
+  </Tab>
 
-```
-/plugin marketplace add ravionhq/skills
-/plugin install ravion@ravion-skills
-```
+  <Tab title="Claude Code plugin">
+    Bundles the skill with the [Ravion Docs MCP server](/mcp/overview):
 
-## Use it without installing
+    ```
+    /plugin marketplace add ravionhq/skills
+    /plugin install ravion@ravion-skills
+    ```
 
-Agents can also read the skill on demand. Paste this into any agent that can fetch URLs:
+  </Tab>
 
-```
-Deploy this project with Ravion: https://www.ravion.com/SKILL.md
-```
+  <Tab title="URL only">
+    Agents that fetch URLs but don't support skills read the hosted copy:
 
-## What the skill covers
+    ```
+    Deploy this project with Ravion: https://www.ravion.com/SKILL.md
+    ```
 
-- Signing in, installing the CLI, and connecting a Git repository
-- Connecting an AWS account, including deploying the CloudFormation stack from the AWS CLI
-- Generating and applying a `ravion.yaml` project config file, including how to look up schemas and modules
-- Dry runs, approval gates, and when `--autoapprove` is safe
-- Build and deploy pipelines, and waiting for a deploy to finish before reporting success
-- Logs, metrics, stack state, Terraform plans, and rollbacks
-- CI integration for config changes
-- Filing bugs from the terminal, plus feedback whenever Ravion was confusing, harder than it should be, or missing something the agent needed
+  </Tab>
+</Tabs>
+
+Agents that support skill discovery also find it through [`https://www.ravion.com/.well-known/agent-skills/index.json`](https://www.ravion.com/.well-known/agent-skills/index.json).
+
+## How the skill is structured
 
 `SKILL.md` stays short so it costs the agent almost nothing to keep loaded. It carries the resource model, the deploy path, and the rules, then links to four reference files — `setup.md`, `project-config.md`, `pipelines.md`, and `operations.md` — that the agent reads only when the task needs them. An install ships those files next to `SKILL.md`; an agent working from the hosted URL fetches them from `https://www.ravion.com/skills/use-ravion/`.
 
-The skill also tells the agent to install the [Ravion Docs MCP server](/mcp/overview) itself, so it can search current documentation while it works. The tools only appear after you restart the agent, so install it up front if you prefer:
+The skill also installs the [Ravion Docs MCP server](/mcp/overview) itself so it can search current documentation while it works. Its tools only appear after you restart the agent, so install it up front if you prefer:
 
 ```bash
 npx add-mcp https://www.ravion.com/docs/mcp --name ravion-docs
@@ -56,4 +58,4 @@ npx add-mcp https://www.ravion.com/docs/mcp --name ravion-docs
 
 ## Contribute
 
-The skill is developed in the open at [ravionhq/skills](https://github.com/ravionhq/skills), which is the source of truth — the hosted copy syncs from it. Open an issue or pull request there when the skill leads an agent astray, or run `ravion report feedback "<what was confusing or missing>"`.
+[ravionhq/skills](https://github.com/ravionhq/skills) is the source of truth, and the hosted copy syncs from it. Open an issue or pull request there when the skill leads an agent astray, or run `ravion report feedback "<what was confusing or missing>"`.
