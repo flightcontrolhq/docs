@@ -65,6 +65,8 @@ ravion login
 ravion project create --given-id my-app --name "My App"
 ravion project config pull <project-id> --file ravion.yaml
 # ...edit ravion.yaml...
+# Already have a config file? Skip `project create` and `project config pull`: apply creates the
+# project when it does not exist yet and the file's project.givenId matches the given ID passed here.
 ravion project config apply <project-id> --file ravion.yaml --dry-run
 ravion project config apply <project-id> --file ravion.yaml   # runs stack pipeline: plan → approval → apply
 

@@ -75,6 +75,12 @@ Store the config file in your repository and manage it with the CLI.
     ravion project create --given-id <project-id> --name "My project" --file ravion.yaml
     ```
 
+<Note>
+  If you already have a config file, you can skip this step. `ravion project config apply
+  <project-id>` creates the project when it does not exist yet and the file's `project.givenId`
+  matches `<project-id>`, and `--dry-run` plans that creation without creating anything.
+</Note>
+
     For an existing project, write its live config to a file:
 
     ```bash
@@ -100,6 +106,10 @@ Store the config file in your repository and manage it with the CLI.
     ```bash
     ravion project config apply <project-id> --file ravion.yaml --dry-run
     ```
+
+    A dry run writes nothing, so the project, environment, and module instance IDs it would create
+    do not exist yet and print as `(known after apply)`. Given IDs are the identifiers you control,
+    so use those to match plan output against your config file.
 
   </Step>
   <Step title="Apply the changes">
