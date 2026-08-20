@@ -390,8 +390,11 @@ ravion pipeline step-execution list [flags]
 | `--cursor <string>` |  | cursor |
 | `--json` |  | emit response as JSON |
 | `--limit <int>` |  | limit |
+| `--limit-per-module-instance <moduleInstanceIds>` |  | When set together with moduleInstanceIds, return only the newest N step executions per module instance. |
+| `--module-instance-ids <strings>` |  | Return step executions acting on any of these module instances, newest first. |
 | `--pipeline-run-id <string>` |  | pipelineRunId |
 | `--pipeline-run-ids <strings>` |  | Batch filter: return step executions for any of these run ids in one call. |
+| `--step-type <build>` |  | Filter to step executions of any of these step types, such as build or `deploy`. |
 | `-v, --verbose` |  | show full output |
 
 #### `ravion pipeline step-execution terraform-resources`
