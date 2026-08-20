@@ -294,6 +294,10 @@
     {
       "source": "/index",
       "destination": "/",
+    },
+    {
+      "source": "/quickstart",
+      "destination": "/start-here",
       "permanent": true
     },
     {

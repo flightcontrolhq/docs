@@ -19,5 +19,7 @@
     "Apply config with `ravion project config apply <project-id> --file ravion.yaml`, and use `--dry-run` first to review planned changes.",
     "Prefer standard library modules (types prefixed `rvn-`) over hand-written Terraform, and wire modules together with `moduleGivenIdRef`.",
     "Reference secrets from AWS Secrets Manager with `valueFrom` instead of putting plaintext values in the config."
-  ]
+  ],
+  "url": "https://context7.com/ravionhq/docs",
+  "public_key": "pk_maLSVsSAdqXBVIZEwSUTX"
 }
