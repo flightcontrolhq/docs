@@ -141,6 +141,17 @@ test("page at a redirect source fails", () => {
   );
 });
 
+test("root index redirects are valid", () => {
+  assert.deepEqual(
+    checkDocsSeoInvariants({
+      pages: [{pagePath: "index", frontmatter: {}}],
+      navigationPages: new Set(["index"]),
+      redirects: [{source: "/index", destination: "/", permanent: true}],
+    }),
+    [],
+  );
+});
+
 test("wildcard redirects are skipped", () => {
   assert.deepEqual(
     checkDocsSeoInvariants({

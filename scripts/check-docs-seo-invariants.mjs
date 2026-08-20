@@ -72,7 +72,8 @@ export function navigationPagePaths(navigation) {
 }
 
 function redirectPath(value) {
-  return value.replace(/^\/+/, "").replace(/\/+$/, "");
+  const path = value.replace(/^\/+/, "").replace(/\/+$/, "");
+  return path || "index";
 }
 
 function isStaticRedirect(redirect) {
@@ -95,7 +96,8 @@ function checkRedirects(pages, navigationPages, redirects) {
 
     const source = redirectPath(redirect.source);
     const destination = redirectPath(redirect.destination);
-    if (pageByPath.has(source)) {
+    const isRootIndexRedirect = source === "index" && destination === "index";
+    if (pageByPath.has(source) && !isRootIndexRedirect) {
       violations.push(`${redirect.source}: redirect source has a live MDX page`);
     }
 
