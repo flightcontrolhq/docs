@@ -294,6 +294,7 @@
     {
       "source": "/index",
       "destination": "/",
+      "permanent": true
     },
     {
       "source": "/quickstart",
