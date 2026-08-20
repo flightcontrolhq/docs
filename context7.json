@@ -1,0 +1,23 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Ravion",
+  "description": "Ravion is the agent-native cloud infrastructure platform that gives developers, AI agents, and DevOps one governed place to provision, deploy, and operate applications in their own AWS account.",
+  "excludeFolders": [
+    "node_modules",
+    "./scripts",
+    "./styles",
+    "./fonts",
+    "./images",
+    "./logo",
+    "./.agents",
+    "./.mintlify",
+    "./.github"
+  ],
+  "excludeFiles": ["README.md", "AGENTS.md"],
+  "rules": [
+    "Declare projects, environments, and module instances in a project config file (ravion.yaml, .jsonc, or .cue) kept in source control.",
+    "Apply config with `ravion project config apply <project-id> --file ravion.yaml`, and use `--dry-run` first to review planned changes.",
+    "Prefer standard library modules (types prefixed `rvn-`) over hand-written Terraform, and wire modules together with `moduleGivenIdRef`.",
+    "Reference secrets from AWS Secrets Manager with `valueFrom` instead of putting plaintext values in the config."
+  ]
+}
