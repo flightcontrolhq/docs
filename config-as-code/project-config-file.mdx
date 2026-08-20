@@ -107,6 +107,10 @@ Store the config file in your repository and manage it with the CLI.
     ravion project config apply <project-id> --file ravion.yaml --dry-run
     ```
 
+    A dry run writes nothing, so the project, environment, and module instance IDs it would create
+    do not exist yet and print as `(known after apply)`. Given IDs are the identifiers you control,
+    so use those to match plan output against your config file.
+
   </Step>
   <Step title="Apply the changes">
     Apply the config to update the stored config and run the Terraform plan if needed.
