@@ -1,7 +1,7 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
   "projectTitle": "Ravion",
-  "description": "Infrastructure as code platform that provisions and deploys apps in your own AWS account with modules, pipelines, and the Ravion CLI",
+  "description": "Ravion is the agent-native cloud infrastructure platform that gives developers, AI agents, and DevOps one governed place to provision, deploy, and operate applications in their own AWS account.",
   "excludeFolders": [
     "node_modules",
     "./scripts",
