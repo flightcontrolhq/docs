@@ -292,6 +292,11 @@
   },
   "redirects": [
     {
+      "source": "/quickstart",
+      "destination": "/start-here",
+      "permanent": true
+    },
+    {
       "source": "/modules/overview",
       "destination": "/concepts/modules",
       "permanent": true
