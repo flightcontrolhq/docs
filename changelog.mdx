@@ -34,33 +34,28 @@ rss: true
 
 ## Platform
 
-### Breaking changes
-
-- **Required pipeline variants:** Add at least one variant to a pipeline configuration before saving it.
-
 ### Features
 
-- **Module canvas editor:** Arrange, group, pin, and configure metrics for module cards, then save or discard your changes.
-- **[Catalog module creation](https://www.ravion.com/docs/module-definitions/catalog):** Start creating a module directly from its catalog definition.
-- **Deferred module references:** Create modules that reference producer modules before those producers have applied.
-- **Environment name presets:** Choose Production, Staging, Development, or Test when creating an environment.
-- **Module delivery status:** See build progress and failure details directly on module cards.
 - **Module categories:** Organize module definitions into categories and choose a category when adding a module.
-- **Pipeline starter configuration:** New pipelines now begin with a runnable hello-world configuration.
+- **Module canvas editor:** Arrange, group, pin, and configure metrics for module cards, then save or discard your changes.
+- **Catalog module creation:** Start creating a module directly from its catalog definition.
+- **Module delivery status:** See build progress and failure details directly on module cards.
+- **Destructive change approval:** Destructive changes now require approval even when auto-approve is enabled.
 - **Agent log controls:** Let an agent set the log search query and time range from the logs view.
 
 ### Improvements
 
 - Create-module dialogs now use more of the available height on short screens.
 - Creating a module now defaults to Create & Apply and uses clearer plan and apply actions.
-- Deletion dialogs now explain when resources remain running in your cloud.
 - The current-state resources view now uses stack-specific empty-state wording and tighter spacing.
 - API key empty states now use clearer language.
 - Terraform plan resources now use the same change colors as applied resources.
-- Destructive changes now require approval even when auto-approve is enabled.
 - EC2 health-check status now separates release failures from target health and shows focused diagnostics.
 - Module canvas updates now avoid unnecessary re-rendering and layout work.
-- Module canvas hover behavior now highlights only the selected card and its matching sidebar row.
+- Modules can now reference producer modules before those producers have applied.
+- Creating an environment now offers Production, Staging, Development, and Test name presets.
+- Run tabs now show the same status icon as the corresponding stack tab, including timed-out runs.
+- Deploy-step drawers now show View deploy when the deployment is identified by the step output.
 
 ### Fixes
 
@@ -69,11 +64,8 @@ rss: true
 - The logs viewer now returns results reliably across supported time ranges.
 - Retrying a partially failed multi-module creation now reuses modules already created in the batch.
 - Pressing Enter inside an empty YAML flow collection now keeps the configuration valid.
-- Metric run and deployment markers now appear at the correct positions for the requested time window.
 - Terraform resource changes now load correctly when the selected run is outside the pipeline bounds.
 - Cancelled queued runs now clear correctly instead of remaining stuck.
-- Run tabs now show the same status icon as the corresponding stack tab, including timed-out runs.
-- Deploy-step drawers now show View deploy when the deployment is identified by the step output.
 - Failed partial applies no longer permanently lock module inputs when no live resources remain.
 - Static deployments now report genuine contention as queued and start uncontended work as in progress.
 
@@ -81,7 +73,7 @@ rss: true
 
 ### [ECS Network Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-nlb) [1.1.0](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-nlb%401.1.0) → [1.1.1](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-nlb%401.1.1)
 
-- One service can now expose up to five TCP, UDP, or TLS ports.
+- Clarify documentation that one service can expose up to five TCP, UDP, or TLS ports.
 
 ### [VPC Network](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-network) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-aws-network%401.0.1) → [1.1.0](https://github.com/ravionhq/modules/releases/tag/rvn-aws-network%401.1.0)
 
@@ -97,7 +89,7 @@ rss: true
 - **Module step filtering:** List pipeline step executions for specific modules instead of every execution.
 - **Module categories:** Manage categories with generated API support and the `ravion module category` command group.
 
-### Fixes
+### Improvements
 
 - **Project config validation:** Validation errors now appear as an indented tree with clear spacing around module details.
 
