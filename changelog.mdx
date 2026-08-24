@@ -25,6 +25,7 @@ rss: true
 {/* ravion-changelog:august-17-2026 */}
 
 {/* ravion-changelog:august-24-2026 */}
+
 <Update
   label="August 24, 2026"
   rss={{
@@ -36,20 +37,20 @@ rss: true
 
 ### Features
 
-- **Module categories:** Organize module definitions into categories and choose a category when adding a module.
-- **Module canvas editor:** Arrange, group, pin, and configure metrics for module cards, then save or discard your changes.
-- **Catalog module creation:** Start creating a module directly from its catalog definition.
-- **Module delivery status:** See build progress and failure details directly on module cards.
-- **Destructive change approval:** Destructive changes now require approval even when auto-approve is enabled.
-- **Agent log controls:** Let an agent set the log search query and time range from the logs view.
+- **Module canvas editor:** Customize your module canvas with drag and drop, grouping, and configure which metrics show on each card
+- **Module categories:** Module definitions can now be organized into categories to make it easier for users to pick the correct module for their use case.
+- **Module build status now on canvas:** See build progress and failure details directly on module cards.
+- **Destructive change approval:** Destructive changes now require stack approval even when auto-approve is enabled.
 
 ### Improvements
 
+- You can now create a module directly from the module catalog
 - Create-module dialogs now use more of the available height on short screens.
 - Creating a module now defaults to Create & Apply and uses clearer plan and apply actions.
 - The current-state resources view now uses stack-specific empty-state wording and tighter spacing.
 - API key empty states now use clearer language.
 - Terraform plan resources now use the same change colors as applied resources.
+- In-app AI chat can now set the log search query and time range in the logs view.
 - EC2 health-check status now separates release failures from target health and shows focused diagnostics.
 - Module canvas updates now avoid unnecessary re-rendering and layout work.
 - Modules can now reference producer modules before those producers have applied.
