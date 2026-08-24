@@ -24,6 +24,78 @@ rss: true
 {/* ravion-changelog:august-10-2026 */}
 {/* ravion-changelog:august-17-2026 */}
 
+{/* ravion-changelog:august-24-2026 */}
+
+<Update
+  label="August 24, 2026"
+  rss={{
+    title: "Module canvas editing, safer pipeline applies, clearer deployment status, and expanded CLI project configuration",
+  }}
+>
+
+## Platform
+
+### Features
+
+- **Module canvas editor:** Customize your module canvas with drag and drop, grouping, and configure which metrics show on each card
+- **Module categories:** Module definitions can now be organized into categories to make it easier for users to pick the correct module for their use case.
+- **Module build status now on canvas:** See build progress and failure details directly on module cards.
+- **Destructive change approval:** Destructive changes now require stack approval even when auto-approve is enabled.
+
+### Improvements
+
+- You can now create a module directly from the module catalog
+- Create-module dialogs now use more of the available height on short screens.
+- Creating a module now defaults to Create & Apply and uses clearer plan and apply actions.
+- The current-state resources view now uses stack-specific empty-state wording and tighter spacing.
+- API key empty states now use clearer language.
+- Terraform plan resources now use the same change colors as applied resources.
+- In-app AI chat can now set the log search query and time range in the logs view.
+- EC2 health-check status now separates release failures from target health and shows focused diagnostics.
+- Module canvas updates now avoid unnecessary re-rendering and layout work.
+- Modules can now reference producer modules before those producers have applied.
+- Creating an environment now offers Production, Staging, Development, and Test name presets.
+- Run tabs now show the same status icon as the corresponding stack tab, including timed-out runs.
+- Deploy-step drawers now show View deploy when the deployment is identified by the step output.
+
+### Fixes
+
+- Stack runs without current resources are now reachable from the stack page.
+- Pending-approval module cards now open their stack when clicked anywhere on the card.
+- The logs viewer now returns results reliably across supported time ranges.
+- Retrying a partially failed multi-module creation now reuses modules already created in the batch.
+- Pressing Enter inside an empty YAML flow collection now keeps the configuration valid.
+- Terraform resource changes now load correctly when the selected run is outside the pipeline bounds.
+- Cancelled queued runs now clear correctly instead of remaining stuck.
+- Failed partial applies no longer permanently lock module inputs when no live resources remain.
+- Static deployments now report genuine contention as queued and start uncontended work as in progress.
+
+## Modules
+
+### [ECS Network Service](https://www.ravion.com/docs/module-definitions/catalog/rvn-ecs-nlb) [1.1.0](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-nlb%401.1.0) → [1.1.1](https://github.com/ravionhq/modules/releases/tag/rvn-ecs-nlb%401.1.1)
+
+- Clarify documentation that one service can expose up to five TCP, UDP, or TLS ports.
+
+### [VPC Network](https://www.ravion.com/docs/module-definitions/catalog/rvn-aws-network) [1.0.1](https://github.com/ravionhq/modules/releases/tag/rvn-aws-network%401.0.1) → [1.1.0](https://github.com/ravionhq/modules/releases/tag/rvn-aws-network%401.1.0)
+
+- Add VPC endpoints, including a free S3 gateway endpoint enabled by default for new VPCs, an optional DynamoDB gateway endpoint, and selectable interface endpoints for AWS services.
+
+## CLI [1.0.0](https://github.com/ravionhq/cli/releases/tag/v1.0.0) → [1.2.2](https://github.com/ravionhq/cli/releases/tag/v1.2.2)
+
+### Features
+
+- **[Project config apply](https://www.ravion.com/docs/config-as-code/project-config-file):** Apply configuration using a project given ID, create the project when it does not exist, and preview the same creation with `--dry-run`.
+- **Project actions:** See project creation actions and known-after-apply identifiers in configuration plans.
+- **Saved module canvas:** Read environment canvas arrangements, including card positions, groups, metrics, and connector shapes.
+- **Module step filtering:** List pipeline step executions for specific modules instead of every execution.
+- **Module categories:** Manage categories with generated API support and the `ravion module category` command group.
+
+### Improvements
+
+- **Project config validation:** Validation errors now appear as an indented tree with clear spacing around module details.
+
+</Update>
+
 <Update
   label="August 17, 2026"
   rss={{
