@@ -60,6 +60,20 @@ ravion deploy create [flags]
 | `--inputs <string>` |  | Deploy-time input values |
 | `--json` |  | emit response as JSON |
 
+### `ravion deploy definition`
+
+Get what a deployment applied
+
+```bash
+ravion deploy definition <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+
 ### `ravion deploy get`
 
 Get Deployment by id
@@ -152,6 +166,37 @@ ravion deploy resource list [flags]
 | `--module-instance-id <string>` |  | moduleInstanceId |
 | `--type <string>` |  | type |
 | `-v, --verbose` |  | show full output |
+
+#### `ravion deploy resource restart`
+
+Restart an EKS workload
+
+```bash
+ravion deploy resource restart <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--json` |  | emit response as JSON |
+| `--wait-seconds <int>` |  | How long, in seconds, the agent watches for the replacement pods to become ready before answering. Omitted takes the agent's default; a negative value asks it not to wait at all. Clamped by both the control plane and the agent, so a caller can only ever ask for less than the ceiling. |
+
+#### `ravion deploy resource rollback`
+
+Roll an EKS workload's Helm release back
+
+```bash
+ravion deploy resource rollback <id> [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--revision <helm rollback>` | yes | Helm's own revision number, from the release's history — not a Ravion identifier. Required and must be positive: helm rollback with no revision means "the previous one", and after a failed upgrade the previous revision and the last revision known to have WORKED are not the same one, so the caller has to say which it means.  It is validated against the revisions Ravion RECORDED for this module instance's prior successful deploys, and then again by the agent against Helm's actual in-cluster history. Both checks are needed and neither subsumes the other: the control plane cannot read a private cluster's release Secrets, and Helm prunes its history to `--max-history`, so a revision Ravion recorded may no longer be there to reinstate. |
+| `--json` |  | emit response as JSON |
+| `--timeout-seconds <int>` |  | Seconds bounding the whole rollback, Helm's own wait included. Omitted takes the agent's default. Clamped on both ends. |
 
 ### `ravion deploy rollback`
 

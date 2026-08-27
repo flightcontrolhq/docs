@@ -47,6 +47,23 @@ ravion values aws/ec2/instances [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
+### `ravion values aws/eks-versions`
+
+Get AWS EKS version values
+
+```bash
+ravion values aws/eks-versions [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--region <string>` | yes | AWS region code |
+| `--current-version <string>` |  | Current cluster version. When set, returns versions greater than or equal to it (upgrade targets); when omitted, returns only versions supported for new cluster creation. |
+| `--json` |  | emit response as JSON |
+| `-v, --verbose` |  | show full output |
+
 ### `ravion values aws/fargate/sizes`
 
 Get AWS Fargate size values
