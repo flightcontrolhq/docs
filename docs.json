@@ -214,6 +214,7 @@
             "pages": [
               "cli/reference/api-key",
               "cli/reference/aws",
+              "cli/reference/billing",
               "cli/reference/bug",
               "cli/reference/certificate",
               "cli/reference/code-source",
