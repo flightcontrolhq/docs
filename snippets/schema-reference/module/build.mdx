@@ -92,6 +92,14 @@ Image build configuration for a module.
   _(templateable)_
 </ResponseField>
 
+<ResponseField name="soci_enabled" type="boolean | null">
+  Build a SOCI-enabled image for lazy loading on AWS Fargate.
+  When enabled, image layers are gzip-compressed (SOCI cannot index zstd)
+  and a SOCI index manifest v2 is generated and pushed alongside the image.
+
+  _(templateable)_
+</ResponseField>
+
 <ResponseField name="destinations" type="Pipeline.EcrDestination[]" required>
   ECR destinations where the built Docker image will be pushed.
 
@@ -360,6 +368,17 @@ Note: Additional validation via CEL:
 
 <ResponseField name="execution_environment_id" type="string | null">
   ID or given ID of a pre-configured execution environment
+
+  _(templateable)_
+</ResponseField>
+
+<ResponseField name="execution_environment_overrides" type="Pipeline.ExecutionEnvironmentOverrides">
+  Overrides for individual attributes of the resolved execution environment.
+  Valid with or without `execution_environment_id` — without one, they apply
+  on top of the default environment or the auto-selected network.
+  The whole block and each field inside it accept template tokens.
+
+  See: [Pipeline.ExecutionEnvironmentOverrides](#pipeline-executionenvironmentoverrides)
 
   _(templateable)_
 </ResponseField>
@@ -661,6 +680,29 @@ IAM policies configuration for runner roles
 Used by EC2-backed steps to specify additional permissions
 
 One of: [Pipeline.AwsPermissionsAttach](#pipeline-awspermissionsattach), [Pipeline.AwsPermissionsReplace](#pipeline-awspermissionsreplace).
+
+### Pipeline.ExecutionEnvironmentOverrides
+
+Overrides applied on top of the resolved execution environment.
+
+An execution environment is a saved network placement. These fields replace
+individual attributes of whichever environment the step resolved — the one
+named by `execution_environment_id`, the AWS account's default when none was
+named, or the network selected from `aws_account_id` plus `region`. Every
+attribute that is not overridden keeps the resolved value.
+
+Replace semantics, not append: an overridden attribute is the only value
+used. Overriding does not require naming an environment.
+
+Both the block as a whole and each field inside it are templateable, so a
+security group produced by an earlier step can be wired straight in.
+
+<ResponseField name="security_group" type="string | null">
+  Security group ID the runner is launched with, replacing the resolved
+  execution environment's security group.
+
+  _(minLen:1; templateable)_
+</ResponseField>
 
 ### Pipeline.InfrastructureType
 
