@@ -394,7 +394,16 @@ Trigger filter configuration
 </ResponseField>
 
 <ResponseField name="paths" type="string[] | null">
-  Only trigger when files in these paths are changed
+  Only trigger when files in these paths are changed.
+  Each entry is a glob matched against every changed file path, relative to
+  the repository root: `*` matches within one path segment, `**` matches
+  across segments, and `{a,b}` and `[abc]` are supported. Dotfiles are
+  matched, and a leading `/` is ignored.
+  Prefix a pattern with `!` to exclude files: a changed file counts only if
+  it matches at least one non-`!` pattern and no `!` pattern. When every
+  pattern is a `!` exclusion, all changed files are included first, so
+  `paths: ["!docs/**"]` means "any change outside docs/".
+  The trigger fires when at least one changed file counts.
 
   _(templateable)_
 </ResponseField>
