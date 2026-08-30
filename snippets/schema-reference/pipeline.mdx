@@ -1172,6 +1172,12 @@ Build static CI action step
 
 General-purpose build action step — triggers a build based on the module's build config.
 
+By default, build steps use `value: 2` with `behavior: cancel-intermediate`,
+keyed automatically by module instance and, when set, `input.branch`. This
+preserves the oldest in-flight build because its deployment may already be
+running, as well as the newest push, while cancelling stale intermediate
+builds. An explicit `concurrency` block opts out of this default entirely.
+
 <ResponseField name="id" type="string" required>
   Unique step identifier, used for referencing in logs and dependencies
 
