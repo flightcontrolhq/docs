@@ -30,7 +30,7 @@ rss: true
 <Update
   label="August 31, 2026"
   rss={{
-    title: "EKS deployments, SOCI lazy loading, billing management, and new metrics and logs commands",
+    title: "SOCI lazy loading, billing management, and new metrics and logs commands",
   }}
 >
 
@@ -38,22 +38,19 @@ rss: true
 
 ### Features
 
-- **EKS deployments:** [Deploy EKS workloads and view their logs and metrics in Ravion](https://www.ravion.com/docs/module-definitions/definition-schema/deploy#eksmoduledeployment).
-- **SOCI lazy loading:** Enable `soci_enabled` for Fargate images to use lazy-loaded container images ([build configuration](https://www.ravion.com/docs/pipelines/config-reference#buildimagecistep)).
+- **SOCI lazy loading:** Set `soci_enabled` on a [`build:image` step](https://www.ravion.com/docs/pipelines/config-reference#buildimagecistep) to use lazy-loaded container images for Fargate. Standard modules will enable it by default after further testing.
 - **Billing and usage settings:** Manage organization plans, add-ons, payment methods, invoices, and usage from the settings pages.
 
 ### Improvements
 
 - Build steps now cancel intermediate runs by default, while blocks apply concurrency only when configured directly.
 - Manual reference inputs no longer show default values as placeholders.
-- Collapsed input tags now have a consistent height whether or not they include an icon.
-- Build cache exports now use matching compression settings, avoiding unnecessary layer recompression.
-- The in-app plan chooser now matches the pricing page, and Talk to sales links open the demo booking page.
+- Image builds are faster now that cache exports use matching compression settings, avoiding unnecessary layer recompression.
 
 ### Fixes
 
 - EC2 execution logs now include the user-facing AWS error when a launch fails.
-- Billing contract rebuilds now use supported contract lookups and update entitlements successfully.
+- Collapsed input tags now have a consistent height whether or not they include an icon.
 
 ## AWS account IAM policy 1.0.45 → 1.0.47
 
