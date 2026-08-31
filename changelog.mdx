@@ -26,6 +26,57 @@ rss: true
 
 {/* ravion-changelog:august-24-2026 */}
 
+{/* ravion-changelog:august-31-2026 */}
+<Update
+  label="August 31, 2026"
+  rss={{
+    title: "EKS deployments, SOCI lazy loading, billing management, and new metrics and logs commands",
+  }}
+>
+
+## Platform
+
+### Features
+
+- **EKS deployments:** [Deploy EKS workloads and view their logs and metrics in Ravion](https://www.ravion.com/docs/module-definitions/definition-schema/deploy#eksmoduledeployment).
+- **SOCI lazy loading:** Enable `soci_enabled` for Fargate images to use lazy-loaded container images ([build configuration](https://www.ravion.com/docs/pipelines/config-reference#buildimagecistep)).
+- **Billing and usage settings:** Manage organization plans, add-ons, payment methods, invoices, and usage from the settings pages.
+
+### Improvements
+
+- Build steps now cancel intermediate runs by default, while blocks apply concurrency only when configured directly.
+- Manual reference inputs no longer show default values as placeholders.
+- Collapsed input tags now have a consistent height whether or not they include an icon.
+- Build cache exports now use matching compression settings, avoiding unnecessary layer recompression.
+- The in-app plan chooser now matches the pricing page, and Talk to sales links open the demo booking page.
+
+### Fixes
+
+- EC2 execution logs now include the user-facing AWS error when a launch fails.
+- Billing contract rebuilds now use supported contract lookups and update entitlements successfully.
+
+## AWS account IAM policy 1.0.45 → 1.0.47
+
+- **EKS cluster access:** Add `eks:DescribeCluster` to the deploy policy.
+- **AMP metrics access:** Add Amazon Managed Prometheus read actions to the broker policy for the EKS metrics dashboard.
+
+Update your AWS account connection in organization settings.
+
+## CLI [1.2.2](https://github.com/ravionhq/cli/releases/tag/v1.2.2) → [1.3.2](https://github.com/ravionhq/cli/releases/tag/v1.3.2)
+
+### Features
+
+- **EKS version lookup:** Use [`ravion values aws/eks-versions`](https://www.ravion.com/docs/cli/reference/values) to list Kubernetes versions available for cluster creation or upgrades.
+- **Amazon Managed Prometheus metrics:** Use [`ravion metrics aws-amp`](https://www.ravion.com/docs/cli/reference/metrics) to run PromQL range queries against an AMP workspace.
+- **Prometheus metrics:** Use [`ravion metrics eks-prometheus`](https://www.ravion.com/docs/cli/reference/metrics) to query Prometheus through an EKS deployment.
+- **EKS workload logs:** Use [`ravion logs eks-loki`](https://www.ravion.com/docs/cli/reference/logs) to tail EKS workload logs from Loki.
+- **Billing portal:** Use [`ravion billing portal-session`](https://www.ravion.com/docs/cli/reference/billing) to open the Stripe customer portal and manage payment methods.
+- **Billing add-ons:** Use [`ravion billing add-on list|enable|disable`](https://www.ravion.com/docs/cli/reference/billing) to manage subscription add-ons.
+- **Billing invoices:** Use [`ravion billing invoice list`](https://www.ravion.com/docs/cli/reference/billing) to list organization invoices with PDF links.
+- **Billing account details:** Use [`ravion billing get`](https://www.ravion.com/docs/cli/reference/billing) to view the billing provider, cards on file, and available payment options.
+
+</Update>
+
 <Update
   label="August 24, 2026"
   rss={{
