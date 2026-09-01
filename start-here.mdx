@@ -1,34 +1,20 @@
 ---
 title: "Start here"
 sidebarTitle: "Start here"
-description: "Install the Ravion agent skill and let your coding agent install the CLI, connect your AWS account, and deploy your project to your own AWS account."
+description: "Paste one prompt into your coding agent and let it install the Ravion agent skill and CLI, connect your AWS account, and deploy your project to your own AWS account."
 "og:image": "https://www.ravion.com/og/docs/start-here.png"
 "twitter:image": "https://www.ravion.com/og/docs/start-here.png"
 ---
 
-Ravion runs infrastructure in your own AWS account, and your coding agent drives it. Setup is two commands: teach the agent, then ask.
+Ravion runs infrastructure in your own AWS account, and your coding agent drives it. Setup is one prompt.
 
-<Steps>
-  <Step title="Install the Ravion agent skill">
+Paste this into Claude Code, Cursor, Codex, or any other agent that supports [Agent Skills](https://agentskills.io):
 
-    ```bash
-    npx skills add ravionhq/skills
-    ```
+```text wrap
+Deploy this project to AWS with Ravion. If the use-ravion skill is not installed yet, install it first with `npx skills add ravionhq/skills`, then follow it.
+```
 
-    This works with Claude Code, Cursor, Codex, and every other agent that supports [Agent Skills](https://agentskills.io). See [Ravion agent skill](/agent-skill) for the plugin and URL options.
-
-  </Step>
-
-  <Step title="Ask your agent">
-
-    ```
-    Deploy this project to AWS with Ravion.
-    ```
-
-    The agent installs the CLI, signs you in, connects your AWS account, writes the project config, applies it, and sets up a build and deploy pipeline.
-
-  </Step>
-</Steps>
+The agent installs the skill if it is missing, then installs the CLI, signs you in, connects your AWS account, writes the project config, applies it, and sets up a build and deploy pipeline. See [Ravion agent skill](/agent-skill) for the plugin and URL install options.
 
 ## What the agent needs from you
 
