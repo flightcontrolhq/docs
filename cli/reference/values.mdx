@@ -42,7 +42,7 @@ ravion values aws/ec2/instances [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--aws-account-id <string>` | yes | AWS account ID |
+| `--aws-account-id <string>` | yes | AWS account reference: unique id, given id, or 12-digit AWS account number |
 | `--region <string>` | yes | AWS region code |
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
@@ -110,7 +110,7 @@ ravion values aws/security-groups [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--aws-account-id <string>` | yes | AWS account ID |
+| `--aws-account-id <string>` | yes | AWS account reference: unique id, given id, or 12-digit AWS account number |
 | `--region <string>` | yes | AWS region code |
 | `--vpc-id <string>` | yes | AWS VPC ID |
 | `--json` |  | emit response as JSON |
@@ -128,7 +128,7 @@ ravion values aws/subnets [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--aws-account-id <string>` | yes | AWS account ID |
+| `--aws-account-id <string>` | yes | AWS account reference: unique id, given id, or 12-digit AWS account number |
 | `--region <string>` | yes | AWS region code |
 | `--vpc-id <string>` | yes | AWS VPC ID |
 | `--json` |  | emit response as JSON |
@@ -146,7 +146,7 @@ ravion values aws/vpcs [flags]
 
 | Flag | Required | Description |
 | --- | --- | --- |
-| `--aws-account-id <string>` | yes | AWS account ID |
+| `--aws-account-id <string>` | yes | AWS account reference: unique id, given id, or 12-digit AWS account number |
 | `--region <string>` | yes | AWS region code |
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
