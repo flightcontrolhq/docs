@@ -223,6 +223,7 @@
               "cli/reference/describe",
               "cli/reference/domain",
               "cli/reference/environment",
+              "cli/reference/feature-flag",
               "cli/reference/feedback",
               "cli/reference/git",
               "cli/reference/infrastructure-event",
