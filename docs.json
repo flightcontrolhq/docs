@@ -83,6 +83,7 @@
                   "module-definitions/catalog/rvn-aws-alb",
                   "module-definitions/catalog/rvn-aws-iam-policy",
                   "module-definitions/catalog/rvn-aws-iam-role",
+                  "module-definitions/catalog/rvn-aws-kms",
                   "module-definitions/catalog/rvn-aws-network",
                   "module-definitions/catalog/rvn-aws-static",
                   "module-definitions/catalog/rvn-cloudfront",
