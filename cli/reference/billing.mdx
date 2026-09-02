@@ -63,6 +63,28 @@ ravion billing add-on list [flags]
 | `--json` |  | emit response as JSON |
 | `-v, --verbose` |  | show full output |
 
+### `ravion billing cycle`
+
+Switch between monthly and annual prepaid billing
+
+**Aliases:** `cycles`
+
+#### `ravion billing cycle set`
+
+Switch the organization between monthly and annual billing
+
+```bash
+ravion billing cycle set [flags]
+```
+
+**Flags:**
+
+| Flag | Required | Description |
+| --- | --- | --- |
+| `--billing-interval <string>` | yes | How the organization is billed: monthly in arrears, or a prepaid annual commitment. Available values: MONTHLY, ANNUAL. |
+| `--json` |  | emit response as JSON |
+| `-y, --yes` |  | skip confirmation prompt |
+
 ### `ravion billing get`
 
 Get BillingAccount
