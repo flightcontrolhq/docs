@@ -101,7 +101,7 @@ How references behave:
 - A reference binds to the module instance it first resolved to. If you rename a producer's `givenId` and reuse the old one for a different module, the reference keeps pointing at the original instance and a `PRODUCER_RENAMED` warning is recorded so you can update the template.
 - You cannot delete a module or environment while another module still references its outputs; remove the reference first.
 - Sensitive outputs are not exposed through references. Reference a handle such as an ARN or secret name instead of the secret value.
-- To write a literal `<<` in a value, escape it as `\<<`.
+- To write a literal `<<` in a value, escape it as `\<<`. The escaped block is stored and passed through as plain text and never evaluated; `\\<<` is a live template preceded by a literal backslash.
 
 In the Ravion app, an input holding a template shows the template text as an editable text field with a note describing which module output it resolves from.
 
